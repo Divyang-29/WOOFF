@@ -1,0 +1,133 @@
+/* ==========================================================================
+   Wooff Product Brand Showcase Component (Revitin Banner & 2-Card Layout)
+   ========================================================================== */
+
+.product-brand-showcase-section {
+  margin: 4.5rem 0;
+}
+
+/* 1. Large Top Media Banner */
+.showcase-banner-card {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 480px;
+  border: 2.5px solid var(--primary-brown, #4B2E1E);
+  box-shadow: 6px 6px 0px var(--primary-brown, #4B2E1E);
+}
+
+.showcase-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.showcase-banner-overlay {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 2px solid var(--primary-brown, #4B2E1E);
+  border-radius: 50px;
+  padding: 0.5rem 1.35rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--primary-brown, #4B2E1E);
+  backdrop-filter: blur(4px);
+}
+
+/* 2. Bottom 2-Column Founder & Mission Grid */
+.showcase-story-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.story-card {
+  background-color: #F8E3C8;
+  border: 2.5px solid var(--primary-brown, #4B2E1E);
+  border-radius: 22px;
+  padding: 2.75rem 2.25rem 2.25rem 2.25rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 6px 6px 0px var(--primary-brown, #4B2E1E);
+  transition: transform 0.25s ease;
+}
+
+.story-card:hover {
+  transform: translateY(-3px);
+}
+
+.story-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #7A5B42;
+  margin-bottom: 0.5rem;
+}
+
+.story-card-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.95rem;
+  font-weight: 600;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 1.15rem;
+  line-height: 1.25;
+}
+
+.story-card-desc {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: #4A3323;
+  margin-bottom: 2rem;
+  max-width: 480px;
+}
+
+.story-icon-footer {
+  margin-top: auto;
+}
+
+.icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: #FFFFFF;
+  border: 2px solid var(--primary-brown, #4B2E1E);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  color: var(--primary-brown, #4B2E1E);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Responsive Viewports */
+@media (max-width: 768px) {
+  .showcase-banner-card {
+    aspect-ratio: 4 / 3;
+    max-height: 320px;
+    border-radius: 18px;
+  }
+
+  .showcase-story-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .story-card {
+    padding: 2rem 1.5rem;
+    border-radius: 18px;
+  }
+
+  .story-card-title {
+    font-size: 1.65rem;
+  }
+}

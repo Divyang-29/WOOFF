@@ -1,0 +1,423 @@
+/* ==========================================================================
+   TestimonialsSection.css - Wooff "Word on the street is" Section
+   Brutalist & Neo-Tactile styling with brand warm brown & cream palette
+   ========================================================================== */
+
+.testimonials-section {
+  background-color: var(--background-cream, #F7EFE6);
+  border-top: 2px solid var(--light-beige, #F2E4D6);
+  border-bottom: 2px solid var(--light-beige, #F2E4D6);
+  padding: 5.5rem 0;
+  position: relative;
+  overflow-x: clip;
+}
+
+/* Header styling aligned with Wooff brand guidelines */
+.testimonials-header {
+  max-width: 720px;
+  margin: 0 auto 3.5rem auto;
+}
+
+.testimonials-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--primary-brown, #4B2E1E);
+  background-color: rgba(229, 139, 87, 0.22);
+  border: 1.5px solid var(--primary-brown, #4B2E1E);
+  padding: 6px 16px;
+  border-radius: 50px;
+  box-shadow: 2px 2px 0px var(--primary-brown, #4B2E1E);
+  margin-bottom: 1rem;
+}
+
+.testimonials-title {
+  font-size: 2.75rem;
+  font-weight: 800;
+  color: var(--primary-brown, #4B2E1E);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+.testimonials-subtitle {
+  font-size: 1.1rem;
+  color: var(--muted-text, #8C7B6A);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Carousel wrapper holding Left Arrow, Brutalist Card, Right Arrow */
+.testimonials-carousel-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  position: relative;
+}
+
+/* ==========================================================================
+   Circular Arrow Buttons with Solid Matching Border & Hover Shift Effects
+   ========================================================================== */
+.testimonial-nav-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background-color: var(--warm-orange, #e58b57) !important;
+  border: 3px solid #4B2E1E;
+  color: #4B2E1E;
+  font-size: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #4B2E1E;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background-color 0.15s ease,
+              color 0.15s ease;
+  user-select: none;
+  outline: none;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.testimonial-nav-btn:hover {
+  background-color: var(--warm-orange, #e58b57) !important;
+  color: #4B2E1E;
+  transform: none !important;
+  box-shadow: 4px 4px 0px #4B2E1E;
+}
+
+.testimonial-nav-btn:active {
+  background-color: var(--warm-orange, #e58b57) !important;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #4B2E1E;
+}
+
+.testimonial-nav-btn:focus-visible {
+  outline: 3px dashed #4B2E1E;
+  outline-offset: 4px;
+}
+
+/* ==========================================================================
+   Brutalist Card Specifications:
+   - Soft cream background (#F7EFE6)
+   - Thick dark brown border (3px solid #4B2E1E)
+   - Harsh offset 3D shadow (10px 10px 0px #4B2E1E)
+   ========================================================================== */
+.testimonial-card,
+.testimonial-brutalist-card {
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #F7EFE6;
+  border: 3px solid #4B2E1E;
+  box-shadow: 10px 10px 0px #4B2E1E;
+  border-radius: 24px;
+  padding: 3rem 3rem 2.75rem 3rem;
+  width: 100%;
+  max-width: 760px;
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.testimonial-card:hover,
+.testimonial-brutalist-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 12px 12px 0px #4B2E1E;
+}
+
+/* Testimonial animated inner content */
+.testimonial-content {
+  animation: testimonialFadeSlide 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes testimonialFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Top bar inside card: Rating stars & verified badge */
+.testimonial-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Rating Stars using FontAwesome (fas fa-star) */
+.testimonial-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #4B2E1E;
+}
+
+.testimonial-stars .fas.fa-star {
+  font-size: 1.25rem;
+  color: var(--warm-orange, #e58b57);
+  text-shadow: 1px 1px 0px #4B2E1E;
+  transition: transform 0.2s ease;
+}
+
+.testimonial-card:hover .testimonial-stars .fas.fa-star {
+  transform: scale(1.06);
+}
+
+.testimonial-verified-badge,
+.verified-badge,
+.review-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--primary-brown, #4B2E1E);
+  background-color: rgba(229, 139, 87, 0.15);
+  border: 1px solid rgba(75, 46, 30, 0.2);
+  padding: 4px 10px;
+  border-radius: 30px;
+}
+
+.testimonial-verified-badge i,
+.verified-badge i,
+.review-badge i {
+  color: var(--primary-brown, #4B2E1E);
+  font-size: 0.8rem;
+}
+
+/* Italicized Quote */
+.testimonial-quote {
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.65;
+  color: #4B2E1E;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  position: relative;
+  flex-grow: 1;
+}
+
+/* Author Row */
+.testimonial-author-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-top: 2px dashed rgba(75, 46, 30, 0.18);
+  padding-top: 1.5rem;
+}
+
+.testimonial-author-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.testimonial-author-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background-color: var(--warm-orange, #e58b57);
+  border: 2px solid #4B2E1E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4B2E1E;
+  font-size: 1.1rem;
+  font-weight: 800;
+  box-shadow: 2px 2px 0px #4B2E1E;
+  flex-shrink: 0;
+}
+
+.testimonial-author-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  margin: 0;
+  letter-spacing: -0.2px;
+}
+
+.testimonial-author-tag {
+  font-size: 0.85rem;
+  color: var(--muted-text, #8C7B6A);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Counter pill (e.g. 02 / 04) */
+.testimonial-counter-pill {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  background-color: var(--white, #FFFFFF);
+  border: 2px solid #4B2E1E;
+  border-radius: 20px;
+  padding: 4px 12px;
+  box-shadow: 2px 2px 0px #4B2E1E;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Pagination dots indicator below carousel
+   ========================================================================== */
+.testimonials-dots-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 2.25rem;
+}
+
+.testimonial-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--light-beige, #F2E4D6);
+  border: 2px solid #4B2E1E;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 1px 1px 0px #4B2E1E;
+}
+
+.testimonial-dot:hover {
+  background-color: var(--warm-orange, #e58b57);
+  transform: scale(1.15);
+}
+
+.testimonial-dot.active {
+  width: 32px;
+  border-radius: 12px;
+  background-color: var(--warm-orange, #e58b57);
+  box-shadow: 2px 2px 0px #4B2E1E;
+}
+
+/* Bottom CTA link */
+.testimonials-bottom-cta {
+  margin-top: 2.5rem;
+}
+
+.testimonials-all-reviews-link {
+  color: #4B2E1E;
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 2px solid var(--warm-orange, #e58b57);
+  padding-bottom: 2px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.testimonials-all-reviews-link:hover {
+  color: var(--secondary-brown, #7A4E2D);
+  border-color: #4B2E1E;
+}
+
+/* ==========================================================================
+   Mobile & Tablet Responsiveness
+   ========================================================================== */
+@media (max-width: 992px) {
+  .testimonials-title {
+    font-size: 2.35rem;
+  }
+  .testimonial-quote {
+    font-size: 1.25rem;
+  }
+  .testimonial-card {
+    padding: 2.5rem 2.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonials-section {
+    padding: 4rem 0;
+  }
+
+  .testimonials-title {
+    font-size: 2rem;
+  }
+
+  .testimonials-subtitle {
+    font-size: 1rem;
+  }
+
+  /* Center card cleanly on mobile */
+  .testimonials-carousel-wrapper {
+    gap: 0;
+    padding: 0 0.5rem;
+  }
+
+  /* Hide navigation arrows on mobile devices */
+  .testimonial-nav-btn {
+    display: none !important;
+  }
+
+  .testimonial-card,
+  .testimonial-brutalist-card {
+    min-height: 340px;
+    padding: 2rem 1.5rem;
+    box-shadow: 10px 10px 0px #4B2E1E;
+    border-radius: 20px;
+  }
+
+  .testimonial-quote {
+    font-size: 1.12rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .testimonial-author-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonials-title {
+    font-size: 1.75rem;
+  }
+
+  .testimonial-card,
+  .testimonial-brutalist-card {
+    min-height: 350px;
+    padding: 1.75rem 1.25rem;
+    box-shadow: 8px 8px 0px #4B2E1E;
+    border-width: 2.5px;
+  }
+
+  .testimonial-quote {
+    font-size: 1.05rem;
+  }
+}

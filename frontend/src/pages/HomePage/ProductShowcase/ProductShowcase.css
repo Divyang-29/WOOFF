@@ -1,0 +1,309 @@
+/* ========================================
+   PRODUCT SHOWCASE SECTION
+======================================== */
+
+.product-showcase-section {
+  position: relative;
+  width: 100%;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 0;
+
+  background-color: var(--background-cream, #F7EFE6);
+  background-image: url('../../../assets/jungle-bg.png');
+
+  /* Keep jungle background proportions and anchor cleanly to bottom */
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ========================================
+   MAIN CONTAINER
+======================================== */
+
+.showcase-container {
+  position: relative;
+  z-index: 2;
+
+  text-align: center;
+
+  padding: 2rem 0 2rem;
+  margin: 0 auto;
+}
+
+
+/* ========================================
+   HEADER
+======================================== */
+
+.showcase-header {
+  position: relative;
+  z-index: 10;
+
+  padding-top: 2rem;
+  text-align: center;
+}
+
+
+.showcase-header h2 {
+  position: relative;
+  z-index: 10;
+
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  color: var(--primary-brown, #4A3326);
+
+  font-weight: 700;
+  line-height: 1.2;
+
+  margin: 0 auto 1rem;
+
+  width: fit-content;
+  max-width: 90%;
+
+  /* Keeps heading readable over branches */
+  padding: 0.35rem 1.5rem;
+
+  background: rgba(247, 239, 230, 0.82);
+
+  border-radius: 20px;
+
+  box-shadow: 0 0 25px 15px rgba(247, 239, 230, 0.75);
+}
+
+
+.showcase-header p {
+  position: relative;
+  z-index: 10;
+
+  font-size: 1.15rem;
+  color: var(--primary-brown, #4A3326);
+
+  max-width: 650px;
+  margin: 0 auto;
+
+  line-height: 1.6;
+
+  padding: 0.4rem 1rem;
+
+  background: rgba(247, 239, 230, 0.45);
+
+  border-radius: 15px;
+}
+
+
+/* ========================================
+   CENTER PRODUCT
+======================================== */
+
+.showcase-center {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: 1rem 0;
+}
+
+
+.main-product-tube {
+  display: block;
+
+  max-height: 450px;
+  width: auto;
+
+  object-fit: contain;
+
+  filter: drop-shadow(0px 20px 15px rgba(0, 0, 0, 0.15));
+
+  animation: floatTube 4s ease-in-out infinite;
+
+  position: relative;
+  z-index: 3;
+}
+
+
+/* ========================================
+   FOOTER
+======================================== */
+
+.showcase-footer {
+  position: relative;
+  z-index: 5;
+
+  text-align: center;
+
+  max-width: 600px;
+  margin: 0 auto;
+
+  padding: 0 1rem 1.5rem;
+}
+
+
+.showcase-footer h3 {
+  font-size: 2.5rem;
+  color: var(--primary-brown, #4A3326);
+
+  font-weight: 700;
+
+  margin: 0 0 1rem;
+}
+
+
+.showcase-footer p {
+  font-size: 1.1rem;
+  color: var(--primary-brown, #4A3326);
+
+  line-height: 1.6;
+
+  margin: 0 auto;
+  margin-bottom: 0;
+
+  opacity: 0.85;
+
+  max-width: 480px;
+}
+
+
+/* ========================================
+   FLOATING INGREDIENTS
+======================================== */
+
+.floating-ingredient {
+  position: absolute;
+
+  font-size: 3rem;
+
+  z-index: 2;
+
+  opacity: 0.7;
+
+  user-select: none;
+  pointer-events: none;
+}
+
+
+.ingredient-1 {
+  top: 20%;
+  left: 20%;
+
+  animation: floatTube 5s ease-in-out infinite 1s;
+}
+
+
+.ingredient-2 {
+  top: 50%;
+  right: 20%;
+
+  font-size: 4rem;
+
+  animation: floatTube 6s ease-in-out infinite 2s;
+}
+
+
+.ingredient-3 {
+  bottom: 10%;
+  left: 30%;
+
+  animation: floatTube 4.5s ease-in-out infinite 0.5s;
+}
+
+
+/* ========================================
+   FLOATING ANIMATION
+======================================== */
+
+@keyframes floatTube {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+
+/* ========================================
+   TABLET AND MOBILE
+======================================== */
+
+@media (max-width: 768px) {
+
+  .product-showcase-section {
+    background-size: cover;
+    background-position: center bottom;
+  }
+
+
+  .showcase-container {
+    padding: 1.5rem 0 1.5rem;
+  }
+
+
+  .showcase-header {
+    padding: 1.5rem 1rem 0;
+  }
+
+
+  .showcase-header h2 {
+    font-size: 2.2rem;
+
+    max-width: 100%;
+
+    padding: 0.3rem 0.8rem;
+
+    box-shadow: 0 0 20px 10px rgba(247, 239, 230, 0.7);
+  }
+
+
+  .showcase-header p {
+    font-size: 1rem;
+
+    padding: 0.3rem 0.5rem;
+  }
+
+
+  .showcase-center {
+    margin: 0.5rem 0;
+  }
+
+
+  .main-product-tube {
+    max-height: 350px;
+  }
+
+
+  .showcase-footer {
+    padding: 0 1rem;
+  }
+
+
+  .showcase-footer h3 {
+    font-size: 2rem;
+  }
+
+
+  .showcase-footer p {
+    font-size: 1rem;
+  }
+
+
+  .floating-ingredient {
+    font-size: 2rem;
+  }
+
+
+  .ingredient-2 {
+    font-size: 2.5rem;
+  }
+}

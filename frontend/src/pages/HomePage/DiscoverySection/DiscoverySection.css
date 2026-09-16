@@ -1,0 +1,126 @@
+.discovery-section {
+  position: relative;
+  overflow: hidden;
+  padding: 6rem 0;
+  margin: 0 !important;
+  margin-top: 0 !important;
+  background-color: var(--primary-brown, #4B2E1E);
+  display: flex;
+  flex-direction: column;
+}
+
+.discovery-parallax-bg {
+  position: absolute;
+  top: -30%;
+  left: 0;
+  width: 100%;
+  height: 160%;
+  background-color: var(--primary-brown, #4B2E1E);
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  z-index: 0;
+  will-change: transform;
+  pointer-events: none !important;
+}
+
+.discovery-section .container {
+  position: relative;
+  z-index: 2;
+}
+
+.discovery-card {
+  position: relative;
+  z-index: 2;
+  background-color: var(--background-cream, #F7EFE6);
+  border: 3px solid var(--primary-brown, #4B2E1E);
+  border-radius: 20px;
+  box-shadow: 10px 10px 0px var(--primary-brown, #4B2E1E);
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+  will-change: transform, box-shadow;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Prevent clicking/pressing/hover effect on the static discovery card */
+.discovery-card:hover,
+.discovery-card:active {
+  transform: none !important;
+  box-shadow: 10px 10px 0px var(--primary-brown, #4B2E1E) !important;
+}
+
+.discovery-text h2 {
+  color: var(--primary-brown);
+  font-weight: 700;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.discovery-text p {
+  color: var(--secondary-brown);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.btn-wooff-primary {
+  background-color: var(--warm-orange, #e58b57);
+  color: var(--primary-brown, #4B2E1E) !important;
+  padding: 0.85rem 2.2rem;
+  font-weight: 800;
+  border: 2.5px solid var(--primary-brown, #4B2E1E);
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease !important;
+  will-change: transform, box-shadow;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  position: relative;
+  z-index: 3;
+}
+
+.btn-wooff-primary:hover {
+  background-color: var(--warm-orange, #e58b57) !important;
+  color: var(--primary-brown, #4B2E1E) !important;
+  transform: none !important; /* Stops it from jumping up */
+  box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E) !important; /* Keeps the shadow the exact same size */
+}
+
+.btn-wooff-primary:active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0px var(--primary-brown, #4B2E1E) !important;
+}
+
+.discovery-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .discovery-section {
+    padding: 3.5rem 0;
+  }
+
+  .discovery-text h2 {
+    font-size: 1.85rem;
+  }
+
+  .discovery-card {
+    box-shadow: 8px 8px 0px var(--primary-brown);
+  }
+
+  .discovery-card:hover,
+  .discovery-card:active {
+    transform: none !important;
+    box-shadow: 8px 8px 0px var(--primary-brown, #4B2E1E) !important;
+  }
+}

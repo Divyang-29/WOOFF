@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+Backend/node_modules/
+frontend/node_modules/
+
+# Environment variables
+.env
+Backend/.env
+frontend/.env
+*.env.local
+
+# Agent & Planning metadata
+.agent/
+.planning/
+agy-error.log
+
+# System & OS Files
+.DS_Store
+Thumbs.db
+
+# Build outputs
+frontend/dist/
+frontend/build/
+dist/
+build/
+
+# Logs
+*.log

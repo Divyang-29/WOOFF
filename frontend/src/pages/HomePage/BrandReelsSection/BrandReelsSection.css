@@ -1,0 +1,347 @@
+/* ==========================================================================
+   Brand Reels Showcase Section (Brushers Co. Inspired Layout)
+   ========================================================================== */
+
+.brand-reels-section {
+  position: relative;
+  background-color: var(--background-cream, #F7EFE6);
+  padding: 5rem 0;
+  overflow: hidden;
+}
+
+/* Header Elements */
+.reels-pill-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--warm-orange, #e58b57);
+  background-color: rgba(229, 139, 87, 0.15);
+  padding: 6px 14px;
+  border-radius: 30px;
+}
+
+.reels-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--primary-brown, #4B2E1E);
+  letter-spacing: -0.5px;
+}
+
+.reels-subtitle {
+  font-size: 1.1rem;
+  color: var(--muted-text, #8C7B6A);
+  max-width: 580px;
+  line-height: 1.5;
+}
+
+/* Navigation Arrow Buttons */
+.reels-arrow-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(75, 46, 30, 0.2);
+  background-color: var(--white, #FFFFFF);
+  color: var(--primary-brown, #4B2E1E);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 12px rgba(75, 46, 30, 0.06);
+}
+
+.reels-arrow-btn:hover:not(.disabled) {
+  background-color: var(--primary-brown, #4B2E1E);
+  color: var(--white, #FFFFFF);
+  border-color: var(--primary-brown, #4B2E1E);
+  transform: none !important;
+  box-shadow: 0 4px 12px rgba(75, 46, 30, 0.06);
+}
+
+.reels-arrow-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Slider Track */
+.reels-slider-track {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 1rem 0.25rem 2rem 0.25rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.reels-slider-track::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* Vertical Reel Card */
+.reel-card {
+  position: relative;
+  flex: 0 0 280px;
+  width: 280px;
+  height: 500px;
+  border-radius: 24px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  box-shadow: 0 16px 36px rgba(75, 46, 30, 0.12);
+  background-color: #2A1C13;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.reel-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 24px 44px rgba(75, 46, 30, 0.2);
+}
+
+/* Video Player Layer */
+.reel-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Top Bar (Author Tag & Sound Button) */
+.reel-top-bar {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  z-index: 3;
+}
+
+.reel-author-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--white, #FFFFFF);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.reel-sound-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--white, #FFFFFF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reel-sound-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: none !important;
+}
+
+/* Bottom Overlay & Content */
+.reel-overlay-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 3rem 14px 14px 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 10, 5, 0) 0%,
+    rgba(20, 10, 5, 0.6) 40%,
+    rgba(20, 10, 5, 0.94) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reel-caption {
+  color: var(--white, #FFFFFF);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Floating Product Card */
+.reel-product-card {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: transform 0.2s ease;
+}
+
+.reel-product-card:hover {
+  transform: translateY(-2px);
+  background: #FFFFFF;
+}
+
+.reel-product-thumb {
+  width: 44px;
+  height: 44px;
+  background: var(--light-beige, #F2E4D6);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.reel-product-thumb img {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+}
+
+.reel-product-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.reel-product-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary-brown, #4B2E1E);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.reel-product-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.reel-product-price {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--warm-orange, #e58b57);
+}
+
+.reel-product-rating {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--muted-text, #8C7B6A);
+}
+
+.reel-product-action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: none;
+  background-color: var(--primary-brown, #4B2E1E);
+  color: var(--white, #FFFFFF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.reel-product-action-btn:hover {
+  background-color: var(--warm-orange, #e58b57);
+  transform: none !important;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .brand-reels-section {
+    padding: 4rem 0;
+  }
+
+  .reels-title {
+    font-size: 2.3rem;
+  }
+
+  .reel-card {
+    flex: 0 0 260px;
+    width: 260px;
+    height: 460px;
+  }
+}
+
+@media (max-width: 768px) {
+  .reels-container,
+  .reels-slider-track {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    scroll-behavior: smooth !important;
+    gap: 1rem !important;
+    width: 100% !important;
+    padding: 0.5rem 0 1.5rem 0 !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none !important; /* Firefox */
+  }
+
+  /* Hide the scrollbar for a cleaner native app feel */
+  .reels-container::-webkit-scrollbar,
+  .reels-slider-track::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  /* Ensure only one reel is displayed at a time on mobile screens with standard 9:16 aspect ratio */
+  .reel-card {
+    flex: 0 0 100% !important; /* Keeps it one-per-screen on mobile */
+    max-width: 100% !important;
+    aspect-ratio: 9 / 16 !important; /* Forces the vertical rectangle shape */
+    height: auto !important;
+    max-height: 80vh !important; /* Prevents it from getting too tall on large phones */
+    overflow: hidden !important;
+    scroll-snap-align: center !important;
+    scroll-snap-stop: always !important;
+    border-radius: 20px !important; /* Maintain the rounded brutalist corners */
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .brand-reels-section {
+    padding: 3.5rem 0;
+  }
+
+  .reels-title {
+    font-size: 1.9rem;
+  }
+
+  .reels-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .reel-caption {
+    font-size: 0.85rem;
+  }
+}

@@ -1,0 +1,100 @@
+/* ==========================================================================
+   Wooff Footer Component Styles (Bootstrap 5 Enhancements)
+   ========================================================================== */
+
+.footer {
+  width: 100%;
+  background-color: var(--primary-brown); /* #4B2E1E */
+  color: var(--background-cream); /* #F7EFE6 */
+  border-top: 1px solid var(--secondary-brown); /* #7A4E2D */
+}
+
+.footer-logo-link {
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.footer-logo-link:hover {
+  opacity: 0.95;
+}
+
+.footer-logo {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  filter: invert(1);
+  opacity: 0.9;
+}
+
+.footer-desc {
+  color: var(--light-beige); /* #F2E4D6 */
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 360px;
+}
+
+.footer-badge-wrapper {
+  margin-top: 4px;
+}
+
+.footer-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: rgba(122, 78, 45, 0.6);
+  color: var(--soft-peach); /* #F7C8A5 */
+  border: 1px solid var(--secondary-brown); /* #7A4E2D */
+}
+
+.footer-col-title {
+  color: var(--soft-peach); /* #F7C8A5 */
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.footer-link {
+  color: var(--background-cream); /* #F7EFE6 */
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--warm-orange); /* #e58b57 */
+}
+
+.footer-divider {
+  border-color: rgba(122, 78, 45, 0.5);
+  opacity: 1;
+}
+
+.footer-copyright {
+  font-size: 13px;
+  color: var(--light-beige); /* #F2E4D6 */
+}
+
+.footer-legal {
+  gap: 1.5rem;
+}
+
+.footer-legal-link {
+  color: var(--background-cream); /* #F7EFE6 */
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.footer-legal-link:hover {
+  color: var(--warm-orange); /* #e58b57 */
+}
+
+@media (max-width: 576px) {
+  .footer-legal {
+    gap: 1rem;
+  }
+}

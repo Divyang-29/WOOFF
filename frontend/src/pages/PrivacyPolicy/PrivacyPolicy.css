@@ -1,0 +1,41 @@
+/* ==========================================================================
+   Wooff Privacy Policy Page Styles - 3D Brutalist Aesthetic
+   ========================================================================== */
+
+@import '../SharedLegal.css';
+
+.privacy-page {
+  background-color: var(--background-cream, #F7EFE6);
+  min-height: 100vh;
+  padding-bottom: 5rem;
+}
+
+/* Custom Tooth Bullet Points */
+.legal-content ul,
+.privacy-page .legal-content ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 1.25rem;
+}
+
+.legal-content ul li,
+.privacy-page .legal-content ul li {
+  position: relative;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+  list-style: none;
+  line-height: 1.75;
+  color: var(--primary-brown, #4B2E1E);
+}
+
+.legal-content ul li::before,
+.privacy-page .legal-content ul li::before {
+  content: '\f5c9'; /* FontAwesome tooth unicode */
+  font-family: "Font Awesome 7 Free", "Font Awesome 6 Free", "Font Awesome 5 Free", "FontAwesome";
+  font-weight: 900; /* CRITICAL: Required for solid icons */
+  position: absolute;
+  left: 0;
+  top: 0.2rem;
+  color: var(--primary-brown, #4B2E1E);
+  font-size: 1.1rem;
+}

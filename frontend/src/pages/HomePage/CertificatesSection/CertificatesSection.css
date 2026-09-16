@@ -1,0 +1,67 @@
+/* ==========================================================================
+   Certificates / Trust Badges Section Styles
+   ========================================================================== */
+
+.certificates-section {
+  background-color: var(--background-cream);
+  border-top: none;
+  border-bottom: none;
+}
+
+.certificates-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 3rem;
+  padding: 3rem 0;
+}
+
+.certificate-logo {
+  max-height: 100px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.certificate-logo:hover {
+  transform: scale(1.05);
+}
+
+.duplicate-logo {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .certificates-section {
+    overflow: hidden; /* Prevents horizontal scrolling issues */
+  }
+
+  .certificates-wrapper {
+    flex-wrap: nowrap; /* Forces everything onto one line */
+    justify-content: flex-start;
+    width: max-content; /* Allows the container to grow beyond the screen */
+    padding: 2rem 1.5rem;
+    gap: 3rem;
+    animation: mobileMarquee 15s linear infinite; /* Adjust 15s to change speed */
+  }
+
+  .duplicate-logo {
+    display: block; /* Show the duplicates to make the loop seamless */
+  }
+
+  .certificate-logo {
+    max-height: 50px; /* Slightly smaller for the scrolling ribbon */
+  }
+}
+
+@keyframes mobileMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* Shifts the track left by exactly half its width plus half the gap */
+    transform: translateX(calc(-50% - 1.5rem));
+  }
+}
+

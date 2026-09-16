@@ -1,0 +1,96 @@
+/* ==========================================================================
+   Wooff Modern Premium Page Banner Component
+   ========================================================================== */
+
+.page-banner {
+  position: relative;
+  width: 100%;
+  padding: 8.5rem 1.5rem 3.5rem 1.5rem;
+  background: linear-gradient(180deg, #F4E8DB 0%, #F7EFE6 100%);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(75, 46, 30, 0.1);
+  overflow: hidden;
+}
+
+.banner-content-wrap {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.banner-breadcrumb-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(75, 46, 30, 0.08);
+  color: var(--primary-brown, #4B2E1E);
+  font-size: 0.825rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 0.45rem 1.35rem;
+  border-radius: 50px;
+  backdrop-filter: blur(4px);
+}
+
+.breadcrumb-home-link {
+  color: var(--primary-brown, #4B2E1E);
+  text-decoration: none;
+  font-weight: 800;
+  transition: opacity 0.2s ease;
+}
+
+.breadcrumb-home-link:hover {
+  opacity: 0.7;
+}
+
+.breadcrumb-divider {
+  display: inline-block;
+  margin: 0 0.5rem;
+  opacity: 0.45;
+  font-weight: 600;
+}
+
+.banner-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 3.5rem;
+  font-weight: 500;
+  color: var(--primary-brown, #4B2E1E);
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin: 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .page-banner {
+    padding: 7rem 1rem 2.5rem 1rem;
+  }
+  .banner-title {
+    font-size: 2.35rem;
+  }
+  .banner-breadcrumb-badge {
+    font-size: 0.75rem;
+    padding: 0.35rem 1rem;
+  }
+  .breadcrumb-divider {
+    margin: 0 0.35rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-title {
+    font-size: 1.95rem;
+  }
+}

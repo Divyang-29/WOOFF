@@ -1,0 +1,517 @@
+/* ==========================================================================
+   Wooff Ingredients Page - Premium Modern Layout
+   ========================================================================== */
+
+.ingredients-page-wrapper {
+  background-color: var(--background-cream, #F7EFE6);
+  min-height: 100vh;
+  padding-bottom: 6rem;
+}
+
+/* ==========================================================================
+   Top Header & Formula Intro
+   ========================================================================== */
+
+.ingredients-header-container {
+  max-width: 840px;
+  margin: 3.5rem auto 3rem auto;
+  text-align: center;
+  padding: 0 1.5rem;
+}
+
+.formula-pill-badge {
+  display: inline-block;
+  background-color: #E2EAD8;
+  color: #3E533F;
+  padding: 0.35rem 1.25rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.ingredients-main-heading {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 3rem;
+  font-weight: 500;
+  color: var(--primary-brown, #4B2E1E);
+  margin: 0 0 1.25rem 0;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+}
+
+.ingredients-sub-heading {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--primary-brown, #4B2E1E);
+  opacity: 0.9;
+  margin: 0 0 2.5rem 0;
+}
+
+/* Flavors Summary Grid - Distinct Flavor Card Themes */
+.flavors-summary-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  text-align: left;
+}
+
+.flavor-summary-card {
+  position: relative;
+  border-radius: 24px;
+  padding: 2rem 2.25rem 1.75rem 2.25rem;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.flavor-summary-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Citrus Flavor Theme (Warm Gold & Citrus Orange) */
+.flavor-citrus {
+  background: linear-gradient(145deg, #FFF8EB 0%, #FEEEC5 100%);
+  border: 2.5px solid #E5A447;
+  box-shadow: 6px 6px 0px #D68D2C;
+}
+
+/* Cacao Flavor Theme (Rich Cream & Chocolate) */
+.flavor-cacao {
+  background: linear-gradient(145deg, #F8EFE7 0%, #E7D7C9 100%);
+  border: 2.5px solid var(--primary-brown, #4B2E1E);
+  box-shadow: 6px 6px 0px var(--primary-brown, #4B2E1E);
+}
+
+.flavor-card-badge {
+  display: inline-block;
+  background-color: #E58B57;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.25rem 0.85rem;
+  border-radius: 50px;
+  margin-bottom: 1rem;
+}
+
+.flavor-card-badge.cacao-badge {
+  background-color: var(--primary-brown, #4B2E1E);
+}
+
+.flavor-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.flavor-info h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: var(--primary-brown, #4B2E1E);
+  margin: 0 0 0.25rem 0;
+  line-height: 1.2;
+}
+
+.flavor-tagline {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #7C6855;
+  display: block;
+}
+
+.flavor-icon-wrap {
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.flavor-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.flavor-ingredients-text {
+  font-size: 0.925rem;
+  line-height: 1.55;
+  color: #4A3A2C;
+  margin: 0 0 1.25rem 0;
+}
+
+.flavor-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.flavor-chip {
+  background: rgba(229, 139, 87, 0.18);
+  color: #8D461D;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+}
+
+.flavor-chip.cacao-chip {
+  background: rgba(75, 46, 30, 0.14);
+  color: #3D2315;
+}
+
+/* ==========================================================================
+   Main Ingredients Showcase Card Container
+   ========================================================================== */
+
+.ingredients-showcase-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.ingredients-showcase-card {
+  background-color: #F4E8DB;
+  border-radius: 36px;
+  padding: 3.5rem;
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 4rem;
+  align-items: flex-start;
+  box-shadow: 0 10px 40px rgba(75, 46, 30, 0.05);
+}
+
+/* Left Column: Research Sticky Card */
+.research-sticky-card {
+  flex: 0 0 320px;
+  position: sticky;
+  top: 7rem;
+  background-color: #F9E5BE;
+  border-radius: 28px;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.research-card-content h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.85rem;
+  font-weight: 600;
+  color: var(--primary-brown, #4B2E1E);
+  line-height: 1.25;
+  margin: 0 0 1.25rem 0;
+}
+
+.research-card-content p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--primary-brown, #4B2E1E);
+  opacity: 0.88;
+  margin: 0 0 2rem 0;
+}
+
+.research-quote-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid rgba(75, 46, 30, 0.15);
+}
+
+.dentist-avatar {
+  width: 44px;
+  height: 44px;
+  background-color: #FAF5EF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.dentist-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+
+.dentist-info strong {
+  color: var(--primary-brown, #4B2E1E);
+}
+
+.dentist-info span {
+  color: var(--muted-text, #8C7B6A);
+}
+
+/* Toggle Switch Control */
+.toggle-descriptions-control {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.toggle-label-text {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--primary-brown, #4B2E1E);
+}
+
+/* iOS Style Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 26px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #D1C4B5;
+  transition: .3s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+}
+
+input:checked + .slider {
+  background-color: var(--primary-brown, #4B2E1E);
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Right Column: Ingredients Accordion List */
+.ingredients-list-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ingredient-accordion-item {
+  border-bottom: 1.5px solid rgba(75, 46, 30, 0.16);
+  padding: 1.5rem 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ingredient-accordion-item:last-child {
+  border-bottom: none;
+}
+
+.ingredient-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.ingredient-title-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.ingredient-item-name {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: var(--primary-brown, #4B2E1E);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.ingredient-item-category {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted-text, #8C7B6A);
+}
+
+.ingredient-item-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.ingredient-item-icon {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.04));
+}
+
+.accordion-toggle-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.75rem;
+  font-weight: 300;
+  color: var(--primary-brown, #4B2E1E);
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 0.5rem;
+}
+
+.ingredient-item-body {
+  margin-top: 1rem;
+  padding-right: 2rem;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.ingredient-item-body p {
+  font-size: 1.025rem;
+  line-height: 1.6;
+  color: var(--primary-brown, #4B2E1E);
+  opacity: 0.9;
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer Banner CTA */
+.ingredients-footer-cta {
+  max-width: 1240px;
+  margin: 5rem auto 0 auto;
+  padding: 3rem 2rem;
+  text-align: center;
+  background-color: var(--primary-brown, #4B2E1E);
+  color: #FAF5EF;
+  border-radius: 28px;
+}
+
+.ingredients-footer-cta h2 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 2.25rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Responsive Styles for Mobile Viewports */
+@media (max-width: 992px) {
+  .ingredients-showcase-container {
+    padding: 0 1rem;
+  }
+  .ingredients-showcase-card {
+    flex-direction: column;
+    padding: 1.75rem 1.25rem;
+    border-radius: 24px;
+    gap: 2rem;
+    background-color: #F4E8DB;
+  }
+  .research-sticky-card {
+    position: static;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #FDE8B3;
+    border-radius: 20px;
+    padding: 1.75rem 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .flavors-summary-row {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .ingredients-header-container {
+    margin: 2rem auto 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .ingredients-main-heading {
+    font-size: 2.1rem;
+  }
+
+  .ingredients-sub-heading {
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+
+  .ingredients-showcase-card {
+    padding: 1.25rem 1rem;
+    border-radius: 20px;
+  }
+
+  .ingredient-accordion-item {
+    padding: 1rem 0.25rem;
+  }
+
+  .ingredient-item-name {
+    font-size: 1.2rem;
+  }
+
+  .ingredient-item-category {
+    font-size: 0.8rem;
+  }
+
+  .ingredient-item-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .accordion-toggle-btn {
+    font-size: 1.5rem;
+  }
+
+  .ingredient-item-body {
+    padding-right: 0;
+  }
+
+  .research-card-content h2 {
+    font-size: 1.4rem;
+  }
+
+  .ingredients-footer-cta {
+    margin-top: 3rem;
+    padding: 2rem 1.25rem;
+    border-radius: 20px;
+  }
+
+  .ingredients-footer-cta h2 {
+    font-size: 1.45rem;
+  }
+}
+

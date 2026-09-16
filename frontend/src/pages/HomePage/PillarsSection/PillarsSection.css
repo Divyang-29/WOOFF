@@ -1,0 +1,209 @@
+.pillars-section {
+  background-color: var(--background-cream, #F7EFE6);
+  border-top: 1px solid rgba(75, 46, 30, 0.08);
+  border-bottom: 1px solid rgba(75, 46, 30, 0.08);
+  padding: 5rem 0;
+}
+
+.max-w-700 {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-mini-tag {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--warm-orange, #e58b57);
+  background-color: rgba(229, 139, 87, 0.15);
+  padding: 5px 14px;
+  border-radius: 30px;
+}
+
+.section-title {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--primary-brown, #4B2E1E);
+  letter-spacing: -0.5px;
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--muted-text, #8C7B6A);
+  line-height: 1.6;
+}
+
+.col-xl-2-4 {
+  flex: 0 0 auto;
+  width: 20%;
+}
+
+.pillar-card {
+  background: var(--white, #FFFFFF);
+  border-radius: 20px;
+  padding: 1.8rem 1.4rem;
+  border: 2.5px solid var(--primary-brown, #4B2E1E);
+  box-shadow: 6px 6px 0px var(--primary-brown, #4B2E1E);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+  cursor: default;
+}
+
+.pillar-card:hover {
+  transform: none !important;
+  box-shadow: 6px 6px 0px var(--primary-brown, #4B2E1E) !important;
+  border-color: var(--primary-brown, #4B2E1E) !important;
+}
+
+.pillar-card:active {
+  transform: none !important;
+  box-shadow: 6px 6px 0px var(--primary-brown, #4B2E1E) !important;
+}
+
+.pillar-icon-box {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background-color: rgba(229, 139, 87, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 1.2rem;
+}
+
+.pillar-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 0.6rem;
+  line-height: 1.35;
+}
+
+.pillar-desc {
+  font-size: 0.88rem;
+  color: var(--muted-text, #8C7B6A);
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+   Tactile 3D Pill Button Styles (Solid Offset Shadow)
+   ========================================================================== */
+.btn-pill-3d,
+.btn-3d-pill,
+.btn-wooff-primary {
+  background-color: var(--warm-orange, #e58b57);
+  color: #4B2E1E;
+  padding: 0.85rem 2.2rem;
+  font-weight: 800;
+  border: 2.5px solid #4B2E1E;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 4px 4px 0px #4B2E1E;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn-pill-3d:hover,
+.btn-3d-pill:hover,
+.btn-wooff-primary:hover {
+  background-color: var(--warm-orange, #e58b57) !important;
+  color: #4B2E1E !important;
+  transform: none !important;
+  box-shadow: 4px 4px 0px #4B2E1E !important;
+}
+
+.btn-pill-3d:active,
+.btn-3d-pill:active,
+.btn-wooff-primary:active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0px #4B2E1E !important;
+}
+
+.mobile-swipe-hint {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--secondary-brown, #7A4E2D);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.swipe-arrow {
+  animation: swipeBounce 1.5s infinite ease-in-out;
+}
+
+@keyframes swipeBounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
+@media (max-width: 1200px) {
+  .col-xl-2-4 {
+    width: 33.3333%;
+  }
+}
+
+@media (max-width: 992px) {
+  .col-xl-2-4 {
+    width: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .pillars-section {
+    padding: 3rem 0;
+  }
+
+  .pillars-grid-container {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 1.5rem !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    margin-left: -0.75rem !important;
+    margin-right: -0.75rem !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .pillars-grid-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pillar-col {
+    flex: 0 0 auto !important;
+    width: 260px !important;
+    scroll-snap-align: start;
+  }
+
+  .pillar-card {
+    padding: 1.35rem 1.15rem;
+    border-radius: 16px;
+    border-width: 2.5px;
+    box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.95rem;
+  }
+}
+

@@ -1,0 +1,391 @@
+/* ==========================================================================
+   Wooff Navbar Component Styles
+   ========================================================================== */
+
+.wooff-site-navbar {
+  background-color: rgba(247, 239, 230, 0.96) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 2px solid rgba(75, 46, 30, 0.12);
+  box-shadow: 0 4px 20px rgba(75, 46, 30, 0.05);
+  transition: all 0.3s ease;
+  padding-top: 1.1rem;
+  padding-bottom: 1.1rem;
+  z-index: 1030;
+}
+
+.nav-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+/* Centered Brand Logo for Desktop */
+@media (min-width: 992px) {
+  .brand-logo-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+.navbar-brand {
+  text-decoration: none;
+  color: var(--primary-brown, #4B2E1E);
+  transition: opacity 0.2s ease;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar-brand:hover {
+  opacity: 0.9;
+}
+
+.navbar-logo,
+.navbar-brand img {
+  max-height: 88px;
+  width: auto;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transition: max-height 0.2s ease;
+}
+
+/* Desktop Left Navigation Links */
+.desktop-nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.wooff-site-navbar .nav-link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: var(--primary-brown, #4B2E1E);
+  font-size: 1.18rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  padding: 0.5rem 0.35rem;
+  text-decoration: none;
+  background-color: transparent !important;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-link-text {
+  position: relative;
+  z-index: 1;
+}
+
+.wooff-site-navbar .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2.5px;
+  background-color: var(--warm-orange, #e58b57);
+  border-radius: 2px;
+  transition: width 0.25s ease, left 0.25s ease;
+}
+
+.wooff-site-navbar .nav-link:hover {
+  color: var(--warm-orange, #e58b57);
+  background-color: transparent !important;
+}
+
+.wooff-site-navbar .nav-link:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+.wooff-site-navbar .nav-link.active-link {
+  color: var(--primary-brown, #4B2E1E);
+  font-weight: 900;
+  background-color: transparent !important;
+}
+
+.wooff-site-navbar .nav-link.active-link::after {
+  display: none;
+}
+
+/* Unique Animated Smile Arc Underline */
+.active-smile-arc {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 8px;
+  animation: popSmileArc 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popSmileArc {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* Right Desktop Action Links (Account & Cart) */
+.btn-account-link {
+  color: var(--primary-brown, #4B2E1E);
+  font-size: 1.18rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.btn-account-link:hover {
+  color: var(--warm-orange, #e58b57);
+}
+
+.btn-cart-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--primary-brown, #4B2E1E);
+  font-size: 1.18rem;
+  font-weight: 800;
+  padding: 0.25rem 0.5rem;
+  position: relative;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-cart-nav:hover {
+  color: var(--warm-orange, #e58b57);
+  transform: scale(1.05);
+}
+
+.cart-icon {
+  width: 25px;
+  height: 25px;
+}
+
+.cart-label {
+  font-size: 1.18rem;
+  font-weight: 800;
+}
+
+.cart-badge-count {
+  background-color: var(--warm-orange, #e58b57);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 800;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  margin-left: 2px;
+  box-shadow: 0 2px 6px rgba(229, 139, 87, 0.4);
+}
+
+/* Mobile & Tablet Hamburger Button - Clean No-Border Style */
+.mobile-hamburger-btn {
+  background: transparent;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--primary-brown, #4B2E1E);
+  padding: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-hamburger-btn:hover {
+  color: var(--warm-orange, #e58b57);
+}
+
+/* ==========================================================================
+   OFF-CANVAS SLIDE-OUT NAVIGATION DRAWER (Mobile & Tablet)
+   ========================================================================== */
+
+.nav-offcanvas-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 99999;
+  display: flex;
+  justify-content: flex-end;
+  opacity: 0;
+  animation: fadeInNavBackdrop 0.25s forwards ease;
+}
+
+@keyframes fadeInNavBackdrop {
+  to { opacity: 1; }
+}
+
+.nav-offcanvas-panel {
+  width: 100%;
+  max-width: 340px;
+  height: 100%;
+  background-color: #FAF5EE;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+  transform: translateX(100%);
+  animation: slideInNav 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInNav {
+  to { transform: translateX(0); }
+}
+
+.offcanvas-header {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid rgba(75, 46, 30, 0.12);
+}
+
+.offcanvas-logo {
+  max-height: 64px;
+  width: auto;
+  mix-blend-mode: multiply;
+}
+
+.offcanvas-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.35rem;
+  color: var(--primary-brown, #4B2E1E);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.offcanvas-close-btn:hover {
+  color: var(--warm-orange, #e58b57);
+  transform: scale(1.15);
+}
+
+.offcanvas-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 1.5rem;
+}
+
+.offcanvas-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.offcanvas-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--primary-brown, #4B2E1E);
+  padding: 0.85rem 1.1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.offcanvas-link:hover {
+  background-color: rgba(229, 139, 87, 0.12);
+  color: var(--warm-orange, #e58b57);
+  transform: translateX(4px);
+}
+
+.offcanvas-link.offcanvas-active {
+  background-color: rgba(229, 139, 87, 0.15);
+  color: var(--warm-orange, #e58b57) !important;
+  font-weight: 800;
+}
+
+.offcanvas-link.offcanvas-active .arrow-icon {
+  color: var(--warm-orange, #e58b57);
+  opacity: 1;
+}
+
+.arrow-icon {
+  font-size: 1.1rem;
+  opacity: 0.5;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.offcanvas-link:hover .arrow-icon {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+.offcanvas-footer {
+  padding: 1.5rem;
+  background-color: #F3E7D7;
+  border-top: 2px solid rgba(75, 46, 30, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.offcanvas-login-btn {
+  display: block;
+  width: 100%;
+  background-color: var(--primary-brown, #4B2E1E);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.85rem;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(75, 46, 30, 0.25);
+  transition: background-color 0.2s ease;
+}
+
+.offcanvas-login-btn:hover {
+  background-color: var(--warm-orange, #e58b57);
+  color: #ffffff;
+}
+
+.offcanvas-footer-note {
+  font-size: 0.78rem;
+  color: var(--muted-text, #7A6B5D);
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Mobile Media Queries */
+@media (max-width: 768px) {
+  .wooff-site-navbar {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .navbar-brand img,
+  .navbar-logo {
+    max-height: 68px;
+  }
+}
+
+
+

@@ -1,0 +1,97 @@
+/* ==========================================================================
+   Wooff ToothHeader Component Styles - Clean Boxless Tooth Icon
+   ========================================================================== */
+
+.tooth-header-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tooth-header-wrapper h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary-brown, #4B2E1E);
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.tooth-icon-container {
+  position: relative;
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+}
+
+.tooth-icon-container i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 3rem;
+  color: var(--primary-brown, #4B2E1E);
+  z-index: 1;
+}
+
+.tooth-number {
+  position: absolute;
+  top: 32%; /* Sits in the thickest part of the upper crown */
+  left: 60% !important; /* Nudged right from 50% for optical centering */
+  transform: translate(-50%, -50%);
+  color: var(--background-cream, #F7EFE6, #ffffff);
+  font-size: 1.3rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .tooth-header-wrapper {
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .tooth-header-wrapper h2 {
+    font-size: 1.3rem;
+  }
+
+  .tooth-icon-container {
+    width: 2.6rem;
+    height: 2.6rem;
+  }
+
+  .tooth-icon-container i {
+    font-size: 2.6rem;
+  }
+
+  .tooth-number {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tooth-header-wrapper {
+    gap: 0.75rem;
+  }
+
+  .tooth-header-wrapper h2 {
+    font-size: 1.18rem;
+  }
+
+  .tooth-icon-container {
+    width: 2.3rem;
+    height: 2.3rem;
+  }
+
+  .tooth-icon-container i {
+    font-size: 2.3rem;
+  }
+
+  .tooth-number {
+    font-size: 0.95rem;
+  }
+}
