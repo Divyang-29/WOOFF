@@ -11,18 +11,28 @@ const app = express();
 
 app.use(helmet());
 
-// Strict CORS configuration
-const rawOrigins = process.env.CORS_ORIGIN || "http://localhost:3000,http://localhost:5173,http://127.0.0.1:5173";
-const allowedOrigins = rawOrigins.split(",").map((o) => o.trim());
+// Strict CORS configuration with Render/Vercel support
+const rawOrigins =
+  (process.env.CORS_ORIGIN || "") +
+  "," +
+  (process.env.FRONTEND_URL || "") +
+  ",http://localhost:3000,http://localhost:5173,http://127.0.0.1:5173,https://wooff-frontend.onrender.com";
+const allowedOrigins = rawOrigins
+  .split(",")
+  .map((o) => o.trim().replace(/\/+$/, ""))
+  .filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
+    const cleanOrigin = origin.replace(/\/+$/, "");
     if (
       allowedOrigins.includes("*") ||
-      allowedOrigins.includes(origin) ||
+      allowedOrigins.includes(cleanOrigin) ||
+      cleanOrigin.endsWith(".onrender.com") ||
+      cleanOrigin.endsWith(".vercel.app") ||
       (process.env.NODE_ENV !== "production" &&
-        /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin))
+        /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin))
     ) {
       return callback(null, true);
     }
