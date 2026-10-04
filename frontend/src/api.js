@@ -4,7 +4,29 @@
  * otherwise falls back to relative paths for Vite proxy forwarding.
  */
 const rawBaseUrl = import.meta.env.VITE_API_URL || '';
-const API_BASE_URL = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
+export const API_BASE_URL = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
+
+// Intercept window.fetch so all relative API calls (/api/... and /terms-and-conditions) automatically route to API_BASE_URL in production
+if (API_BASE_URL && typeof window !== 'undefined' && window.fetch) {
+  const originalFetch = window.fetch;
+  window.fetch = function (resource, config) {
+    if (typeof resource === 'string') {
+      if (resource.startsWith('/api') || resource.startsWith('/terms-and-conditions')) {
+        resource = `${API_BASE_URL}${resource}`;
+      }
+    } else if (resource instanceof Request && resource.url) {
+      try {
+        const parsedUrl = new URL(resource.url);
+        if (parsedUrl.pathname.startsWith('/api') || parsedUrl.pathname.startsWith('/terms-and-conditions')) {
+          resource = new Request(`${API_BASE_URL}${parsedUrl.pathname}${parsedUrl.search}`, resource);
+        }
+      } catch {
+        // keep original resource if URL parsing fails
+      }
+    }
+    return originalFetch.call(this, resource, config);
+  };
+}
 
 export const API_ENDPOINTS = {
   CONTACT: `${API_BASE_URL}/api/contact`,
