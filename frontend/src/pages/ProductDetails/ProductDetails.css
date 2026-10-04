@@ -298,7 +298,7 @@
   justify-content: center;
 }
 
-/* Crimped Tail (Left Side) */
+/* Crimped Tail (Left Side / Back - horizontal lines) */
 .add-to-cart-btn::before {
   content: "";
   position: absolute;
@@ -310,10 +310,10 @@
   border: 3px solid var(--primary-brown, #4B2E1E);
   border-right: none;
   border-radius: 4px 0 0 4px;
-  background-image: repeating-linear-gradient(to right, transparent, transparent 3px, #4B2E1E 3px, #4B2E1E 5px);
+  background-image: repeating-linear-gradient(to bottom, transparent, transparent 3px, #4B2E1E 3px, #4B2E1E 5px);
 }
 
-/* Tube Cap (Right Side) */
+/* Tube Cap (Right Side / Front - 2 vertical lines) */
 .add-to-cart-btn::after {
   content: "";
   position: absolute;
@@ -325,6 +325,18 @@
   border: 3px solid var(--primary-brown, #4B2E1E);
   border-left: none;
   border-radius: 0 6px 6px 0;
+  background-image: linear-gradient(
+    to right,
+    transparent 0px,
+    transparent 4px,
+    #4B2E1E 4px,
+    #4B2E1E 6px,
+    transparent 6px,
+    transparent 17px,
+    #4B2E1E 17px,
+    #4B2E1E 19px,
+    transparent 19px
+  );
 }
 
 .add-to-cart-btn:hover:not(:disabled) {
@@ -502,6 +514,7 @@
 
 .ingredient-card-text {
   flex: 1;
+  min-width: 0;
 }
 
 .ingredient-card-title {
@@ -511,6 +524,8 @@
   color: var(--primary-brown, #4B2E1E);
   margin: 0 0 0.2rem 0;
   line-height: 1.2;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .ingredient-card-subtitle {
@@ -615,61 +630,14 @@
   margin: 0;
 }
 
-/* Mobile Adjustments */
-@media (max-width: 992px) {
-  .product-hero-section {
-    flex-direction: column;
-    gap: 2.5rem;
-  }
-  .product-info-sticky {
-    position: static;
-  }
-  .product-title {
-    font-size: 2.25rem;
-  }
-  .quantity-and-cart-row {
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-  .add-to-cart-btn {
-    width: calc(100% - 46px) !important;
-  }
-  .ingredients-wooff-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2.5rem 1.5rem;
-  }
-  .ingredients-main-title {
-    font-size: 1.95rem;
-  }
-}
-
-@media (max-width: 640px) {
-  .product-gallery-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .gallery-card.hero-card {
-    aspect-ratio: 1 / 1;
-  }
-  .ingredients-wooff-grid {
-    grid-template-columns: 1fr;
-    gap: 2.25rem;
-  }
-  .ingredients-main-title {
-    font-size: 1.65rem;
-  }
-  .ingredient-card-image-wrap {
-    width: 70px;
-    height: 70px;
-  }
-}
-
 /* ==========================================================================
-   Perfora-Style Active Offers, Pincode Checker & Accordions
+   Perfora-Style Active Offers, Pincode Checker & Accordions (Base Styles)
    ========================================================================== */
 
 /* 1. Perfora-Style Active Offers Cards */
 .active-offers-section {
   margin-top: 2rem;
+  width: 100%;
 }
 
 .offers-section-title {
@@ -686,6 +654,7 @@
   overflow-x: auto;
   padding-bottom: 0.85rem;
   scrollbar-width: thin;
+  width: 100%;
 }
 
 .perfora-ticket-card {
@@ -778,6 +747,7 @@
 /* 2. Single Line Check Delivery Timeline Box */
 .delivery-pincode-wrapper {
   margin-top: 1.5rem;
+  width: 100%;
 }
 
 .pincode-single-line-box {
@@ -790,6 +760,8 @@
   padding: 0.65rem 1rem;
   background-color: #FFFFFF;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .pincode-inline-label {
@@ -810,6 +782,7 @@
   font-weight: 500;
   color: var(--primary-brown, #4B2E1E);
   min-width: 0;
+  width: 0;
 }
 
 .pincode-input::placeholder {
@@ -828,6 +801,7 @@
   white-space: nowrap;
   flex-shrink: 0;
   transition: opacity 0.2s ease;
+  padding: 0;
 }
 
 .btn-pincode-check:hover {
@@ -842,6 +816,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .del-res-item {
@@ -864,6 +840,7 @@
   color: var(--primary-brown, #4B2E1E);
   letter-spacing: 0.2px;
   gap: 0.5rem;
+  width: 100%;
 }
 
 .trust-strip-item {
@@ -875,10 +852,12 @@
 /* 4. Product Info Accordions */
 .product-info-accordions {
   margin-top: 1.5rem;
+  width: 100%;
 }
 
 .accordion-block {
   border-bottom: 1.5px solid rgba(75, 46, 30, 0.15);
+  width: 100%;
 }
 
 .accordion-header-btn {
@@ -913,20 +892,229 @@
   font-size: 0.96rem;
   line-height: 1.7;
   color: #3D2619;
+  width: 100%;
 }
 
 .benefits-bullet-list,
 .features-bullet-list {
   padding-left: 1.25rem;
   margin: 0;
+  width: 100%;
 }
 
 .benefits-bullet-list li,
 .features-bullet-list li {
   margin-bottom: 0.4rem;
+  overflow-wrap: break-word;
 }
 
 .usage-instruction-p {
   margin: 0;
+  overflow-wrap: break-word;
+}
+
+/* ==========================================================================
+   Responsive Viewports & Mobile Breakpoints (Strictly at End of File)
+   ========================================================================== */
+
+@media (max-width: 992px) {
+  .product-page-wrapper {
+    overflow-x: hidden;
+    padding-top: 5.5rem;
+    width: 100%;
+    max-width: 100%;
+  }
+  .product-hero-section {
+    flex-direction: column;
+    gap: 2.5rem;
+    width: 100%;
+    max-width: 100%;
+    align-items: stretch;
+  }
+  .product-gallery-container {
+    width: 100%;
+    max-width: 100%;
+  }
+  .product-info-sticky {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+  .product-title {
+    font-size: 2.25rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .quantity-and-cart-row {
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+    max-width: 100%;
+    align-items: flex-start;
+  }
+  .quantity-selector {
+    align-self: flex-start;
+  }
+  .add-to-cart-btn {
+    width: calc(100% - 50px) !important;
+    max-width: 380px;
+    margin-left: 18px !important;
+    margin-right: 32px !important;
+    align-self: flex-start;
+  }
+  .ingredients-wooff-grid {
+    grid-template-columns: 1fr;
+    gap: 2.25rem;
+  }
+  .ingredients-main-title {
+    font-size: 1.95rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-container {
+    padding: 0 1rem;
+    margin: 1.5rem auto 4rem auto;
+    gap: 3.5rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+  .product-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+    width: 100%;
+  }
+  .gallery-card.hero-card {
+    aspect-ratio: 16 / 11;
+  }
+  .product-title {
+    font-size: 1.95rem;
+  }
+  .product-trust-strip {
+    flex-wrap: wrap;
+    gap: 0.5rem 0.85rem;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 100%;
+  }
+  .trust-strip-item {
+    font-size: 0.78rem;
+  }
+  .ingredients-main-title {
+    font-size: 1.65rem;
+  }
+  .ingredient-card-image-wrap {
+    width: 72px;
+    height: 72px;
+  }
+}
+
+@media (max-width: 576px) {
+  .product-page-wrapper {
+    padding-top: 5rem;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .product-container {
+    padding: 0 0.85rem;
+    gap: 2.5rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+  .gallery-card.hero-card {
+    aspect-ratio: 1 / 1;
+  }
+  .product-title {
+    font-size: 1.7rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .final-price {
+    font-size: 1.85rem;
+  }
+  .add-to-cart-btn {
+    font-size: 0.95rem;
+    padding: 0.85rem 1rem;
+    width: calc(100% - 50px) !important;
+    max-width: 360px;
+    margin-left: 18px !important;
+    margin-right: 32px !important;
+  }
+  .pincode-single-line-box {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.25rem !important;
+    padding: 0.5rem 0.65rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .pincode-inline-label {
+    width: auto !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    font-size: clamp(0.68rem, 2.5vw, 0.78rem) !important;
+    margin-bottom: 0 !important;
+  }
+  .pincode-input {
+    min-width: 0 !important;
+    width: 0 !important;
+    flex: 1 !important;
+    font-size: clamp(0.68rem, 2.5vw, 0.78rem) !important;
+    padding: 0 0.2rem !important;
+  }
+  .pincode-input::placeholder {
+    font-size: clamp(0.65rem, 2.4vw, 0.76rem) !important;
+  }
+  .btn-pincode-check {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    font-size: clamp(0.68rem, 2.5vw, 0.78rem) !important;
+    padding: 0 !important;
+  }
+  .product-trust-strip {
+    flex-wrap: wrap !important;
+    gap: 0.45rem 0.75rem !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .trust-strip-item {
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .product-container {
+    padding: 0 0.65rem;
+  }
+  .pincode-single-line-box {
+    padding: 0.45rem 0.5rem !important;
+    gap: 0.15rem !important;
+  }
+  .pincode-inline-label {
+    font-size: 0.66rem !important;
+  }
+  .pincode-input {
+    font-size: 0.66rem !important;
+  }
+  .pincode-input::placeholder {
+    font-size: 0.64rem !important;
+  }
+  .btn-pincode-check {
+    font-size: 0.66rem !important;
+  }
+  .add-to-cart-btn {
+    font-size: 0.85rem !important;
+  }
 }
 

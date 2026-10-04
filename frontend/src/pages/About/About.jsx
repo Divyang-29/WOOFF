@@ -1,9 +1,23 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import Banner from '../../components/Banner/Banner';
 import './About.css';
 
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
+
 export default function About() {
+  const wrapperRef = useRef(null);
+  const pathRef = useRef(null);
+  const carRef = useRef(null);
+  const animTimeline = useRef(null);
+
+  const [pathD, setPathD] = useState('');
+  const [svgSize, setSvgSize] = useState({ width: 0, height: 0 });
+  const [svgLoaded, setSvgLoaded] = useState(false);
+
   const timelineData = [
     {
       year: '2022',
@@ -48,6 +62,234 @@ export default function About() {
     }
   ];
 
+  const updateTimelinePath = () => {
+    if (!wrapperRef.current) return;
+    const wrapper = wrapperRef.current;
+    const wrapperRect = wrapper.getBoundingClientRect();
+    const nodeEls = wrapper.querySelectorAll('.timeline-node-dot');
+    if (!nodeEls || nodeEls.length === 0) return;
+
+    const points = [];
+    nodeEls.forEach((el) => {
+      const rect = el.getBoundingClientRect();
+      points.push({
+        x: rect.left + rect.width / 2 - wrapperRect.left,
+        y: rect.top + rect.height / 2 - wrapperRect.top
+      });
+    });
+
+    if (points.length < 2) return;
+
+    const isMobile = window.innerWidth <= 868;
+    // Desktop: generous organic 44px wave; Mobile: subtle 12px wave through center column
+    const swing = isMobile ? 12 : 44;
+
+    // Start directly at the first milestone dot (starting point)
+    const startX = points[0].x;
+    const startY = points[0].y;
+
+    let path = `M ${startX.toFixed(1)} ${startY.toFixed(1)}`;
+
+    // Alternating curve directions: +1 (right), -1 (left), +1 (right), -1 (left)
+    const directions = [1, -1, 1, -1];
+
+    for (let i = 0; i < points.length - 1; i++) {
+      const pA = points[i];
+      const pB = points[i + 1];
+      const dir = directions[i % directions.length];
+      const dy = pB.y - pA.y;
+      const midY = (pA.y + pB.y) / 2;
+      const midX = (pA.x + pB.x) / 2 + dir * swing;
+
+      // Spline from pA to (midX, midY)
+      path += ` C ${pA.x.toFixed(1)} ${(pA.y + dy * 0.22).toFixed(1)}, ${midX.toFixed(1)} ${(midY - dy * 0.22).toFixed(1)}, ${midX.toFixed(1)} ${midY.toFixed(1)}`;
+
+      // Spline from (midX, midY) to pB
+      path += ` C ${midX.toFixed(1)} ${(midY + dy * 0.22).toFixed(1)}, ${pB.x.toFixed(1)} ${(pB.y - dy * 0.22).toFixed(1)}, ${pB.x.toFixed(1)} ${pB.y.toFixed(1)}`;
+    }
+
+    setPathD(path);
+    setSvgSize({ width: wrapperRect.width, height: wrapperRect.height });
+  };
+
+  // Recalculate path on mount, resize, and DOM changes
+  useEffect(() => {
+    updateTimelinePath();
+
+    const ro = new ResizeObserver(() => {
+      updateTimelinePath();
+    });
+
+    if (wrapperRef.current) {
+      ro.observe(wrapperRef.current);
+    }
+
+    window.addEventListener('resize', updateTimelinePath);
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', updateTimelinePath);
+    };
+  }, []);
+
+  // Fetch provided Wooff founders car SVG with transparent background
+  useEffect(() => {
+    let isMounted = true;
+    fetch('/assets/wooff_founders_car_illustration_no_background.svg')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to load wooff_founders_car_illustration_no_background.svg');
+        return res.text();
+      })
+      .then((svgText) => {
+        if (!isMounted || !carRef.current) return;
+        carRef.current.innerHTML = `
+          <div class="timeline-car-svg-wrap">${svgText}</div>
+        `;
+        const svg = carRef.current.querySelector('svg');
+        if (svg) {
+          svg.removeAttribute('width');
+          svg.removeAttribute('height');
+          svg.style.width = '100%';
+          svg.style.height = 'auto';
+          svg.style.display = 'block';
+        }
+        setSvgLoaded(true);
+      })
+      .catch((err) => {
+        console.error('Error loading car SVG:', err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Initialize GSAP ScrollTrigger animation for the car along the curved path
+  useEffect(() => {
+    if (!svgLoaded || !pathD || !carRef.current || !pathRef.current || !wrapperRef.current) {
+      return;
+    }
+
+    const carEl = carRef.current;
+    const pathEl = pathRef.current;
+    const rearWheel = carEl.querySelector('#rear-wheel');
+    const frontWheel = carEl.querySelector('#front-wheel');
+
+    // Clean up previous timeline and triggers
+    if (animTimeline.current) {
+      animTimeline.current.kill();
+    }
+    ScrollTrigger.getAll().forEach((st) => {
+      if (st.vars.id && st.vars.id.startsWith('timeline-')) {
+        st.kill();
+      }
+    });
+
+    gsap.set(carEl, { visibility: 'visible' });
+
+    if (rearWheel) {
+      gsap.set(rearWheel, { transformBox: 'view-box' });
+    }
+    if (frontWheel) {
+      gsap.set(frontWheel, { transformBox: 'view-box' });
+    }
+
+    const nodeEls = wrapperRef.current.querySelectorAll('.timeline-node-dot');
+    const firstDot = nodeEls[0];
+    const lastDot = nodeEls[nodeEls.length - 1];
+
+    // Place car directly at the first milestone node (starting point) immediately
+    gsap.set(carEl, {
+      motionPath: {
+        path: pathEl,
+        align: pathEl,
+        alignOrigin: [0.5, 0.5],
+        start: 0,
+        end: 0,
+        autoRotate: false,
+      },
+      visibility: 'visible',
+    });
+
+    const tl = gsap.timeline({
+      id: 'timeline-car-main',
+      scrollTrigger: {
+        trigger: firstDot || wrapperRef.current,
+        start: 'center 50%',
+        endTrigger: lastDot || wrapperRef.current,
+        end: 'center 50%',
+        scrub: 0.8,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    // Animate car along the exact curved timeline path starting right at the first node
+    tl.to(carEl, {
+      motionPath: {
+        path: pathEl,
+        align: pathEl,
+        alignOrigin: [0.5, 0.5],
+        autoRotate: false, // Keep car upright and natural
+      },
+      immediateRender: true,
+      ease: 'none',
+      duration: 1,
+    }, 0);
+
+    // Synchronize independent wheel rotation around their own rotation centers
+    if (rearWheel) {
+      tl.to(rearWheel, {
+        rotation: 360 * 10,
+        transformOrigin: '297px 740px',
+        ease: 'none',
+        duration: 1,
+      }, 0);
+    }
+
+    if (frontWheel) {
+      tl.to(frontWheel, {
+        rotation: 360 * 10,
+        transformOrigin: '1001px 744px',
+        ease: 'none',
+        duration: 1,
+      }, 0);
+    }
+
+    animTimeline.current = tl;
+
+    // Story milestones: subtle activation as car passes each year
+    const rowEls = wrapperRef.current.querySelectorAll('.timeline-row');
+    rowEls.forEach((rowEl, idx) => {
+      ScrollTrigger.create({
+        id: `timeline-milestone-${idx}`,
+        trigger: rowEl,
+        start: 'top 55%',
+        end: 'bottom 45%',
+        toggleClass: { targets: rowEl, className: 'milestone-active' },
+      });
+      ScrollTrigger.create({
+        id: `timeline-milestone-reached-${idx}`,
+        trigger: rowEl,
+        start: 'top 55%',
+        onEnter: () => rowEl.classList.add('milestone-reached'),
+        onLeaveBack: () => rowEl.classList.remove('milestone-reached'),
+      });
+    });
+
+    ScrollTrigger.refresh();
+
+    return () => {
+      if (animTimeline.current) {
+        animTimeline.current.kill();
+      }
+      ScrollTrigger.getAll().forEach((st) => {
+        if (st.vars.id && st.vars.id.startsWith('timeline-')) {
+          st.kill();
+        }
+      });
+    };
+  }, [svgLoaded, pathD]);
+
   const philosophyPromises = [
     {
       icon: 'fa-vial-circle-check',
@@ -88,9 +330,31 @@ export default function About() {
           </p>
         </section>
 
-        {/* 2. Brewskin Timeline Container with Central Spine */}
-        <section className="timeline-journey-wrapper">
-          <div className="timeline-central-spine"></div>
+        {/* 2. Brewskin Timeline Container with Curvy Spine */}
+        <section className="timeline-journey-wrapper" ref={wrapperRef}>
+          {/* Curvy Path SVG */}
+          {svgSize.width > 0 && svgSize.height > 0 && (
+            <svg 
+              className="timeline-curvy-svg" 
+              width={svgSize.width} 
+              height={svgSize.height}
+              viewBox={`0 0 ${svgSize.width} ${svgSize.height}`}
+            >
+              <path 
+                id="timelineCurvedPath"
+                ref={pathRef}
+                d={pathD} 
+                className="timeline-curvy-path"
+              />
+            </svg>
+          )}
+
+          {/* Animated Wooff Founders Car along the Curvy Timeline Path */}
+          <div 
+            ref={carRef} 
+            className="timeline-animated-car" 
+            aria-label="Wooff founders car traveling along timeline"
+          />
 
           <div className="timeline-items-list">
             {timelineData.map((item, index) => {
@@ -102,25 +366,29 @@ export default function About() {
                   <div className="timeline-col col-content-left">
                     {isEven ? (
                       <div className="story-img-card-wrap">
-                        <img src={item.image} alt={item.title} className="story-timeline-img" />
+                        <img 
+                          src={item.image} 
+                          alt={item.title} 
+                          className="story-timeline-img" 
+                          onLoad={updateTimelinePath}
+                        />
                         <span className="story-img-caption">{item.caption}</span>
                       </div>
                     ) : (
                       <div className="story-text-card">
                         <span className="timeline-section-badge">{item.badge}</span>
                         <h2>{item.title}</h2>
+                        <div className="story-divider-rule"></div>
                         <p>{item.text}</p>
                         {item.author && <span className="story-author-tag"><i className="fa-solid fa-user-doctor me-2"></i>{item.author}</span>}
                       </div>
                     )}
                   </div>
 
-                  {/* Center Node / Year Badge */}
+                  {/* Center Node: Year & Dot on curvy line */}
                   <div className="timeline-center-node">
-                    <div className="year-pill-badge">{item.year}</div>
-                    <div className="pit-stop-badge">
-                      <i className="fa-solid fa-car-side me-1"></i> PIT STOP!
-                    </div>
+                    <span className="timeline-year-text">{item.year}</span>
+                    <div className="timeline-node-dot"></div>
                   </div>
 
                   {/* Right Column Content */}
@@ -129,12 +397,18 @@ export default function About() {
                       <div className="story-text-card">
                         <span className="timeline-section-badge">{item.badge}</span>
                         <h2>{item.title}</h2>
+                        <div className="story-divider-rule"></div>
                         <p>{item.text}</p>
                         {item.author && <span className="story-author-tag"><i className="fa-solid fa-user-doctor me-2"></i>{item.author}</span>}
                       </div>
                     ) : (
                       <div className="story-img-card-wrap">
-                        <img src={item.image} alt={item.title} className="story-timeline-img" />
+                        <img 
+                          src={item.image} 
+                          alt={item.title} 
+                          className="story-timeline-img" 
+                          onLoad={updateTimelinePath}
+                        />
                         <span className="story-img-caption">{item.caption}</span>
                       </div>
                     )}

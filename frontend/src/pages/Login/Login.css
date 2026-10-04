@@ -1,0 +1,581 @@
+/* ==========================================================================
+   Wooff Modern Auth Modal Overlay Styling (Login & Signup Popup)
+   ========================================================================== */
+
+/* Fullscreen Blurred Backdrop Overlay */
+.auth-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1050;
+  background: rgba(30, 20, 15, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  animation: authFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow-y: auto;
+}
+
+@keyframes authFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Page wrapper version (for direct /login or /signup URL routes) */
+.auth-page-wrapper {
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  background: linear-gradient(135deg, #F7EFE6 0%, #F2E4D6 50%, #F7C8A5 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Modal Card Box: Wider width, compact height to fit on screen */
+.auth-card-container {
+  width: 100%;
+  max-width: 560px; /* Wider horizontal width */
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(75, 46, 30, 0.15);
+  border-radius: 24px;
+  padding: 1.75rem 2rem; /* Compact padding */
+  box-shadow: 0 24px 48px rgba(42, 28, 19, 0.2), 0 2px 6px rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 1051;
+  transform: scale(0.94) translateY(10px);
+  animation: authPopIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes authPopIn {
+  to {
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Modal Close Button */
+.auth-modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(140, 123, 106, 0.12);
+  border: 1px solid rgba(75, 46, 30, 0.15);
+  color: #4B2E1E;
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.auth-modal-close-btn:hover {
+  background: #4B2E1E;
+  color: #FFFFFF;
+  transform: rotate(90deg);
+}
+
+@media (max-width: 576px) {
+  .auth-card-container {
+    padding: 1.5rem 1.25rem;
+    border-radius: 20px;
+    max-width: 100%;
+  }
+}
+
+/* Auth Header */
+.auth-header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.auth-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(229, 139, 87, 0.15);
+  color: #4B2E1E;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.25rem 0.8rem;
+  border-radius: 50px;
+  border: 1px solid rgba(229, 139, 87, 0.3);
+  margin-bottom: 0.5rem;
+}
+
+.auth-title {
+  color: #4B2E1E;
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.auth-subtitle {
+  color: #8C7B6A;
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+/* Mode Nav Tabs (Log In vs Sign Up) */
+.auth-tabs-nav {
+  display: flex;
+  background: #F7EFE6;
+  padding: 4px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(75, 46, 30, 0.15);
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.55rem 0.9rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #8C7B6A;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.auth-tab-btn.active {
+  background: #4B2E1E;
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(75, 46, 30, 0.25);
+}
+
+.auth-tab-btn:hover:not(.active) {
+  color: #4B2E1E;
+}
+
+/* Method Selector (WhatsApp OTP vs Email/Password) */
+.auth-method-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.15rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed rgba(140, 123, 106, 0.25);
+}
+
+.method-option-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #8C7B6A;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.method-option-btn.active {
+  color: #e58b57;
+  background: rgba(229, 139, 87, 0.1);
+}
+
+/* Side-by-Side 2-Column Row for Wide Layout */
+.auth-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .auth-row-2col {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* Custom Input Groups */
+.auth-input-group {
+  margin-bottom: 0.95rem;
+  text-align: left;
+}
+
+.auth-input-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #4B2E1E;
+  margin-bottom: 0.3rem;
+}
+
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input-icon {
+  position: absolute;
+  left: 12px;
+  color: #8C7B6A;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.auth-input-field {
+  width: 100%;
+  padding: 0.65rem 0.9rem 0.65rem 2.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2A1C13;
+  background: #FFFFFF;
+  border: 2px solid rgba(122, 78, 45, 0.2);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.auth-input-field:focus {
+  border-color: #e58b57;
+  box-shadow: 0 0 0 4px rgba(229, 139, 87, 0.15);
+}
+
+.auth-input-field::placeholder {
+  color: #B5A89B;
+}
+
+/* Forgot Password Link */
+.forgot-password-link {
+  font-size: 0.82rem;
+  color: #e58b57;
+  font-weight: 700;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  float: right;
+  margin-top: 4px;
+}
+
+.forgot-password-link:hover {
+  color: #d97a44;
+}
+
+/* Phone input with country code dropdown */
+.phone-input-flex {
+  display: flex;
+  gap: 8px;
+}
+
+.country-select {
+  padding: 0.65rem 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #4B2E1E;
+  background: #FFFFFF;
+  border: 2px solid rgba(122, 78, 45, 0.2);
+  border-radius: 12px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.country-select:focus {
+  border-color: #e58b57;
+}
+
+.phone-number-input {
+  padding-left: 2.4rem !important;
+}
+
+/* Password Toggle Icon */
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #8C7B6A;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle-btn:hover {
+  color: #4B2E1E;
+}
+
+/* 6-Digit OTP Boxes */
+.otp-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 1.25rem 0;
+}
+
+.otp-box {
+  width: 48px;
+  height: 52px;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  background: #FFFFFF;
+  border: 2px solid rgba(122, 78, 45, 0.25);
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+@media (max-width: 400px) {
+  .otp-box {
+    width: 40px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+}
+
+.otp-box:focus {
+  border-color: #e58b57;
+  box-shadow: 0 0 0 4px rgba(229, 139, 87, 0.2);
+  transform: translateY(-2px);
+}
+
+.otp-box.filled {
+  border-color: #4B2E1E;
+  background: #FAF5F0;
+}
+
+/* Resend OTP Section */
+.resend-otp-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: 0.82rem;
+}
+
+.resend-link-btn {
+  background: none;
+  border: none;
+  color: #e58b57;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.resend-link-btn:disabled {
+  color: #B5A89B;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+/* Dev Mode OTP Banner */
+.dev-otp-banner {
+  background: #FFF8E7;
+  border: 1.5px dashed #E58B57;
+  border-radius: 12px;
+  padding: 0.55rem 0.8rem;
+  margin-bottom: 1rem;
+  font-size: 0.82rem;
+  color: #7A4E2D;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dev-otp-code {
+  font-weight: 800;
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: #4B2E1E;
+  background: #F7EFE6;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 2px;
+}
+
+/* Submit & Action Buttons */
+.auth-submit-btn {
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  background: #e58b57;
+  border: 2.5px solid #4B2E1E;
+  border-radius: 50px;
+  box-shadow: 4px 4px 0px #4B2E1E;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.25rem;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+  background: #d97a44;
+  transform: none;
+  box-shadow: 4px 4px 0px #4B2E1E;
+}
+
+.auth-submit-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #4B2E1E;
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: 2px 2px 0px #4B2E1E;
+}
+
+.secondary-back-btn {
+  background: none;
+  border: none;
+  color: #8C7B6A;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color 0.2s ease;
+}
+
+.secondary-back-btn:hover {
+  color: #4B2E1E;
+}
+
+/* Checkbox & Terms */
+.auth-checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.95rem;
+  font-size: 0.8rem;
+  color: #8C7B6A;
+  text-align: left;
+}
+
+.auth-checkbox-group input[type="checkbox"] {
+  accent-color: #e58b57;
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.auth-checkbox-group a {
+  color: #4B2E1E;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* Alert Messages */
+.auth-alert {
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.auth-alert-error {
+  background: #FDF2F2;
+  color: #9B1C1C;
+  border: 1px solid #F8B4B4;
+}
+
+.auth-alert-success {
+  background: #F3FAF7;
+  color: #03543F;
+  border: 1px solid #84E1BC;
+}
+
+/* Profile / Account Page Styling */
+.account-page-container {
+  min-height: 80vh;
+  padding: 3rem 1rem;
+  background: var(--background-cream, #F7EFE6);
+}
+
+.account-card {
+  background: #FFFFFF;
+  border: 2px solid rgba(75, 46, 30, 0.12);
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(75, 46, 30, 0.08);
+  padding: 2.5rem;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.account-avatar-badge {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #F7C8A5;
+  color: #4B2E1E;
+  font-size: 2.2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #4B2E1E;
+  margin: 0 auto 1rem;
+  box-shadow: 3px 3px 0px #4B2E1E;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.85rem 0;
+  border-bottom: 1px dashed rgba(140, 123, 106, 0.25);
+  font-size: 0.95rem;
+}
+
+.info-label {
+  color: #8C7B6A;
+  font-weight: 600;
+}
+
+.info-value {
+  color: #4B2E1E;
+  font-weight: 700;
+}

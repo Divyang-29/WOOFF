@@ -5,7 +5,7 @@
 .contact-page-section {
   background-color: var(--background-cream, #F7EFE6);
   min-height: calc(100vh - 300px);
-  padding-top: 3.5rem;
+  padding-top: 0;
   padding-bottom: 5rem;
   color: var(--dark-text, #2A1C13);
   position: relative;

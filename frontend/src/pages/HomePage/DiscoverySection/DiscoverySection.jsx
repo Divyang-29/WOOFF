@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './DiscoverySection.css';
@@ -44,7 +45,7 @@ export default function DiscoverySection() {
             <p>
               Who knew healthy teeth could taste like dessert? Our signature Chocolate flavor makes brushing feel like a daily treat, without any of the sugar or toxic junk. Finally, a toothpaste your kids will actually ask to use.
             </p>
-            <button className="btn-wooff-primary">Grab a Tube</button>
+            <Link to="/products" className="btn-wooff-primary">Grab a Tube</Link>
           </div>
           <div className="col-md-6 order-1 order-md-2 discovery-image p-4 text-center pb-0 pb-md-4">
             {/* Placeholder for the product image */}

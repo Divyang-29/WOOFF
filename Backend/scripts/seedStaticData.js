@@ -257,8 +257,8 @@ async function seedStaticData() {
         display_order: 4,
       },
       {
-        title: "No Xylitol, Fluoride & SLS",
-        desc_text: "Free of endocrine disruptors, stomach-upsetting sugar alcohols, and foaming detergents.",
+        title: "Fluoride & SLS Free",
+        desc_text: "Free of endocrine disruptors, artificial foaming detergents, and chemical warning labels.",
         icon: "fas fa-ban",
         display_order: 5,
       },

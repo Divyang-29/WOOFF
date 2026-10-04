@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import wooffLogo from '../../assets/wooff-logo.png';
 import './Navbar.css';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { openCart, cartCount } = useCart();
+  const { isAuthenticated, user, openAuthModal } = useAuth();
   const location = useLocation();
 
   const toggleMobileMenu = () => {
@@ -71,9 +73,19 @@ export default function Navbar() {
 
           {/* Right Desktop Actions */}
           <div className="d-none d-lg-flex align-items-center gap-4">
-            <Link to="/login" className="btn-account-link">
-              Login
-            </Link>
+            {isAuthenticated ? (
+              <Link to="/account" className="btn-account-link">
+                Account ✨
+              </Link>
+            ) : (
+              <button
+                type="button"
+                className="btn-account-link bg-transparent border-0 p-0"
+                onClick={() => openAuthModal('login')}
+              >
+                Login / Signup
+              </button>
+            )}
 
             <button 
               type="button" 
@@ -167,9 +179,22 @@ export default function Navbar() {
 
             {/* Offcanvas Footer Actions */}
             <div className="offcanvas-footer">
-              <Link to="/login" className="offcanvas-login-btn" onClick={closeMobileMenu}>
-                Login / Signup
-              </Link>
+              {isAuthenticated ? (
+                <Link to="/account" className="offcanvas-login-btn" onClick={closeMobileMenu}>
+                  My Account {user?.username ? `(${user.username})` : ''}
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className="offcanvas-login-btn border-0 text-center w-100"
+                  onClick={() => {
+                    closeMobileMenu();
+                    openAuthModal('login');
+                  }}
+                >
+                  Login / Signup
+                </button>
+              )}
               <p className="offcanvas-footer-note">100% Prebiotic & Natural Oral Care</p>
             </div>
           </div>

@@ -1,0 +1,480 @@
+/* ==========================================================================
+   Wooff Modern Customer Account Portal Styling
+   ========================================================================== */
+
+.account-portal-wrapper {
+  background-color: var(--background-cream, #F7EFE6);
+  min-height: 90vh;
+  padding-bottom: 5rem;
+}
+
+.account-portal-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 0;
+}
+
+/* 2-Column Responsive Dashboard Grid */
+.account-dashboard-grid {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 991px) {
+  .account-dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+/* -------------------------------------------------------------
+   LEFT SIDEBAR: Profile Card & Navigation
+   ------------------------------------------------------------- */
+.account-sidebar-card {
+  background: #FFFFFF;
+  border: 2px solid rgba(75, 46, 30, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 10px 28px rgba(75, 46, 30, 0.05);
+  overflow: hidden;
+  position: sticky;
+  top: 100px;
+}
+
+.sidebar-profile-header {
+  background: linear-gradient(180deg, rgba(229, 139, 87, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
+  padding: 2rem 1.5rem 1.25rem;
+  text-align: center;
+  border-bottom: 1px dashed rgba(75, 46, 30, 0.12);
+}
+
+.account-avatar-large {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F7C8A5 0%, #E58B57 100%);
+  color: #4B2E1E;
+  font-size: 2.2rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.85rem;
+  border: 3px solid #4B2E1E;
+  box-shadow: 0 6px 16px rgba(75, 46, 30, 0.12);
+}
+
+.sidebar-user-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  margin-bottom: 0.2rem;
+}
+
+.sidebar-user-email {
+  font-size: 0.85rem;
+  color: #8C7B6A;
+  word-break: break-all;
+}
+
+/* Sidebar Navigation Menu */
+.sidebar-nav-menu {
+  padding: 0.85rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.sidebar-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.8rem 1.1rem;
+  border: none;
+  background: transparent;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #6B5B4E;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.sidebar-nav-btn-content {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.sidebar-nav-btn i {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+  color: #8C7B6A;
+  transition: color 0.2s ease;
+}
+
+.sidebar-nav-btn:hover {
+  background: rgba(229, 139, 87, 0.08);
+  color: #4B2E1E;
+}
+
+.sidebar-nav-btn:hover i {
+  color: #e58b57;
+}
+
+.sidebar-nav-btn.active {
+  background: #4B2E1E;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(75, 46, 30, 0.2);
+}
+
+.sidebar-nav-btn.active i {
+  color: #F7C8A5;
+}
+
+.nav-badge-pill {
+  background: #E58B57;
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+}
+
+.sidebar-footer-actions {
+  padding: 1rem;
+  border-top: 1px dashed rgba(75, 46, 30, 0.12);
+}
+
+.sidebar-logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.7rem;
+  border: 1.5px solid rgba(75, 46, 30, 0.2);
+  background: transparent;
+  color: #4B2E1E;
+  font-weight: 700;
+  font-size: 0.88rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar-logout-btn:hover {
+  background: #FDF2F0;
+  border-color: #E53E3E;
+  color: #E53E3E;
+}
+
+/* -------------------------------------------------------------
+   RIGHT MAIN CONTENT CARD
+   ------------------------------------------------------------- */
+.account-content-card {
+  background: #FFFFFF;
+  border: 2px solid rgba(75, 46, 30, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 10px 28px rgba(75, 46, 30, 0.05);
+  padding: 2rem 2.25rem;
+  min-height: 520px;
+}
+
+@media (max-width: 576px) {
+  .account-content-card {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+.tab-header-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  margin-bottom: 0.35rem;
+}
+
+.tab-header-subtitle {
+  color: #8C7B6A;
+  font-size: 0.92rem;
+  margin-bottom: 1.75rem;
+}
+
+/* Info Row */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px dashed rgba(140, 123, 106, 0.2);
+  font-size: 0.95rem;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  color: #8C7B6A;
+  font-weight: 600;
+}
+
+.info-value {
+  color: #4B2E1E;
+  font-weight: 700;
+}
+
+/* -------------------------------------------------------------
+   ORDERS LIST
+   ------------------------------------------------------------- */
+.orders-list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.order-history-card {
+  border: 1.5px solid rgba(75, 46, 30, 0.12);
+  border-radius: 16px;
+  padding: 1.35rem;
+  background: #FFFFFF;
+  transition: box-shadow 0.2s ease;
+}
+
+.order-history-card:hover {
+  box-shadow: 0 6px 20px rgba(75, 46, 30, 0.06);
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px dashed rgba(75, 46, 30, 0.12);
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.order-number {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #4B2E1E;
+}
+
+.order-date {
+  font-size: 0.82rem;
+  color: #8C7B6A;
+}
+
+.order-status-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.3rem 0.75rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.order-status-badge.delivered {
+  background: #E6FFFA;
+  color: #234E52;
+  border: 1px solid #81E6D9;
+}
+
+.order-status-badge.shipped {
+  background: #EBF8FF;
+  color: #2A4365;
+  border: 1px solid #90CDF4;
+}
+
+.order-status-badge.processing,
+.order-status-badge.pending {
+  background: #FFFFAF;
+  color: #744210;
+  border: 1px solid #ECC94B;
+}
+
+.order-status-badge.cancelled {
+  background: #FFF5F5;
+  color: #742A2A;
+  border: 1px solid #FEB2B2;
+}
+
+.order-card-body {
+  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.order-product-thumbnails {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.order-thumb-img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid rgba(75, 46, 30, 0.1);
+  background: #FAF7F2;
+}
+
+.order-total-amount {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #4B2E1E;
+}
+
+/* Empty State */
+.empty-tab-state {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+}
+
+.empty-state-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #FAF7F2;
+  color: #e58b57;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  border: 2px dashed #E58B57;
+}
+
+/* -------------------------------------------------------------
+   SAVED ADDRESSES
+   ------------------------------------------------------------- */
+.addresses-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .addresses-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.address-item-card {
+  border: 1.5px solid rgba(75, 46, 30, 0.12);
+  border-radius: 16px;
+  padding: 1.25rem;
+  background: #FFFFFF;
+}
+
+.address-item-card.default-address {
+  border-color: #E58B57;
+  background: #FFFBF7;
+}
+
+.address-tag-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: #4B2E1E;
+  color: #FFFFFF;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.address-details-text {
+  font-size: 0.9rem;
+  color: #6B5B4E;
+  line-height: 1.6;
+  margin: 0.75rem 0 0.5rem;
+}
+
+/* -------------------------------------------------------------
+   SETTINGS FORM
+   ------------------------------------------------------------- */
+.settings-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .settings-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.settings-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.settings-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #4B2E1E;
+}
+
+.settings-input {
+  border: 1.5px solid rgba(75, 46, 30, 0.15);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: #4B2E1E;
+  background: #FFFFFF;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-input:focus {
+  outline: none;
+  border-color: #E58B57;
+  box-shadow: 0 0 0 3px rgba(229, 139, 87, 0.15);
+}
+
+.btn-wooff-save {
+  background: #4B2E1E;
+  color: #FFFFFF;
+  border: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.8rem 1.85rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(75, 46, 30, 0.15);
+}
+
+.btn-wooff-save:hover {
+  background: #362013;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(75, 46, 30, 0.22);
+}
+
+.account-toast-alert {
+  padding: 0.85rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.account-toast-alert.success {
+  background: #F0FFF4;
+  border: 1px solid #9AE6B4;
+  color: #22543D;
+}

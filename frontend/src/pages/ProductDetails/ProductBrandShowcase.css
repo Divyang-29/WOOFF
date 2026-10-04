@@ -110,11 +110,16 @@
 }
 
 /* Responsive Viewports */
-@media (max-width: 768px) {
+@media (max-width: 860px) {
+  .product-brand-showcase-section {
+    margin: 3.5rem 0;
+  }
+
   .showcase-banner-card {
-    aspect-ratio: 4 / 3;
-    max-height: 320px;
+    aspect-ratio: 16 / 10;
+    max-height: 340px;
     border-radius: 18px;
+    box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
   }
 
   .showcase-story-grid {
@@ -123,11 +128,35 @@
   }
 
   .story-card {
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.25rem;
     border-radius: 18px;
+    box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
   }
 
   .story-card-title {
     font-size: 1.65rem;
+  }
+
+  .story-card-desc {
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .showcase-banner-card {
+    aspect-ratio: 4 / 3;
+    max-height: 260px;
+  }
+
+  .showcase-banner-overlay {
+    bottom: 1rem;
+    left: 1rem;
+    padding: 0.4rem 1rem;
+    font-size: 0.72rem;
+  }
+
+  .story-card {
+    padding: 1.75rem 1rem;
   }
 }

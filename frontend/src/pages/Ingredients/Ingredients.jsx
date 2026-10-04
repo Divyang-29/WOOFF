@@ -8,49 +8,49 @@ const INGREDIENTS_DATA = [
     name: "Theobromine",
     category: "Enamel Mineralization",
     desc: "The magic of cocoa! It is a naturally occurring compound found in chocolate that has been shown to support enamel mineralization. Paired with nHAp, it helps strengthen tiny teeth while making brushing actually taste delicious.",
-    icon: "/images/ingredients/cacao.jpg"
+    icon: "/images/ingredients/theobromine_clean.png"
   },
   {
     id: 'nhap',
     name: "Nano-Hydroxyapatite (nHAp)",
     category: "Remineralizing Superhero",
     desc: "The superhero ingredient. nHAp is a non-toxic mineral that naturally makes up 97% of your tooth enamel. It binds directly to teeth to rebuild, protect, and remineralize safely, without the toxicity concerns of traditional fluoride.",
-    icon: "/images/ingredients/nhap.jpg"
+    icon: "/images/ingredients/nhap_clean.png"
   },
   {
     id: 'calcium-gluconate',
     name: "Calcium Gluconate",
     category: "Mineral Availability",
     desc: "The foundational building block. This provides a highly bioavailable source of calcium, ensuring your child's teeth have the essential minerals they need to stay strong, hard, and healthy as they grow.",
-    icon: "/images/ingredients/calcium.jpg"
+    icon: "/images/ingredients/calcium_clean.png"
   },
   {
     id: 'inulin',
     name: "Inulin",
     category: "Prebiotic Microbiome Support",
     desc: "A happy mouth means happy teeth. Inulin is a natural prebiotic that feeds the beneficial bacteria in the mouth. This promotes a balanced, healthy oral microbiome to naturally crowd out the bad, cavity-causing bugs.",
-    icon: "/images/ingredients/inulin.jpg"
+    icon: "/images/ingredients/inulin_clean.png"
   },
   {
     id: 'vitamin-c',
     name: "Ascorbic Acid / Vitamin C",
     category: "Antioxidant & Tissue Care",
     desc: "Not just for immune support! Ascorbic Acid (Vitamin C) is a vital antioxidant that supports healthy, resilient gums and oral tissues, keeping the soft-tissue foundation of your child's smile strong.",
-    icon: "/images/ingredients/vitaminc.jpg"
+    icon: "/images/ingredients/vitaminc_clean.png"
   },
   {
     id: 'lactoferrin',
     name: "Lactoferrin",
     category: "Antimicrobial Protein",
     desc: "The gentle protector. This naturally occurring antimicrobial protein works around the clock to help maintain excellent oral hygiene by keeping the microbial balance of the mouth perfectly in check.",
-    icon: "/images/ingredients/lactoferrin.jpg"
+    icon: "/images/ingredients/lactoferrin_clean.png"
   },
   {
     id: 'coq10',
     name: "Coenzyme Q10 (CoQ10)",
     category: "Gum Health Antioxidant",
     desc: "A powerful antioxidant that works behind the scenes. CoQ10 is widely used and studied for supporting overall gum health, ensuring the delicate soft tissues in the mouth stay just as healthy as the enamel.",
-    icon: "/images/ingredients/coq10.jpg"
+    icon: "/images/ingredients/coq10_clean.png"
   }
 ];
 
@@ -85,7 +85,7 @@ export default function Ingredients() {
                 <span className="flavor-tagline">Bright, refreshing & packed with Vitamin C</span>
               </div>
               <div className="flavor-icon-wrap">
-                <img src="/images/ingredients/vitaminc.jpg" alt="Citrus Slice" className="flavor-icon-img" />
+                <img src="/images/ingredients/vitaminc_clean.png" alt="Citrus Slice" className="flavor-icon-img" />
               </div>
             </div>
             <p className="flavor-ingredients-text">
@@ -106,7 +106,7 @@ export default function Ingredients() {
                 <span className="flavor-tagline">Rich, creamy chocolate enamel remineralizer</span>
               </div>
               <div className="flavor-icon-wrap">
-                <img src="/images/ingredients/cacao.jpg" alt="Cacao Beans" className="flavor-icon-img" />
+                <img src="/images/ingredients/theobromine_clean.png" alt="Cacao Beans" className="flavor-icon-img" />
               </div>
             </div>
             <p className="flavor-ingredients-text">

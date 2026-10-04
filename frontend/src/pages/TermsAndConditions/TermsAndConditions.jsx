@@ -1,29 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Banner from '../../components/Banner/Banner';
 import ToothHeader from '../../components/ToothHeader/ToothHeader';
+import { API_ENDPOINTS } from '../../api';
 import './TermsAndConditions.css';
 
 export default function TermsAndConditions() {
+  const [dynamicTerms, setDynamicTerms] = useState(null);
+
+  useEffect(() => {
+    const fetchTerms = async () => {
+      try {
+        const endpoint = API_ENDPOINTS?.TERMS || '/terms-and-conditions';
+        const res = await fetch(endpoint);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.terms) {
+            setDynamicTerms(data.terms);
+          }
+        }
+      } catch (err) {
+        console.warn('Using default Terms & Conditions document.', err);
+      }
+    };
+    fetchTerms();
+  }, []);
+
   return (
     <div className="terms-page">
       <Banner
-        title="Terms & Conditions"
+        title={dynamicTerms?.title || "Terms & Conditions"}
         breadcrumb="HOME / TERMS & CONDITIONS"
       />
 
       <div className="container legal-stack-container">
-        {/* Section 1 */}
-        <section className="legal-section-card">
-          <ToothHeader number="1" title="Agreement to Terms" />
-          <div className="legal-content">
-            <p className="terms-paragraph">
-              Welcome to Wooff! By accessing or using our website, purchasing our oral care products, or engaging
-              with our services, you agree to be bound by these Terms and Conditions and our Privacy Policy. If you
-              do not agree with any part of these terms, please do not use our website or purchase our products.
-            </p>
-          </div>
-        </section>
+        {dynamicTerms?.content ? (
+          <section className="legal-section-card">
+            <ToothHeader number="1" title={dynamicTerms.title || "Store Policy Details"} />
+            <div className="legal-content">
+              <div style={{ whiteSpace: 'pre-line', lineHeight: '1.7', color: '#4B2E1E' }}>
+                {dynamicTerms.content}
+              </div>
+            </div>
+          </section>
+        ) : (
+          <>
+            {/* Section 1 */}
+            <section className="legal-section-card">
+              <ToothHeader number="1" title="Agreement to Terms" />
+              <div className="legal-content">
+                <p className="terms-paragraph">
+                  Welcome to Wooff! By accessing or using our website, purchasing our oral care products, or engaging
+                  with our services, you agree to be bound by these Terms and Conditions and our Privacy Policy. If you
+                  do not agree with any part of these terms, please do not use our website or purchase our products.
+                </p>
+              </div>
+            </section>
 
         {/* Section 2 */}
         <section className="legal-section-card">
@@ -129,6 +161,8 @@ export default function TermsAndConditions() {
             </div>
           </div>
         </section>
+          </>
+        )}
       </div>
     </div>
   );

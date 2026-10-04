@@ -10,12 +10,15 @@ const {
   updateProductHandler,
   deleteProductHandler,
   addReviewHandler,
+  deleteReviewHandler,
+  getAllReviewsHandler,
 } = require("../controllers/productController");
 
 const router = express.Router();
 
 // Public routes
 router.get("/", getAllProductsHandler);
+router.get("/reviews/all", getAllReviewsHandler);
 router.get("/:slugOrId", getProductDetailsHandler);
 router.post("/:id/review", addReviewHandler);
 
@@ -42,6 +45,7 @@ router.put(
   updateProductHandler
 );
 
+router.delete("/reviews/:id", authMiddleware, adminMiddleware, deleteReviewHandler);
 router.delete("/:id", authMiddleware, adminMiddleware, deleteProductHandler);
 
 module.exports = router;

@@ -47,7 +47,9 @@ app.use(
     },
   })
 );
+const path = require("path");
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const authRoutes = require("./routes/authRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
@@ -71,8 +73,12 @@ const faqRoutes = require("./routes/faqRoutes");
 const benefitRoutes = require("./routes/benefitRoutes");
 const pillarRoutes = require("./routes/pillarRoutes");
 const blogRoutes = require("./routes/blogRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
 
+app.use("/api/auth", authRoutes);
 app.use("/auth", authRoutes);
+app.use("/api/upload", uploadRoutes);
+app.use("/upload", uploadRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/category", categoryRoutes);

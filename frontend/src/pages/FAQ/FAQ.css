@@ -5,12 +5,13 @@
 .faq-page {
   background-color: var(--background-cream, #F7EFE6);
   min-height: 100vh;
+  padding-top: 1rem;
   padding-bottom: 6rem;
 }
 
 /* Container positioned safely below the banner line */
 .faq-container {
-  margin-top: 3rem; /* Pushes the cards safely below the banner line */
+  margin-top: 1.5rem; /* Pushes the cards safely below the banner line */
   margin-bottom: 5rem;
   position: relative;
   z-index: 10;

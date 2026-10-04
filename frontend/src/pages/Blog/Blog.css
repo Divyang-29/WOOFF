@@ -5,13 +5,14 @@
 .blog-page-wrapper {
   background-color: var(--background-cream, #F7EFE6);
   min-height: 100vh;
+  padding-top: 0;
   color: var(--primary-brown, #4B2E1E);
 }
 
 .blog-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 4rem 1.5rem;
+  padding: 1.5rem 1.5rem 4rem 1.5rem;
 }
 
 /* Grid Layout */

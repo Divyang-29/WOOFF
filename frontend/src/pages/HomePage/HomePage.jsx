@@ -1,7 +1,8 @@
 import HeroSection from './HeroSection/HeroSection';
 import CertificatesSection from './CertificatesSection/CertificatesSection';
 import ProductShowcase from './ProductShowcase/ProductShowcase';
-import PillarsSection from './PillarsSection/PillarsSection';
+import CleanIngredientsSection from './CleanIngredientsSection/CleanIngredientsSection';
+import ComparisonSection from './ComparisonSection/ComparisonSection';
 import BrandReelsSection from './BrandReelsSection/BrandReelsSection';
 import DiscoverySection from './DiscoverySection/DiscoverySection';
 import BenefitsSection from './BenefitsSection/BenefitsSection';
@@ -13,11 +14,12 @@ export default function HomePage() {
       <HeroSection />
       <CertificatesSection />
       <ProductShowcase />
+      <CleanIngredientsSection />
       <DiscoverySection />
       <BenefitsSection />
+      <ComparisonSection />
       <BrandReelsSection />
       <TestimonialsSection />
-      <PillarsSection />
     </div>
   );
 }

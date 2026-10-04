@@ -95,6 +95,32 @@ const updateUserProfile = async (userId, { username, birthdate, gender }) => {
   await pool.query(query, values);
 };
 
+// Find User By Email
+const findUserByEmail = async (email) => {
+  const query = `
+    SELECT * FROM users
+    WHERE LOWER(email) = LOWER($1)
+  `;
+  const result = await pool.query(query, [email.trim()]);
+  return result.rows[0];
+};
+
+// Create User with Email and Password
+const createUserWithEmail = async ({ email, passwordHash, username = null, childName = null }) => {
+  const cleanEmail = email.trim().toLowerCase();
+  const defaultUsername = username || cleanEmail.split("@")[0];
+
+  const query = `
+    INSERT INTO users (email, password_hash, username, child_name)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id, username, email, child_name, role, created_at
+  `;
+
+  const values = [cleanEmail, passwordHash, defaultUsername, childName];
+  const result = await pool.query(query, values);
+  return result.rows[0];
+};
+
 // Clear User OTP
 const clearOTP = async (userId) => {
   const query = `
@@ -108,6 +134,8 @@ const clearOTP = async (userId) => {
 module.exports = {
   findUserByPhone,
   findUserByUsername,
+  findUserByEmail,
+  createUserWithEmail,
   createPhoneUser,
   saveOTPByPhone,
   updateUserProfile,

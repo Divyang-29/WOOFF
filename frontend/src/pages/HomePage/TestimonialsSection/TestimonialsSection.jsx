@@ -1,8 +1,41 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './TestimonialsSection.css';
 
+const DEFAULT_TESTIMONIALS = [
+  {
+    id: 1,
+    rating: 5,
+    text: "Wooff has completely eliminated the morning brushing drama with my 4-year-old. The natural chocolate taste is incredible!",
+    author: "Sarah Jenkins",
+  },
+  {
+    id: 2,
+    rating: 5,
+    text: "As a pediatric biological dentist, finding a 100% toxin-free toothpaste with 2% Nano-hydroxyapatite and prebiotic microbiome support is extraordinary. Wooff sets a new benchmark for kids oral care.",
+    author: "Dr. Julian Vance, DDS",
+  },
+  {
+    id: 3,
+    rating: 5,
+    text: "Finally a toothpaste that is safe if swallowed and actually keeps their teeth cavity-free. My kids ask to brush their teeth now!",
+    author: "Maya Patel",
+  },
+  {
+    id: 4,
+    rating: 5,
+    text: "No harsh chemicals, SLS, or artificial dyes. My twins love the cocoa flavor and their dentist gave them 5 stars at our last checkup.",
+    author: "David Miller",
+  },
+  {
+    id: 5,
+    rating: 5,
+    text: "The prebiotic formula is a game changer for fresh breath and natural oral flora protection.",
+    author: "Priya Sharma",
+  },
+];
+
 export default function TestimonialsSection() {
-  const [testimonials, setTestimonials] = useState([]);
+  const [testimonials, setTestimonials] = useState(DEFAULT_TESTIMONIALS);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
@@ -41,12 +74,15 @@ export default function TestimonialsSection() {
               'Wooff Community Member',
           }));
           setTestimonials(formatted);
-          setLoading(false);
         } else if (isMounted) {
-          setLoading(false);
+          setTestimonials(DEFAULT_TESTIMONIALS);
         }
       } catch (error) {
         console.error('Error fetching testimonials from /api/testimonials:', error);
+        if (isMounted) {
+          setTestimonials(DEFAULT_TESTIMONIALS);
+        }
+      } finally {
         if (isMounted) {
           setLoading(false);
         }

@@ -55,6 +55,13 @@ export default function ProductDetails() {
     }
   };
 
+  const renderStars = (rating) => {
+    const validRating = Number(rating) || 0;
+    const fullStars = Math.round(validRating);
+    const emptyStars = 5 - fullStars;
+    return '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
+  };
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -146,10 +153,30 @@ export default function ProductDetails() {
             
             <h1 className="product-title">{data.title}</h1>
 
-            <div className="product-rating-row">
-              <div className="stars">★★★★★</div>
-              <span className="rating-score">{data.rating_avg ? parseFloat(data.rating_avg).toFixed(1) : '4.9'}</span>
-              <span className="reviews-count">• {data.review_count || 128} Reviews</span>
+            <div 
+              className="product-rating-row"
+              onClick={() => {
+                const el = document.getElementById('customer-reviews-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              style={{ cursor: 'pointer' }}
+              title={Number(data.review_count) > 0 ? 'Click to view customer reviews' : 'Click to write the first review'}
+            >
+              {Number(data.review_count) > 0 ? (
+                <>
+                  <div className="stars">{renderStars(data.rating_avg)}</div>
+                  <span className="rating-score">
+                    {parseFloat(data.rating_avg).toFixed(1)}
+                  </span>
+                  <span className="reviews-count">
+                    • {data.review_count} {parseInt(data.review_count, 10) === 1 ? 'Review' : 'Reviews'}
+                  </span>
+                </>
+              ) : (
+                <span className="reviews-count no-reviews">
+                  No reviews yet • <span style={{ textDecoration: 'underline', color: 'var(--primary-brown, #4B2E1E)', fontWeight: 600 }}>Be the first to review</span>
+                </span>
+              )}
             </div>
             
             <div className="product-pricing">
@@ -196,9 +223,10 @@ export default function ProductDetails() {
                 <input 
                   type="text" 
                   className="pincode-input" 
-                  placeholder="Enter your Pincode"
+                  placeholder="Enter Pincode"
                   value={pincode}
                   maxLength={6}
+                  size={6}
                   onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
                   onKeyDown={(e) => e.key === 'Enter' && handleCheckPincode()}
                 />
@@ -317,6 +345,7 @@ export default function ProductDetails() {
         {/* Dynamic Customer Reviews Dashboard & Grid */}
         <ProductReviews 
           productId={data.id}
+          productSlug={data.slug}
           initialRatingAvg={data.rating_avg}
           initialReviewCount={data.review_count}
           initialReviews={data.reviews}

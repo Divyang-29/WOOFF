@@ -10,13 +10,25 @@ const { getProductBySlugOrId } = require("../models/productModel");
 // Create Video Reel Handler (Admin)
 const createVideoReelHandler = async (req, res) => {
   try {
-    const { product_id, video_url: bodyVideoUrl, product_name, product_photo: bodyProductPhoto, price } = req.body;
+    const { 
+      product_id, 
+      video_url: bodyVideoUrl, 
+      product_name, 
+      product_photo: bodyProductPhoto, 
+      price,
+      caption,
+      author,
+      rating,
+      reviews_count,
+      product_slug
+    } = req.body;
 
     let targetVideoUrl = bodyVideoUrl || null;
     let targetPhoto = bodyProductPhoto || null;
     let targetName = product_name || null;
-    let targetPrice = price !== undefined ? parseFloat(price) : null;
+    let targetPrice = price !== undefined && price !== null && price !== '' ? parseFloat(price) : null;
     let targetProductId = product_id ? parseInt(product_id) : null;
+    let targetSlug = product_slug || null;
 
     // Handle file upload for video if present
     if (req.files && req.files.video && req.files.video[0]) {
@@ -35,6 +47,7 @@ const createVideoReelHandler = async (req, res) => {
         if (!targetName) targetName = linkedProduct.title;
         if (!targetPhoto) targetPhoto = linkedProduct.primary_image;
         if (targetPrice === null || isNaN(targetPrice)) targetPrice = parseFloat(linkedProduct.final_price || linkedProduct.price);
+        if (!targetSlug) targetSlug = linkedProduct.slug;
       }
     }
 
@@ -58,6 +71,11 @@ const createVideoReelHandler = async (req, res) => {
       product_name: targetName.trim(),
       product_photo: targetPhoto,
       price: targetPrice,
+      caption: caption || targetName,
+      author: author || '@wooffkids',
+      rating: rating || '5.0 ★',
+      reviews_count: reviews_count || '1k+',
+      product_slug: targetSlug,
     });
 
     return res.status(201).json({

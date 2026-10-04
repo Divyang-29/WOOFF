@@ -28,22 +28,12 @@ export default function Footer() {
           </div>
 
           {/* Column 2: Products & Science */}
-          <div className="col-12 col-md-4">
+          <div className="col-6 col-md-4">
             <h5 className="footer-col-title mb-3">Shop & Science</h5>
             <ul className="footer-links-list list-unstyled mb-0">
               <li className="mb-2">
                 <Link to="/products" className="footer-link">
-                  Prebiotic Toothpastes
-                </Link>
-              </li>
-              <li className="mb-2">
-                <Link to="/products" className="footer-link">
-                  Gentle Kids Brushes
-                </Link>
-              </li>
-              <li className="mb-2">
-                <Link to="/products" className="footer-link">
-                  Starter Smile Bundles
+                  Toothpaste
                 </Link>
               </li>
               <li className="mb-2">
@@ -65,7 +55,7 @@ export default function Footer() {
           </div>
 
           {/* Column 3: Customer Care & Support */}
-          <div className="col-12 col-md-4">
+          <div className="col-6 col-md-4">
             <h5 className="footer-col-title mb-3">Customer Care</h5>
             <ul className="footer-links-list list-unstyled mb-0">
               <li className="mb-2">
@@ -79,8 +69,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li className="mb-2">
-                <Link to="/return-policy" className="footer-link">
-                  Return Policy
+                <Link to="/refund-policy" className="footer-link">
+                  Refund & Returns Policy
                 </Link>
               </li>
               <li className="mb-2">

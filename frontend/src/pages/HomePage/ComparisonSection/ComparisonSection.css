@@ -1,0 +1,272 @@
+.comparison-section {
+  background-color: var(--background-cream, #F7EFE6);
+  padding: 4.5rem 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.max-w-700 {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.comparison-section .section-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+  border-bottom: none !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+}
+
+.comparison-section .section-title::after,
+.comparison-section .section-title::before {
+  display: none !important;
+}
+
+.comparison-section .section-subtitle {
+  font-size: 1.05rem;
+  color: var(--muted-text, #8C7B6A);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Outer Card Container */
+.comparison-table-card {
+  max-width: 1260px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Revitin Exact Table Styling */
+.compare-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: transparent;
+}
+
+/* Header Row */
+.header-tr th {
+  vertical-align: bottom;
+  padding: 10;
+}
+
+/* Blank Top Left Header Cell */
+.th-blank {
+  width: 44%;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Wooff Header Cell (Sage Green, Protrudes Upwards) */
+.th-wooff {
+  width: 28%;
+  background-color: #E2E8D8;
+  color: var(--primary-brown, #4B2E1E);
+  font-size: 1.15rem;
+  font-weight: 800;
+  text-align: center;
+  padding: 1.2rem 1rem;
+  border-top: 1.5px solid #B5C5AD;
+  border-left: 1.5px solid #B5C5AD;
+  border-right: 1.5px solid #B5C5AD;
+  border-bottom: 1.5px solid #B5C5AD;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+/* Traditional Toothpaste Header Cell */
+.th-traditional {
+  width: 28%;
+  background-color: var(--background-cream, #F7EFE6);
+  color: var(--primary-brown, #4B2E1E);
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 1.2rem 1rem;
+  border-top: 1.5px solid #BCAE9F;
+  border-right: 1.5px solid #BCAE9F;
+  border-bottom: 1.5px solid #BCAE9F;
+  border-top-right-radius: 14px;
+}
+
+/* Body Rows & Cells */
+.compare-table td {
+  padding: 1.05rem 1.4rem;
+  vertical-align: middle;
+  border-bottom: 1.5px solid #BCAE9F;
+}
+
+/* Row 1 Top Left Border & Corner */
+.compare-table tbody tr:first-child td.td-feature {
+  border-top: 1.5px solid #BCAE9F;
+  border-top-left-radius: 14px;
+}
+
+.td-feature {
+  width: 44%;
+  background-color: var(--background-cream, #F7EFE6);
+  color: var(--primary-brown, #4B2E1E);
+  font-size: 0.98rem;
+  font-weight: 700;
+  text-align: left;
+  line-height: 1.4;
+  border-left: 1.5px solid #BCAE9F;
+}
+
+.td-wooff {
+  width: 28%;
+  background-color: #E2E8D8;
+  text-align: center;
+  border-left: 1.5px solid #B5C5AD;
+  border-right: 1.5px solid #B5C5AD;
+  border-bottom: 1.5px solid #B5C5AD;
+}
+
+.td-traditional {
+  width: 28%;
+  background-color: var(--background-cream, #F7EFE6);
+  text-align: center;
+  border-right: 1.5px solid #BCAE9F;
+}
+
+/* Bottom Corners of Last Row */
+.compare-table tbody tr:last-child td.td-feature {
+  border-bottom-left-radius: 14px;
+}
+
+.compare-table tbody tr:last-child td.td-traditional {
+  border-bottom-right-radius: 14px;
+}
+
+.compare-table tbody tr:last-child td.td-wooff {
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+/* Badges */
+.badge-check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: #96AA84;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.badge-empty {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid #C8C0B8;
+  display: inline-block;
+  margin: 0 auto;
+  background-color: transparent;
+}
+
+/* Cross-Platform Mobile Responsiveness */
+@media (max-width: 768px) {
+  .comparison-section {
+    padding: 3rem 0;
+  }
+
+  .comparison-section .section-title {
+    font-size: 1.75rem;
+  }
+
+  .comparison-section .section-subtitle {
+    font-size: 0.92rem;
+  }
+
+  .comparison-table-card {
+    padding: 0 0.25rem;
+  }
+
+  .table-responsive-wrapper {
+    overflow-x: visible;
+  }
+
+  .compare-table {
+    width: 100% !important;
+    table-layout: fixed;
+  }
+
+  .th-blank,
+  .td-feature {
+    width: 46% !important;
+    padding: 0.75rem 0.6rem !important;
+    font-size: 0.85rem !important;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+
+  .th-wooff,
+  .td-wooff {
+    width: 27% !important;
+    padding: 0.75rem 0.3rem !important;
+  }
+
+  .th-traditional,
+  .td-traditional {
+    width: 27% !important;
+    padding: 0.75rem 0.3rem !important;
+  }
+
+  .th-wooff {
+    font-size: 0.95rem !important;
+  }
+
+  .th-traditional {
+    font-size: 0.84rem !important;
+    line-height: 1.25;
+  }
+
+  .badge-check {
+    width: 22px;
+    height: 22px;
+  }
+
+  .badge-check svg {
+    width: 11px;
+    height: 9px;
+  }
+
+  .badge-empty {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 400px) {
+  .th-blank,
+  .td-feature {
+    font-size: 0.8rem !important;
+    padding: 0.65rem 0.35rem !important;
+  }
+
+  .th-wooff {
+    font-size: 0.88rem !important;
+  }
+
+  .th-traditional {
+    font-size: 0.78rem !important;
+  }
+
+  .compare-table td,
+  .compare-table th {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+}

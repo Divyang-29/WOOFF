@@ -53,9 +53,6 @@ export default function ProductFAQ({ faqs }) {
         
         {/* Left Editorial Header Column */}
         <div className="faq-left-column">
-          <span className="faq-sage-pill">
-            <i className="fa-solid fa-heart-shield me-2"></i>You're not alone
-          </span>
           <h2 className="faq-main-title">
             Frequently Asked Questions
           </h2>

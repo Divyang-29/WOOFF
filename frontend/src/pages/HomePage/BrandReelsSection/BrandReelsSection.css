@@ -94,6 +94,7 @@
   box-shadow: 0 16px 36px rgba(75, 46, 30, 0.12);
   background-color: #2A1C13;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .reel-card:hover {
@@ -119,7 +120,7 @@
   top: 14px;
   left: 14px;
   right: 14px;
-  z-index: 3;
+  z-index: 5;
 }
 
 .reel-author-tag {
@@ -148,11 +149,13 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
+  z-index: 10;
 }
 
 .reel-sound-btn:hover {
   background: rgba(0, 0, 0, 0.7);
-  transform: none !important;
+  transform: scale(1.1) !important;
 }
 
 /* Bottom Overlay & Content */

@@ -37,12 +37,12 @@
 
 .tooth-number {
   position: absolute;
-  top: 32%; /* Sits in the thickest part of the upper crown */
-  left: 60% !important; /* Nudged right from 50% for optical centering */
+  top: 33%; /* Sits in the thickest part of the upper crown */
+  left: 50%;
   transform: translate(-50%, -50%);
-  color: var(--background-cream, #F7EFE6, #ffffff);
-  font-size: 1.3rem;
-  font-weight: 900;
+  color: var(--background-cream, #F7EFE6);
+  font-size: 0.85rem;
+  font-weight: 700;
   line-height: 1;
   text-align: center;
   z-index: 10;
@@ -69,7 +69,7 @@
   }
 
   .tooth-number {
-    font-size: 1.1rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -92,6 +92,6 @@
   }
 
   .tooth-number {
-    font-size: 0.95rem;
+    font-size: 0.65rem;
   }
 }

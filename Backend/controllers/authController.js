@@ -4,10 +4,27 @@ const { sendWhatsAppOTP: dispatchWhatsAppOTP } = require("../utils/whatsappServi
 
 const {
   findUserByPhone,
+  findUserByEmail,
+  createUserWithEmail,
   saveOTPByPhone,
   updateUserProfile,
   clearOTP,
 } = require("../models/userModel");
+
+// Password hashing helpers
+const hashPassword = (password) => {
+  const salt = crypto.randomBytes(16).toString("hex");
+  const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, "sha512").toString("hex");
+  return `${salt}:${hash}`;
+};
+
+const verifyPassword = (password, storedHash) => {
+  if (!storedHash || !storedHash.includes(":")) return false;
+  const [salt, originalHash] = storedHash.split(":");
+  const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, "sha512").toString("hex");
+  return hash === originalHash;
+};
+
 
 // Send WhatsApp 6-Digit OTP (Passwordless Login / Register Step 1)
 const sendWhatsAppOTP = async (req, res) => {
@@ -173,15 +190,147 @@ const resendWhatsAppOTP = async (req, res) => {
   }
 };
 
-// Register Alias (Passwordless WhatsApp OTP)
+// Email & Password Register
 const register = async (req, res) => {
-  return sendWhatsAppOTP(req, res);
+  try {
+    const { email, password, username, fullName, childName } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email address and password are required.",
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail.includes("@")) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid email address.",
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters long.",
+      });
+    }
+
+    const existingUser = await findUserByEmail(cleanEmail);
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "An account with this email address already exists. Please sign in.",
+      });
+    }
+
+    const passwordHash = hashPassword(password);
+    const displayName = fullName || username || cleanEmail.split("@")[0];
+
+    const newUser = await createUserWithEmail({
+      email: cleanEmail,
+      passwordHash,
+      username: displayName,
+      childName: childName || null,
+    });
+
+    const jwtSecret = process.env.JWT_SECRET || "wooff_secret_key_123";
+    const token = jwt.sign(
+      {
+        id: newUser.id,
+        email: newUser.email,
+        username: newUser.username,
+        role: newUser.role || "user",
+      },
+      jwtSecret,
+      { expiresIn: "7d" }
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Account created successfully!",
+      token,
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        username: newUser.username,
+        childName: newUser.child_name || childName || "",
+        role: newUser.role || "user",
+      },
+    });
+  } catch (error) {
+    console.error("Email Register Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to create account.",
+    });
+  }
 };
 
-// Login Alias (Passwordless WhatsApp OTP)
+// Email & Password Login
 const login = async (req, res) => {
-  return sendWhatsAppOTP(req, res);
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email address and password are required.",
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const user = await findUserByEmail(cleanEmail);
+
+    if (!user || !user.password_hash) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password. Please check your credentials.",
+      });
+    }
+
+    const isMatch = verifyPassword(password, user.password_hash);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password. Please check your credentials.",
+      });
+    }
+
+    const jwtSecret = process.env.JWT_SECRET || "wooff_secret_key_123";
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role || "user",
+      },
+      jwtSecret,
+      { expiresIn: "7d" }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Welcome back!",
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        childName: user.child_name || "",
+        role: user.role || "user",
+      },
+    });
+  } catch (error) {
+    console.error("Email Login Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Server Error during login.",
+    });
+  }
 };
+
 
 module.exports = {
   sendWhatsAppOTP,

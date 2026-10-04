@@ -95,7 +95,23 @@ const getBlogByIdHandler = async (req, res) => {
 // Create Blog Handler
 const createBlogHandler = async (req, res) => {
   try {
-    const { title, slug, content, image_url, author } = req.body;
+    const {
+      title,
+      slug,
+      content,
+      image_url,
+      author,
+      category,
+      tags,
+      excerpt,
+      reading_time,
+      author_role,
+      author_avatar,
+      author_bio,
+      image_caption,
+      faqs,
+      conclusion_takeaways,
+    } = req.body;
 
     if (!title || !content || !author) {
       return res.status(400).json({
@@ -110,6 +126,16 @@ const createBlogHandler = async (req, res) => {
       content: content.trim(),
       image_url: image_url || null,
       author: author.trim(),
+      category: category ? category.trim() : 'Dental Health',
+      tags: tags ? (Array.isArray(tags) ? tags.join(', ') : tags.trim()) : 'OralCare, KidsWellness, Wooff',
+      excerpt: excerpt ? excerpt.trim() : '',
+      reading_time: reading_time ? reading_time.trim() : '5 min read',
+      author_role: author_role ? author_role.trim() : 'Pediatric Dental Specialist',
+      author_avatar: author_avatar ? author_avatar.trim() : '/assets/wooff-logo.png',
+      author_bio: author_bio ? author_bio.trim() : '',
+      image_caption: image_caption ? image_caption.trim() : '',
+      faqs: faqs || [],
+      conclusion_takeaways: conclusion_takeaways || [],
     });
 
     return res.status(201).json({

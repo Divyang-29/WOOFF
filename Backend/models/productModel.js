@@ -1,5 +1,18 @@
 const pool = require("../config/db");
 
+// Auto migration to ensure is_bestseller column and product_reviews table exist
+pool.query("ALTER TABLE products ADD COLUMN IF NOT EXISTS is_bestseller BOOLEAN DEFAULT false;").catch(() => {});
+pool.query(`
+  CREATE TABLE IF NOT EXISTS product_reviews (
+    id SERIAL PRIMARY KEY,
+    product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+    customer_name VARCHAR(150) NOT NULL,
+    rating NUMERIC(3,2) NOT NULL,
+    review_text TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  );
+`).catch(() => {});
+
 // Helper to generate URL-friendly slug
 const generateSlug = (text) => {
   return text
@@ -46,9 +59,9 @@ const createProduct = async ({
     // Insert Product
     const productQuery = `
       INSERT INTO products (
-        category_id, title, slug, price, final_price, primary_image, images, description, stock, sku, estimated_delivery, is_active
+        category_id, title, slug, price, final_price, primary_image, images, description, stock, sku, estimated_delivery, is_active, is_bestseller
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10, $11, true)
+      VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10, $11, true, $12)
       RETURNING *
     `;
 
@@ -64,6 +77,7 @@ const createProduct = async ({
       stock,
       sku.trim(),
       estimated_delivery ? estimated_delivery.trim() : "2-4 business days",
+      Boolean(is_bestseller),
     ];
 
     const productRes = await client.query(productQuery, productValues);
@@ -263,7 +277,7 @@ const updateProduct = async (id, data) => {
 
   const allowedFields = [
     "category_id", "title", "slug", "price", "final_price",
-    "primary_image", "description", "stock", "sku", "estimated_delivery", "is_active"
+    "primary_image", "description", "stock", "sku", "estimated_delivery", "is_active", "is_bestseller"
   ];
 
   for (const field of allowedFields) {
@@ -294,11 +308,10 @@ const updateProduct = async (id, data) => {
   return await getProductBySlugOrId(id, true);
 };
 
-// Soft Delete / Archive Product
+// Delete Product from Database
 const deleteProduct = async (id) => {
   const query = `
-    UPDATE products 
-    SET is_active = false, updated_at = CURRENT_TIMESTAMP 
+    DELETE FROM products 
     WHERE id = $1 
     RETURNING *
   `;
@@ -334,13 +347,73 @@ const addProductReview = async (productId, { customer_name, rating, review_text 
     );
 
     await client.query("COMMIT");
-    return review;
+    return { review, rating_avg, review_count };
   } catch (error) {
     await client.query("ROLLBACK");
     throw error;
   } finally {
     client.release();
   }
+};
+
+// Delete Customer Review and Recalculate Rating Average & Count
+const deleteProductReview = async (reviewId) => {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    const reviewRes = await client.query("SELECT * FROM product_reviews WHERE id = $1", [reviewId]);
+    const review = reviewRes.rows[0];
+    if (!review) {
+      await client.query("ROLLBACK");
+      return null;
+    }
+
+    const productId = review.product_id;
+
+    await client.query("DELETE FROM product_reviews WHERE id = $1", [reviewId]);
+
+    const statsRes = await client.query(
+      `SELECT COALESCE(AVG(rating)::numeric(3,2), 0.00) as rating_avg, COUNT(*)::int as review_count
+       FROM product_reviews WHERE product_id = $1`,
+      [productId]
+    );
+
+    const { rating_avg, review_count } = statsRes.rows[0];
+
+    await client.query(
+      `UPDATE products SET rating_avg = $1, review_count = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3`,
+      [rating_avg, review_count, productId]
+    );
+
+    await client.query("COMMIT");
+    return { review, rating_avg, review_count, productId };
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
+// Get All Product Reviews for Admin Panel
+const getAllProductReviews = async () => {
+  const query = `
+    SELECT 
+      r.id, 
+      r.product_id, 
+      r.customer_name, 
+      r.rating, 
+      r.review_text, 
+      r.created_at,
+      p.title as product_title,
+      p.slug as product_slug
+    FROM product_reviews r
+    LEFT JOIN products p ON r.product_id = p.id
+    ORDER BY r.created_at DESC
+  `;
+  const result = await pool.query(query);
+  return result.rows;
 };
 
 module.exports = {
@@ -350,4 +423,6 @@ module.exports = {
   updateProduct,
   deleteProduct,
   addProductReview,
+  deleteProductReview,
+  getAllProductReviews,
 };

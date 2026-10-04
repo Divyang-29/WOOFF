@@ -5,7 +5,7 @@
 .page-banner {
   position: relative;
   width: 100%;
-  padding: 8.5rem 1.5rem 3.5rem 1.5rem;
+  padding: 8rem 1.5rem 2.5rem 1.5rem;
   background: linear-gradient(180deg, #F4E8DB 0%, #F7EFE6 100%);
   background-size: cover;
   background-position: center;
@@ -75,10 +75,10 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .page-banner {
-    padding: 7rem 1rem 2.5rem 1rem;
+    padding: 7.5rem 1.25rem 2rem 1.25rem;
   }
   .banner-title {
-    font-size: 2.35rem;
+    font-size: 2.25rem;
   }
   .banner-breadcrumb-badge {
     font-size: 0.75rem;
@@ -90,7 +90,10 @@
 }
 
 @media (max-width: 480px) {
+  .page-banner {
+    padding: 7rem 1rem 1.75rem 1rem;
+  }
   .banner-title {
-    font-size: 1.95rem;
+    font-size: 1.85rem;
   }
 }

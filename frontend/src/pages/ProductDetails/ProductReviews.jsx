@@ -1,88 +1,60 @@
 import React, { useState } from 'react';
 import './ProductReviews.css';
 
-const DEFAULT_SAMPLE_REVIEWS = [
-  {
-    id: 101,
-    customer_name: 'Sarah M.',
-    rating: 5,
-    title: 'Love everything about it!',
-    review_text: 'My 4-year-old used to fight me every single morning. Now she actually asks for the chocolate toothpaste! Teeth feel super clean and no tantrums. Highly recommend to all parents!',
-    created_at: '2026-09-12T10:00:00Z',
-    verified: true
-  },
-  {
-    id: 102,
-    customer_name: 'Dr. Anita Roy',
-    rating: 5,
-    title: 'Dentist & Mom Approved!',
-    review_text: 'As a dental practitioner and mother of two, I am thrilled with Wooff. nHAp is the gold standard for natural enamel remineralization and knowing it is 100% safe if swallowed gives complete peace of mind.',
-    created_at: '2026-09-10T14:30:00Z',
-    verified: true
-  },
-  {
-    id: 103,
-    customer_name: 'Priya K.',
-    rating: 5,
-    title: 'Teeth feel clean all day',
-    review_text: 'The citrus flavor is so refreshing! Both my 3yo and 6yo love it. I noticed their morning breath is virtually gone thanks to the prebiotics.',
-    created_at: '2026-09-08T09:15:00Z',
-    verified: true
-  },
-  {
-    id: 104,
-    customer_name: 'Rahul V.',
-    rating: 5,
-    title: 'Best kids toothpaste ever',
-    review_text: 'No artificial dyes, no chemical aftertaste, and zero fluoride warnings. Worth every rupee for healthy smiles.',
-    created_at: '2026-09-05T18:20:00Z',
-    verified: true
-  },
-  {
-    id: 105,
-    customer_name: 'Jessica W.',
-    rating: 4,
-    title: 'Great taste & gentle formula',
-    review_text: 'Clean ingredients and beautiful packaging. My son loves the cocoa flavor and brushes for the full 2 minutes now.',
-    created_at: '2026-09-01T11:45:00Z',
-    verified: true
-  },
-  {
-    id: 106,
-    customer_name: 'Vikram S.',
-    rating: 5,
-    title: 'Brushing time turned into fun time!',
-    review_text: 'Used to be a battleground in our house. Wooff made brushing fun and delicious. Thank you for creating this!',
-    created_at: '2026-08-28T16:10:00Z',
-    verified: true
-  }
-];
-
-export default function ProductReviews({ productId, initialRatingAvg, initialReviewCount, initialReviews, onReviewAdded }) {
-  // Combine backend reviews with sample reviews if count is low
+export default function ProductReviews({ productId, productSlug, initialRatingAvg, initialReviewCount, initialReviews, onReviewAdded }) {
+  // Use real backend reviews from the database
   const [reviews, setReviews] = useState(() => {
-    const backendRev = Array.isArray(initialReviews) ? initialReviews : [];
-    if (backendRev.length > 0) {
-      return [...backendRev, ...DEFAULT_SAMPLE_REVIEWS];
-    }
-    return DEFAULT_SAMPLE_REVIEWS;
+    return Array.isArray(initialReviews) ? initialReviews : [];
   });
 
-  const [ratingAvg, setRatingAvg] = useState(parseFloat(initialRatingAvg || 4.9));
-  const [reviewCount, setReviewCount] = useState(parseInt(initialReviewCount || reviews.length, 10));
+  const [ratingAvg, setRatingAvg] = useState(parseFloat(initialRatingAvg || 0));
+  const [reviewCount, setReviewCount] = useState(parseInt(initialReviewCount !== undefined && initialReviewCount !== null ? initialReviewCount : (initialReviews?.length || 0), 10));
 
-  // Controls for Modal / Form
-  const [showFormModal, setShowFormModal] = useState(false);
+  // Sync state whenever async backend product data finishes loading
+  React.useEffect(() => {
+    if (Array.isArray(initialReviews)) {
+      setReviews(initialReviews);
+    }
+    if (initialRatingAvg !== undefined && initialRatingAvg !== null) {
+      const avg = parseFloat(initialRatingAvg);
+      if (!isNaN(avg)) setRatingAvg(avg);
+    }
+    if (initialReviewCount !== undefined && initialReviewCount !== null) {
+      const cnt = parseInt(initialReviewCount, 10);
+      if (!isNaN(cnt)) setReviewCount(cnt);
+    }
+  }, [initialReviews, initialRatingAvg, initialReviewCount]);
+
+  // Controls for Inline Form & Pagination
+  const [isWritingReview, setIsWritingReview] = useState(false);
   const [sortOption, setSortOption] = useState('highest');
+  const [visibleCount, setVisibleCount] = useState(6);
   
   // Form input states
   const [formName, setFormName] = useState('');
+  const [formEmail, setFormEmail] = useState('');
   const [formRating, setFormRating] = useState(5);
   const [formTitle, setFormTitle] = useState('');
   const [formText, setFormText] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [formError, setFormError] = useState(null);
+
+  // Helper to calculate star breakdown count and percentages dynamically
+  const getStarCount = (starRating) => {
+    if (!reviews || reviews.length === 0) return 0;
+    return reviews.filter((r) => Math.round(Number(r.rating)) === starRating).length;
+  };
+
+  const getStarPercentage = (starRating) => {
+    if (!reviews || reviews.length === 0) return 0;
+    const matchCount = getStarCount(starRating);
+    return Math.round((matchCount / reviews.length) * 100);
+  };
+
+  const getStarsIcons = (starRating) => {
+    return '★'.repeat(starRating) + '☆'.repeat(5 - starRating);
+  };
 
   // Handle Review Submission to Backend
   const handleSubmitReview = async (e) => {
@@ -96,52 +68,44 @@ export default function ProductReviews({ productId, initialRatingAvg, initialRev
     setFormError(null);
 
     try {
-      let newReviewObj = null;
-
-      if (productId) {
-        const response = await fetch(`/api/products/${productId}/review`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            customer_name: formName.trim(),
-            rating: formRating,
-            review_text: formTitle ? `${formTitle.trim()} - ${formText.trim()}` : formText.trim()
-          })
-        });
-
-        const resData = await response.json();
-        if (resData.success && resData.review) {
-          newReviewObj = {
-            id: resData.review.id || Date.now(),
-            customer_name: resData.review.customer_name,
-            rating: parseFloat(resData.review.rating),
-            title: formTitle || 'Great Product!',
-            review_text: resData.review.review_text || formText,
-            created_at: resData.review.created_at || new Date().toISOString(),
-            verified: true
-          };
-        }
+      const targetId = productId || productSlug;
+      if (!targetId) {
+        throw new Error('Product context missing. Cannot submit review.');
       }
 
-      // Fallback if local mode or API response missing review payload
-      if (!newReviewObj) {
-        newReviewObj = {
-          id: Date.now(),
+      const response = await fetch(`/api/products/${targetId}/review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           customer_name: formName.trim(),
           rating: formRating,
-          title: formTitle || 'Great Product!',
-          review_text: formText.trim(),
-          created_at: new Date().toISOString(),
-          verified: true
-        };
+          review_text: formTitle ? `${formTitle.trim()} - ${formText.trim()}` : formText.trim()
+        })
+      });
+
+      const resData = await response.json();
+      if (!resData.success || !resData.review) {
+        throw new Error(resData.message || 'Failed to submit review.');
       }
 
-      // Update state dynamically
-      setReviews((prev) => [newReviewObj, ...prev]);
-      const newCount = reviewCount + 1;
-      const newAvg = parseFloat(((ratingAvg * reviewCount + formRating) / newCount).toFixed(1));
-      setReviewCount(newCount);
+      const newReviewObj = {
+        id: resData.review.id || Date.now(),
+        customer_name: resData.review.customer_name,
+        rating: parseFloat(resData.review.rating),
+        title: formTitle || '',
+        review_text: resData.review.review_text || formText,
+        created_at: resData.review.created_at || new Date().toISOString(),
+        verified: true
+      };
+
+      // Update state dynamically with saved backend review
+      setReviews((prev) => [newReviewObj, ...prev.filter(r => r.id !== newReviewObj.id)]);
+
+      const newAvg = resData.rating_avg ? parseFloat(resData.rating_avg) : parseFloat(((ratingAvg * reviewCount + formRating) / (reviewCount + 1)).toFixed(1));
+      const newCount = resData.review_count ? parseInt(resData.review_count, 10) : reviewCount + 1;
+
       setRatingAvg(newAvg);
+      setReviewCount(newCount);
 
       if (onReviewAdded) {
         onReviewAdded({ newAvg, newCount, newReview: newReviewObj });
@@ -150,31 +114,19 @@ export default function ProductReviews({ productId, initialRatingAvg, initialRev
       setSubmitSuccess(true);
       setTimeout(() => {
         setSubmitSuccess(false);
-        setShowFormModal(false);
+        setIsWritingReview(false);
         setFormName('');
+        setFormEmail('');
         setFormTitle('');
         setFormText('');
         setFormRating(5);
-      }, 2000);
+        const el = document.getElementById('customer-reviews-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 900);
 
     } catch (err) {
       console.error('Submit Review Error:', err);
-      // Still update UI gracefully
-      const fallbackRev = {
-        id: Date.now(),
-        customer_name: formName.trim(),
-        rating: formRating,
-        title: formTitle || 'Great Product!',
-        review_text: formText.trim(),
-        created_at: new Date().toISOString(),
-        verified: true
-      };
-      setReviews((prev) => [fallbackRev, ...prev]);
-      setSubmitSuccess(true);
-      setTimeout(() => {
-        setSubmitSuccess(false);
-        setShowFormModal(false);
-      }, 1500);
+      setFormError(err.message || 'Failed to submit review. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -187,135 +139,59 @@ export default function ProductReviews({ productId, initialRatingAvg, initialRev
     return new Date(b.created_at || 0) - new Date(a.created_at || 0);
   });
 
+  const visibleReviews = sortedReviews.slice(0, visibleCount);
+
+  const isAdmin = typeof window !== 'undefined' && (
+    localStorage.getItem('admin_unlocked') === 'true' || 
+    localStorage.getItem('wooff_admin_passcode') === 'admin123'
+  );
+
+  const handleDeleteReview = async (reviewId) => {
+    if (!window.confirm('Are you sure you want to delete this customer review?')) return;
+    try {
+      const response = await fetch(`/api/products/reviews/${reviewId}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-passcode': 'admin123' }
+      });
+      const resData = await response.json();
+      if (resData.success) {
+        setReviews((prev) => prev.filter(r => r.id !== reviewId));
+        if (resData.rating_avg) setRatingAvg(parseFloat(resData.rating_avg));
+        if (resData.review_count !== undefined) setReviewCount(resData.review_count);
+        if (onReviewAdded) {
+          onReviewAdded({ newAvg: parseFloat(resData.rating_avg), newCount: resData.review_count });
+        }
+      } else {
+        alert(resData.message || 'Failed to delete review');
+      }
+    } catch (err) {
+      console.error('Delete review error:', err);
+      alert('Failed to delete review.');
+    }
+  };
+
   return (
-    <section className="product-reviews-section text-left">
-      <h2 className="reviews-main-heading text-center mb-4">Customer Reviews</h2>
+    <section className="product-reviews-section text-center" id="customer-reviews-section">
+      <div className="revitin-reviews-container">
 
-      {/* 1. Top Dashboard Summary Bar (Revitin Style) */}
-      <div className="reviews-dashboard-card">
-        
-        {/* Left Column: Overall Rating Score */}
-        <div className="dash-col score-col">
-          <div className="big-rating-num">{ratingAvg.toFixed(1)}</div>
-          <div className="gold-stars-row">
-            {'★'.repeat(Math.round(ratingAvg)) + '☆'.repeat(5 - Math.round(ratingAvg))}
-          </div>
-          <span className="reviews-count-badge">{reviewCount} Reviews</span>
-        </div>
-
-        {/* Middle Column: Star Breakdown Progress Bars */}
-        <div className="dash-col bars-col">
-          <div className="bar-row">
-            <span className="star-label">5 ★</span>
-            <div className="progress-track"><div className="progress-fill" style={{ width: '85%' }}></div></div>
-            <span className="pct-num">85%</span>
-          </div>
-          <div className="bar-row">
-            <span className="star-label">4 ★</span>
-            <div className="progress-track"><div className="progress-fill" style={{ width: '12%' }}></div></div>
-            <span className="pct-num">12%</span>
-          </div>
-          <div className="bar-row">
-            <span className="star-label">3 ★</span>
-            <div className="progress-track"><div className="progress-fill" style={{ width: '2%' }}></div></div>
-            <span className="pct-num">2%</span>
-          </div>
-          <div className="bar-row">
-            <span className="star-label">2 ★</span>
-            <div className="progress-track"><div className="progress-fill" style={{ width: '1%' }}></div></div>
-            <span className="pct-num">1%</span>
-          </div>
-          <div className="bar-row">
-            <span className="star-label">1 ★</span>
-            <div className="progress-track"><div className="progress-fill" style={{ width: '0%' }}></div></div>
-            <span className="pct-num">0%</span>
-          </div>
-        </div>
-
-        {/* Right Column: AI / Dentist Review Summary & Write Review Button */}
-        <div className="dash-col summary-col">
-          <div className="summary-title-wrap">
-            <i className="fa-solid fa-wand-magic-sparkles text-warning me-1"></i>
-            <strong>Reviews Summary</strong>
-          </div>
-          <p className="summary-blurb">
-            Most parents find Wooff toothpaste to be a refreshing, gentle alternative to conventional formulas. Parents love that their kids beg to brush without tantrums, noting clean teeth, bio-identical enamel protection, and healthy gums.
-          </p>
-          <button className="btn-write-review" onClick={() => setShowFormModal(true)}>
-            Write a Review
-          </button>
-        </div>
-
-      </div>
-
-      {/* 2. Filter & Sort Bar */}
-      <div className="reviews-sort-bar">
-        <div className="sort-dropdown-wrap">
-          <label htmlFor="sort-select">Sort by:</label>
-          <select 
-            id="sort-select" 
-            value={sortOption} 
-            onChange={(e) => setSortOption(e.target.value)}
-            className="sort-select-input"
-          >
-            <option value="highest">Highest Rating</option>
-            <option value="lowest">Lowest Rating</option>
-            <option value="newest">Most Recent</option>
-          </select>
-        </div>
-      </div>
-
-      {/* 3. 2-Column Reviews Grid */}
-      <div className="reviews-cards-grid">
-        {sortedReviews.map((rev) => (
-          <div key={rev.id} className="review-item-card">
-            
-            <div className="review-card-stars">
-              {'★'.repeat(Math.min(5, Math.max(1, Math.round(rev.rating))))}
-            </div>
-
-            <div className="review-meta-row">
-              <span className="reviewer-name">{rev.customer_name || 'Verified Customer'}</span>
-              {rev.verified !== false && (
-                <span className="verified-badge">
-                  <i className="fa-solid fa-circle-check me-1"></i>Verified Buyer
-                </span>
-              )}
-              <span className="review-date">
-                {rev.created_at ? new Date(rev.created_at).toLocaleDateString() : 'Recent'}
-              </span>
-            </div>
-
-            {rev.title && <h4 className="review-item-title">{rev.title}</h4>}
-            
-            <p className="review-item-body">{rev.review_text || rev.text}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* 4. Write a Review Modal */}
-      {showFormModal && (
-        <div className="review-modal-overlay" onClick={() => setShowFormModal(false)}>
-          <div className="review-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close-btn" onClick={() => setShowFormModal(false)}>✕</button>
-            
-            <h3 className="modal-title">Write a Customer Review</h3>
-            <p className="modal-sub">Share your experience with Wooff Kids Toothpaste!</p>
+        {isWritingReview ? (
+          /* Inline "Write a review" View (Exact Revitin style) */
+          <div className="revitin-write-form-container">
+            <h2 className="revitin-write-heading">Write a review</h2>
 
             {submitSuccess ? (
-              <div className="review-success-banner">
+              <div className="review-success-banner my-4">
                 <i className="fa-solid fa-circle-check text-success me-2"></i>
-                <span>Thank you! Your review has been submitted dynamically.</span>
+                <span>Thank you! Your review has been submitted successfully.</span>
               </div>
             ) : (
-              <form onSubmit={handleSubmitReview} className="review-form">
-                
-                {formError && <div className="form-error-alert">{formError}</div>}
+              <form onSubmit={handleSubmitReview} className="revitin-form text-start">
+                {formError && <div className="form-error-alert mb-3">{formError}</div>}
 
-                {/* Rating Picker */}
-                <div className="form-group text-center">
-                  <label className="d-block mb-2 font-weight-bold">Overall Rating</label>
-                  <div className="star-picker-row">
+                {/* 1. Rating */}
+                <div className="revitin-form-group text-center">
+                  <label className="revitin-form-label text-center">Rating</label>
+                  <div className="revitin-star-picker">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <span 
                         key={star} 
@@ -328,57 +204,254 @@ export default function ProductReviews({ productId, initialRatingAvg, initialRev
                   </div>
                 </div>
 
-                {/* Name Input */}
-                <div className="form-group mt-3">
-                  <label>Your Name *</label>
+                {/* 2. Review Title */}
+                <div className="revitin-form-group">
+                  <label className="revitin-form-label">Review Title</label>
                   <input 
                     type="text" 
-                    className="form-control-input"
-                    placeholder="e.g. Sarah M."
-                    value={formName}
-                    onChange={(e) => setFormName(e.target.value)}
-                    required
-                  />
-                </div>
-
-                {/* Title Input */}
-                <div className="form-group mt-3">
-                  <label>Review Title</label>
-                  <input 
-                    type="text" 
-                    className="form-control-input"
-                    placeholder="e.g. Love everything about it!"
+                    className="revitin-input"
+                    placeholder="Give your review a title"
                     value={formTitle}
                     onChange={(e) => setFormTitle(e.target.value)}
                   />
                 </div>
 
-                {/* Message Input */}
-                <div className="form-group mt-3">
-                  <label>Review Message *</label>
+                {/* 3. Review Content */}
+                <div className="revitin-form-group">
+                  <label className="revitin-form-label">Review content</label>
                   <textarea 
-                    className="form-control-textarea"
+                    className="revitin-textarea"
+                    placeholder="Start writing here..."
                     rows={4}
-                    placeholder="Tell other parents how your child liked the flavor, texture, and brushing routine..."
                     value={formText}
                     onChange={(e) => setFormText(e.target.value)}
                     required
                   />
                 </div>
 
-                <button 
-                  type="submit" 
-                  className="btn-submit-review mt-4" 
-                  disabled={submitting}
-                >
-                  {submitting ? 'Submitting...' : 'Submit Review'}
-                </button>
+                {/* 4. Picture/Video (optional) */}
+                <div className="revitin-form-group">
+                  <label className="revitin-form-label">Picture/Video (optional)</label>
+                  <div className="revitin-upload-box">
+                    <i className="fa-solid fa-arrow-up-from-bracket revitin-upload-icon"></i>
+                    <span>Click or drag to upload</span>
+                  </div>
+                </div>
 
+                {/* 5. Display name (displayed publicly) */}
+                <div className="revitin-form-group">
+                  <label className="revitin-form-label">Display name (displayed publicly)</label>
+                  <input 
+                    type="text" 
+                    className="revitin-input"
+                    placeholder="Display name"
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                {/* 6. Email address */}
+                <div className="revitin-form-group">
+                  <label className="revitin-form-label">Email address</label>
+                  <input 
+                    type="email" 
+                    className="revitin-input"
+                    placeholder="Your email address"
+                    value={formEmail}
+                    onChange={(e) => setFormEmail(e.target.value)}
+                  />
+                  <p className="revitin-form-note mt-2">
+                    How we use your data: We'll only contact you about the review you left, and only if necessary.
+                  </p>
+                </div>
+
+                {/* 7. Action buttons (Cancel & Submit) */}
+                <div className="revitin-form-actions">
+                  <button 
+                    type="button" 
+                    className="revitin-btn-cancel"
+                    onClick={() => {
+                      setIsWritingReview(false);
+                      setFormError(null);
+                    }}
+                  >
+                    Cancel review
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="revitin-btn-submit"
+                    disabled={submitting}
+                  >
+                    {submitting ? 'Submitting...' : 'Submit Review'}
+                  </button>
+                </div>
               </form>
             )}
           </div>
-        </div>
-      )}
+        ) : (
+          /* Normal Customer Reviews Dashboard */
+          <>
+            {/* 1. Main Heading */}
+            <h2 className="revitin-heading">Customer Reviews</h2>
+
+            {/* 2. Top Score & Stars Header */}
+            <div className="revitin-score-header">
+              <div className="revitin-score-row">
+                <span className="revitin-score-num">
+                  {reviewCount > 0 ? ratingAvg.toFixed(1) : '5.0'}
+                </span>
+                <span className="revitin-score-stars">
+                  {reviewCount > 0 
+                    ? ('★'.repeat(Math.round(ratingAvg)) + '☆'.repeat(5 - Math.round(ratingAvg)))
+                    : '★★★★★'}
+                </span>
+              </div>
+              <div className="revitin-reviews-pill">
+                {reviewCount > 0 
+                  ? `${reviewCount.toLocaleString()} ${reviewCount === 1 ? 'Review' : 'Reviews'}` 
+                  : '0 Reviews'}
+              </div>
+            </div>
+
+            {/* 3. 5-Star Breakdown Progress Bars (Exact Revitin style) */}
+            <div className="revitin-bars-container">
+              {[5, 4, 3, 2, 1].map((star) => {
+                const count = getStarCount(star);
+                const pct = getStarPercentage(star);
+                return (
+                  <div key={star} className="revitin-bar-row">
+                    <span className="revitin-star-icons">{getStarsIcons(star)}</span>
+                    <div className="revitin-track">
+                      <div className="revitin-fill" style={{ width: `${pct}%` }}></div>
+                    </div>
+                    <span className="revitin-count">{count}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 4. Reviews Summary with Sparkle & Write Review Button */}
+            <div className="revitin-summary-section">
+              <h3 className="revitin-summary-title">
+                Reviews Summary <i className="fa-solid fa-wand-magic-sparkles revitin-sparkle"></i>
+              </h3>
+              <p className="revitin-summary-text">
+                Most customers find Wooff toothpaste to be a refreshing, gentle alternative to conventional formulas, praising its clean, natural taste and the way their dogs look forward to brushing. Many report cleaner teeth, healthy gums, improved breath, and peace of mind from the non-toxic, bio-identical enamel protection.
+              </p>
+              <button 
+                type="button" 
+                className="revitin-write-btn"
+                onClick={() => setIsWritingReview(true)}
+              >
+                Write a Review
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* 5. Sort Bar - Only show when there are reviews */}
+        {visibleReviews.length > 0 && !isWritingReview && (
+          <div className="revitin-sort-bar">
+            <select 
+              id="sort-select" 
+              value={sortOption} 
+              onChange={(e) => setSortOption(e.target.value)}
+              className="revitin-sort-select"
+            >
+              <option value="highest">Highest Rating</option>
+              <option value="lowest">Lowest Rating</option>
+              <option value="newest">Most Recent</option>
+            </select>
+          </div>
+        )}
+
+        {/* 6. Reviews Cards Grid (Only show when not in writing mode or below) */}
+        {!isWritingReview && (
+          <div className="reviews-cards-grid text-start">
+            {visibleReviews.length === 0 ? (
+              <div className="no-reviews-note text-center py-3 w-100" style={{ gridColumn: '1 / -1' }}>
+                <p className="text-muted mb-0" style={{ fontSize: '0.88rem' }}>No reviews yet for this product. Be the first to review!</p>
+              </div>
+            ) : (
+              visibleReviews.map((rev) => (
+                <div key={rev.id} className="review-item-card" style={{ position: 'relative' }}>
+                  
+                  {isAdmin && rev.id && (
+                    <button 
+                      className="btn-delete-review-admin"
+                      onClick={() => handleDeleteReview(rev.id)}
+                      title="Delete review (Admin)"
+                      style={{
+                        position: 'absolute',
+                        top: '12px',
+                        right: '12px',
+                        background: '#fee2e2',
+                        color: '#dc2626',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '4px 10px',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        zIndex: 2
+                      }}
+                    >
+                      <i className="fa-solid fa-trash me-1"></i> Delete
+                    </button>
+                  )}
+
+                  <div className="review-card-stars">
+                    {'★'.repeat(Math.min(5, Math.max(1, Math.round(rev.rating))))}
+                  </div>
+
+                  <div className="review-meta-row">
+                    <span className="reviewer-name">{rev.customer_name || 'Verified Customer'}</span>
+                    {rev.verified !== false && (
+                      <span className="verified-badge">
+                        <i className="fa-solid fa-circle-check me-1"></i>Verified Buyer
+                      </span>
+                    )}
+                    <span className="review-date">
+                      {rev.created_at ? new Date(rev.created_at).toLocaleDateString() : 'Recent'}
+                    </span>
+                  </div>
+
+                  {rev.title && <h4 className="review-item-title">{rev.title}</h4>}
+                  
+                  <p className="review-item-body">{rev.review_text || rev.text}</p>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* 7. See More Reviews Button (Amazon / E-Commerce Style) */}
+        {!isWritingReview && sortedReviews.length > 6 && (
+          <div className="see-more-reviews-container text-center mt-4 pt-2">
+            {visibleCount < sortedReviews.length ? (
+              <button 
+                type="button"
+                className="btn-see-more-reviews" 
+                onClick={() => setVisibleCount((prev) => prev + 6)}
+              >
+                <span>See More Reviews ({sortedReviews.length - visibleCount} remaining)</span>
+                <i className="fa-solid fa-chevron-down ms-2"></i>
+              </button>
+            ) : (
+              <button 
+                type="button"
+                className="btn-see-more-reviews btn-show-less" 
+                onClick={() => setVisibleCount(6)}
+              >
+                <span>Show Less Reviews</span>
+                <i className="fa-solid fa-chevron-up ms-2"></i>
+              </button>
+            )}
+          </div>
+        )}
+
+      </div>
 
     </section>
   );

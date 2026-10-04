@@ -11,7 +11,7 @@ const TOTAL_FRAMES = 150;
  * Matches assets in /frames/frame_0001.jpg to /frames/frame_0150.jpg
  */
 const getFramePath = (index) => {
-  const paddedIndex = String(index).padStart(4, '0');
+  const paddedIndex = String(index + 1).padStart(4, '0');
   return `/frames/frame_${paddedIndex}.jpg`;
 };
 
@@ -58,32 +58,6 @@ export default function HeroSection() {
         img.naturalWidth * ratio,
         img.naturalHeight * ratio
       );
-    } else {
-      // Fallback aesthetic styling using brand palette
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const gradient = ctx.createRadialGradient(
-        width / 2,
-        height / 2,
-        60 * dpr,
-        width / 2,
-        height / 2,
-        Math.max(width, height) / 1.4
-      );
-      gradient.addColorStop(0, '#F7EFE6'); // brand-cream
-      gradient.addColorStop(1, '#F2E4D6'); // brand-beige
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.save();
-      ctx.fillStyle = 'rgba(75, 46, 30, 0.4)';
-      ctx.font = `${13 * dpr}px monospace`;
-      ctx.textAlign = 'center';
-      ctx.fillText(
-        `Frame ${index + 1} / ${TOTAL_FRAMES}`,
-        width / 2,
-        height - 30 * dpr
-      );
-      ctx.restore();
     }
   }, []);
 
@@ -106,18 +80,19 @@ export default function HeroSection() {
     renderFrame(currentFrameRef.current);
   }, [renderFrame]);
 
-  // 1. Asynchronously preload 150 frames
+  // 1. Asynchronously preload ALL 150 frames into memory before starting animation
   useEffect(() => {
     let loadedCount = 0;
     const preloadedImages = [];
 
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+    for (let i = 0; i < TOTAL_FRAMES; i++) {
       const img = new Image();
-      img.src = getFramePath(i);
 
       const onImageFinished = () => {
         loadedCount++;
         setLoadingProgress(Math.round((loadedCount / TOTAL_FRAMES) * 100));
+
+        // When all 150 frames are fully preloaded, enable the experience
         if (loadedCount === TOTAL_FRAMES) {
           imagesRef.current = preloadedImages;
           setIsLoaded(true);
@@ -126,8 +101,10 @@ export default function HeroSection() {
 
       img.onload = onImageFinished;
       img.onerror = onImageFinished;
+      img.src = getFramePath(i);
       preloadedImages.push(img);
     }
+    imagesRef.current = preloadedImages;
   }, []);
 
   // 2. Window resize listener
@@ -284,4 +261,3 @@ export default function HeroSection() {
     </div>
   );
 }
-

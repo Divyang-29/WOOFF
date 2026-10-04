@@ -5,6 +5,8 @@ const {
   updateProduct,
   deleteProduct,
   addProductReview,
+  deleteProductReview,
+  getAllProductReviews,
 } = require("../models/productModel");
 
 // Create Product Handler (Admin Only - Category Required)
@@ -264,7 +266,19 @@ const addReviewHandler = async (req, res) => {
       });
     }
 
-    const review = await addProductReview(parseInt(id), {
+    let productId = parseInt(id, 10);
+    if (isNaN(productId)) {
+      const prod = await getProductBySlugOrId(id);
+      if (!prod) {
+        return res.status(404).json({
+          success: false,
+          message: "Product not found.",
+        });
+      }
+      productId = prod.id;
+    }
+
+    const { review, rating_avg, review_count } = await addProductReview(productId, {
       customer_name: customer_name.trim(),
       rating: numericRating,
       review_text: review_text ? review_text.trim() : null,
@@ -274,12 +288,68 @@ const addReviewHandler = async (req, res) => {
       success: true,
       message: "Review submitted successfully.",
       review,
+      rating_avg,
+      review_count,
     });
   } catch (error) {
     console.error("Add Review Error:", error);
     return res.status(500).json({
       success: false,
       message: error.message || "Failed to submit review.",
+    });
+  }
+};
+
+// Delete Customer Review Handler (Admin Only)
+const deleteReviewHandler = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const reviewId = parseInt(id, 10);
+
+    if (isNaN(reviewId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid review ID.",
+      });
+    }
+
+    const result = await deleteProductReview(reviewId);
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: "Review not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Review deleted successfully.",
+      productId: result.productId,
+      rating_avg: result.rating_avg,
+      review_count: result.review_count,
+    });
+  } catch (error) {
+    console.error("Delete Review Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to delete review.",
+    });
+  }
+};
+
+// Get All Reviews Handler (Admin Only)
+const getAllReviewsHandler = async (req, res) => {
+  try {
+    const reviews = await getAllProductReviews();
+    return res.status(200).json({
+      success: true,
+      reviews,
+    });
+  } catch (error) {
+    console.error("Get All Reviews Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to fetch reviews.",
     });
   }
 };
@@ -291,4 +361,6 @@ module.exports = {
   updateProductHandler,
   deleteProductHandler,
   addReviewHandler,
+  deleteReviewHandler,
+  getAllReviewsHandler,
 };
