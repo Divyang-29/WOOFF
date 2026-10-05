@@ -84,6 +84,16 @@ const benefitRoutes = require("./routes/benefitRoutes");
 const pillarRoutes = require("./routes/pillarRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const {
+  createOrderHandler: standardCreateOrderHandler,
+  verifyPaymentHandler: standardVerifyPaymentHandler,
+} = require("./controllers/razorpayController");
+
+// Standard Razorpay Checkout Endpoints
+app.post("/api/create-order", standardCreateOrderHandler);
+app.post("/create-order", standardCreateOrderHandler);
+app.post("/api/verify-payment", standardVerifyPaymentHandler);
+app.post("/verify-payment", standardVerifyPaymentHandler);
 
 app.use("/api/auth", authRoutes);
 app.use("/auth", authRoutes);

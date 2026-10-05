@@ -1118,3 +1118,205 @@
   }
 }
 
+/* ========================================================
+   RAZORPAY STANDARD CHECKOUT STYLES (Product Detail Page)
+   ======================================================== */
+.buy-now-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, #0C2340 0%, #1A365D 100%);
+  color: #FFFFFF;
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 0.95rem 1.5rem;
+  border: 2.5px solid var(--primary-brown, #4B2E1E);
+  border-radius: 50px;
+  box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.buy-now-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0px var(--primary-brown, #4B2E1E);
+  background: linear-gradient(135deg, #13335A 0%, #2B4C7E 100%);
+}
+
+.buy-now-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--primary-brown, #4B2E1E);
+}
+
+.buy-now-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  filter: grayscale(40%);
+}
+
+.razorpay-trust-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted-text, #8C7B6A);
+  margin-bottom: 1.25rem;
+}
+
+.razorpay-trust-indicator i {
+  color: #10B981;
+}
+
+.razorpay-error-banner {
+  background-color: #FEF2F2;
+  color: #991B1B;
+  border: 2px solid #EF4444;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.razorpay-error-banner button {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #991B1B;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+/* Payment Success Modal */
+.payment-success-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(42, 28, 19, 0.7);
+  backdrop-filter: blur(4px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  animation: fadeInModal 0.25s ease-out;
+}
+
+.payment-success-card {
+  background: #FFFDF9;
+  border: 3px solid var(--primary-brown, #4B2E1E);
+  border-radius: 24px;
+  box-shadow: 8px 8px 0px var(--primary-brown, #4B2E1E);
+  max-width: 480px;
+  width: 100%;
+  padding: 2.25rem 2rem;
+  text-align: center;
+  position: relative;
+  animation: popInCard 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.success-check-icon {
+  width: 72px;
+  height: 72px;
+  background-color: #DEF7EC;
+  border: 3px solid #0E9F6E;
+  color: #0E9F6E;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem;
+  margin: 0 auto 1.25rem auto;
+  box-shadow: 3px 3px 0px #0E9F6E;
+}
+
+.payment-success-card h3 {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 0.5rem;
+}
+
+.payment-success-card .success-subtitle {
+  color: var(--muted-text, #8C7B6A);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.payment-receipt-box {
+  background-color: #FAF4EB;
+  border: 2px dashed rgba(75, 46, 30, 0.25);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0;
+  font-size: 0.9rem;
+}
+
+.receipt-row.total-row {
+  border-top: 1.5px solid rgba(75, 46, 30, 0.15);
+  margin-top: 0.4rem;
+  padding-top: 0.55rem;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--primary-brown, #4B2E1E);
+}
+
+.receipt-label {
+  color: var(--muted-text, #8C7B6A);
+  font-weight: 600;
+}
+
+.receipt-val {
+  color: var(--dark-text, #2A1C13);
+  font-weight: 700;
+  word-break: break-all;
+}
+
+.btn-success-done {
+  width: 100%;
+  background-color: #E58B57;
+  color: var(--primary-brown, #4B2E1E);
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 0.85rem 1.5rem;
+  border: 2.5px solid var(--primary-brown, #4B2E1E);
+  border-radius: 50px;
+  box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.btn-success-done:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0px var(--primary-brown, #4B2E1E);
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popInCard {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
