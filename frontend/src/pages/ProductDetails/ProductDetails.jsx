@@ -230,6 +230,15 @@ export default function ProductDetails() {
       const result = await response.json();
 
       if (!response.ok || !result.success || !result.token) {
+        if (
+          result.isPendingChannelSync ||
+          result.message?.includes('pending') ||
+          result.message?.includes('Something went wrong')
+        ) {
+          throw new Error(
+            'Shiprocket Checkout channel is pending activation from Shiprocket team. In the meantime, please click "PAY VIA RAZORPAY" below.'
+          );
+        }
         throw new Error(
           result.message || 'Shiprocket checkout initiation pending catalog sync configuration.'
         );

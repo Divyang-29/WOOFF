@@ -650,9 +650,16 @@ exports.initiateCheckout = async (req, res, next) => {
       });
     }
 
+    const isPendingSync =
+      srResponse.body?.error?.message === "Something went wrong! Please try again later." ||
+      srResponse.statusCode === 500;
+
     return res.status(srResponse.statusCode || 500).json({
       success: false,
-      message: srResponse.body?.error?.message || "Failed to generate Shiprocket checkout token",
+      isPendingChannelSync: isPendingSync,
+      message: isPendingSync
+        ? "Shiprocket Checkout channel activation is pending with the Shiprocket team. Once they configure your Catalog Sync URLs in their portal, 1-Click checkout will activate."
+        : srResponse.body?.error?.message || "Failed to generate Shiprocket checkout token",
       details: srResponse.body,
     });
   } catch (error) {
