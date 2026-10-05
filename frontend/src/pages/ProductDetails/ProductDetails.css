@@ -1119,6 +1119,48 @@
 }
 
 /* ========================================================
+   SHIPROCKET 1-CLICK FAST CHECKOUT STYLES
+   ======================================================== */
+.shiprocket-checkout-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, #7A3E9D 0%, #5B2C6F 100%);
+  color: #FFFFFF;
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 0.95rem 1.5rem;
+  border: 2.5px solid var(--primary-brown, #4B2E1E);
+  border-radius: 50px;
+  box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.shiprocket-checkout-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0px var(--primary-brown, #4B2E1E);
+  background: linear-gradient(135deg, #8E44AD 0%, #6C3483 100%);
+}
+
+.shiprocket-checkout-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--primary-brown, #4B2E1E);
+}
+
+.shiprocket-checkout-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  filter: grayscale(40%);
+}
+
+/* ========================================================
    RAZORPAY STANDARD CHECKOUT STYLES (Product Detail Page)
    ======================================================== */
 .buy-now-btn {

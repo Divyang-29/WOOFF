@@ -7,10 +7,16 @@
     <title>Wooff</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Shiprocket Checkout Styles -->
+    <link rel="stylesheet" href="https://checkout-ui.shiprocket.com/assets/styles/shopify.css">
   </head>
   <body>
+    <!-- Hidden sellerDomain for Shiprocket Checkout channel integration -->
+    <input type="hidden" value="wooff-frontend.onrender.com" id="sellerDomain"/>
     <div id="root"></div>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Shiprocket Checkout Script -->
+    <script src="https://checkout-ui.shiprocket.com/assets/js/channels/shopify.js"></script>
     <script type="module" src="/src/main.jsx"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   </body>

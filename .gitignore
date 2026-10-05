@@ -29,3 +29,5 @@ build/
 
 # Raw media / temp videos
 VIdeo/
+extracted_sr_guide.txt
+shiprocket_collection.json

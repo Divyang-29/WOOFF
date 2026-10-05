@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { loadRazorpayScript } from '../../utils/razorpay';
+import { loadShiprocketScript } from '../../utils/shiprocket';
 import KeyIngredients from './KeyIngredients';
 import ProductBrandShowcase from './ProductBrandShowcase';
 import ProductFAQ from './ProductFAQ';
@@ -22,6 +23,9 @@ export default function ProductDetails() {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentError, setPaymentError] = useState(null);
   const [paymentSuccessData, setPaymentSuccessData] = useState(null);
+
+  // Shiprocket Checkout States
+  const [isProcessingShiprocket, setIsProcessingShiprocket] = useState(false);
 
   // Perfora-style states
   const [pincode, setPincode] = useState('');
@@ -195,6 +199,58 @@ export default function ProductDetails() {
     }
   };
 
+  const handleShiprocketCheckout = async (e) => {
+    e.preventDefault();
+    if (!data || data.stock <= 0) return;
+
+    try {
+      setPaymentError(null);
+      setIsProcessingShiprocket(true);
+
+      // STEP 1: Ensure Shiprocket script and hidden sellerDomain are ready
+      await loadShiprocketScript();
+
+      // STEP 2: Request Shiprocket Access Token from backend
+      const response = await fetch('/api/shiprocket/checkout/initiate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: [
+            {
+              variant_id: String(data.id),
+              quantity: quantity,
+            },
+          ],
+          redirect_url: `${window.location.origin}/order-success`,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success || !result.token) {
+        throw new Error(
+          result.message || 'Shiprocket checkout initiation pending catalog sync configuration.'
+        );
+      }
+
+      // STEP 3: Open Shiprocket Checkout Modal via HeadlessCheckout
+      if (window.HeadlessCheckout && typeof window.HeadlessCheckout.addToCart === 'function') {
+        window.HeadlessCheckout.addToCart(e, result.token, {
+          fallbackUrl: `${window.location.origin}/product/${data.slug || data.id}`,
+        });
+      } else {
+        throw new Error('Shiprocket HeadlessCheckout library not loaded in browser.');
+      }
+    } catch (err) {
+      console.error('Shiprocket checkout error:', err);
+      setPaymentError(err.message || 'Unable to open Shiprocket Checkout.');
+    } finally {
+      setIsProcessingShiprocket(false);
+    }
+  };
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -349,6 +405,27 @@ export default function ProductDetails() {
               </button>
             </div>
 
+            {/* Shiprocket 1-Click Fast Checkout Button */}
+            <button 
+              type="button"
+              id="shiprocketCheckoutBtn"
+              className="shiprocket-checkout-btn" 
+              disabled={data.stock <= 0 || isProcessingShiprocket}
+              onClick={handleShiprocketCheckout}
+            >
+              {isProcessingShiprocket ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Connecting to Shiprocket...
+                </>
+              ) : (
+                <>
+                  <i className="fa-solid fa-bolt-lightning me-2"></i>
+                  {data.stock > 0 ? `1-CLICK FAST CHECKOUT • ₹${(data.final_price * quantity).toFixed(2)}` : 'OUT OF STOCK'}
+                </>
+              )}
+            </button>
+
             {/* Razorpay Standard Checkout Buy Now Button */}
             <button 
               type="button"
@@ -363,15 +440,15 @@ export default function ProductDetails() {
                 </>
               ) : (
                 <>
-                  <i className="fa-solid fa-bolt me-2"></i>
-                  {data.stock > 0 ? `BUY NOW WITH RAZORPAY • ₹${(data.final_price * quantity).toFixed(2)}` : 'OUT OF STOCK'}
+                  <i className="fa-solid fa-credit-card me-2"></i>
+                  {data.stock > 0 ? `PAY VIA RAZORPAY • ₹${(data.final_price * quantity).toFixed(2)}` : 'OUT OF STOCK'}
                 </>
               )}
             </button>
 
             <div className="razorpay-trust-indicator">
               <i className="fa-solid fa-shield-halved"></i>
-              <span>100% Secure Checkout powered by Razorpay</span>
+              <span>100% Secure Checkout • Shiprocket Fastrr & Razorpay (UPI, Cards, COD)</span>
             </div>
 
             {/* Payment Error Feedback */}

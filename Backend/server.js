@@ -40,7 +40,16 @@ const corsOptions = {
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "x-razorpay-signature", "x-signature"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "x-razorpay-signature",
+    "x-signature",
+    "x-api-key",
+    "x-api-hmac-sha256",
+    "X-Api-Key",
+    "X-Api-HMAC-SHA256",
+  ],
 };
 
 app.use(cors(corsOptions));
@@ -88,12 +97,21 @@ const {
   createOrderHandler: standardCreateOrderHandler,
   verifyPaymentHandler: standardVerifyPaymentHandler,
 } = require("./controllers/razorpayController");
+const shiprocketRoutes = require("./routes/shiprocketRoutes");
+const shiprocketController = require("./controllers/shiprocketController");
 
 // Standard Razorpay Checkout Endpoints
 app.post("/api/create-order", standardCreateOrderHandler);
 app.post("/create-order", standardCreateOrderHandler);
 app.post("/api/verify-payment", standardVerifyPaymentHandler);
 app.post("/verify-payment", standardVerifyPaymentHandler);
+
+// Shiprocket Checkout & Loyalty Endpoints
+app.use("/api/shiprocket", shiprocketRoutes);
+app.use("/shiprocket", shiprocketRoutes);
+app.post("/get-points", shiprocketController.getLoyaltyPoints);
+app.post("/block-points", shiprocketController.blockLoyaltyPoints);
+app.post("/unblock-points", shiprocketController.unblockLoyaltyPoints);
 
 app.use("/api/auth", authRoutes);
 app.use("/auth", authRoutes);

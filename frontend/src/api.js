@@ -52,6 +52,10 @@ export const API_ENDPOINTS = {
     ANALYTICS: `${API_BASE_URL}/api/admin/analytics`,
     LOW_STOCK: `${API_BASE_URL}/api/admin/inventory/low-stock`,
   },
+  SHIPROCKET: {
+    INITIATE: `${API_BASE_URL}/api/shiprocket/checkout/initiate`,
+    LOYALTY_GET_POINTS: `${API_BASE_URL}/api/shiprocket/loyalty/get-points`,
+  },
 };
 
 export default API_ENDPOINTS;
