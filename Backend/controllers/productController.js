@@ -1,3 +1,4 @@
+const pool = require("../config/db");
 const {
   createProduct,
   getProductBySlugOrId,
@@ -9,7 +10,7 @@ const {
   getAllProductReviews,
 } = require("../models/productModel");
 
-// Create Product Handler (Admin Only - Category Required)
+// Create Product Handler (Admin Only)
 const createProductHandler = async (req, res) => {
   try {
     const {
@@ -19,6 +20,7 @@ const createProductHandler = async (req, res) => {
       price,
       final_price,
       primary_image: bodyPrimaryImage,
+      image,
       description,
       stock,
       sku,
@@ -26,32 +28,46 @@ const createProductHandler = async (req, res) => {
       is_bestseller,
     } = req.body;
 
-    if (!category_id) {
+    if (!title || !price) {
       return res.status(400).json({
         success: false,
-        message: "category_id is required. Every product must be assigned to an existing category.",
+        message: "Product title and price are required.",
       });
     }
 
-    if (!title || !price || !final_price || !sku) {
-      return res.status(400).json({
-        success: false,
-        message: "Title, price, final_price, and SKU are required.",
-      });
+    // Resolve category_id safely
+    let targetCategoryId = category_id ? parseInt(category_id) : null;
+    let validCategory = null;
+    if (targetCategoryId && !isNaN(targetCategoryId)) {
+      const catCheck = await pool.query("SELECT id FROM categories WHERE id = $1", [targetCategoryId]);
+      if (catCheck.rows.length > 0) {
+        validCategory = catCheck.rows[0].id;
+      }
     }
 
-    // Process primary image from file upload or body URL
-    let primary_image = bodyPrimaryImage || null;
+    if (!validCategory) {
+      const fallbackCat = await pool.query("SELECT id FROM categories ORDER BY id ASC LIMIT 1");
+      if (fallbackCat.rows.length > 0) {
+        validCategory = fallbackCat.rows[0].id;
+      } else {
+        const createdCat = await pool.query(
+          "INSERT INTO categories (name, slug, description) VALUES ('General', 'general', 'Default category') RETURNING id"
+        );
+        validCategory = createdCat.rows[0].id;
+      }
+    }
+
+    // Process primary image from file upload, body URL, or fallback
+    let primary_image = bodyPrimaryImage || image || null;
     if (req.files && req.files.primary_image && req.files.primary_image[0]) {
       primary_image = req.files.primary_image[0].path || req.files.primary_image[0].secure_url;
     }
-
     if (!primary_image) {
-      return res.status(400).json({
-        success: false,
-        message: "Primary image is required (upload file or provide URL).",
-      });
+      primary_image = "/assets/tooth_paste.png";
     }
+
+    const targetSku = sku && sku.trim() ? sku.trim() : `WOOFF-${Date.now().toString(36).toUpperCase()}`;
+    const targetFinalPrice = final_price ? parseFloat(final_price) : parseFloat(price);
 
     // Process gallery images (up to 5 images)
     let images = [];
@@ -74,16 +90,16 @@ const createProductHandler = async (req, res) => {
     }
 
     const product = await createProduct({
-      category_id: parseInt(category_id),
+      category_id: validCategory,
       title: title.trim(),
       slug,
       price: parseFloat(price),
-      final_price: parseFloat(final_price),
+      final_price: targetFinalPrice,
       primary_image,
       images,
       description: description ? description.trim() : null,
       stock: stock ? parseInt(stock) : 0,
-      sku: sku.trim(),
+      sku: targetSku,
       estimated_delivery: estimated_delivery ? estimated_delivery.trim() : "2-4 business days",
       ingredients,
       faqs,

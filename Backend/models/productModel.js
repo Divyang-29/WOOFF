@@ -39,6 +39,7 @@ const createProduct = async ({
   estimated_delivery = "2-4 business days",
   ingredients = [],
   faqs = [],
+  is_bestseller = false,
 }) => {
   if (!category_id) {
     throw new Error("category_id is required. Every product must be assigned to a category.");

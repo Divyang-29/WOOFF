@@ -572,7 +572,7 @@ export default function Admin() {
   const handleSaveProduct = async (e) => {
     e.preventDefault();
     if (!productForm.title || !productForm.price) {
-      showToast('danger', 'Please enter title and price.');
+      showToast('danger', 'Please enter product title and price.');
       return;
     }
 
@@ -584,6 +584,14 @@ export default function Admin() {
       const method = isEdit ? 'PUT' : 'POST';
 
       const token = localStorage.getItem('token');
+      const payload = {
+        ...productForm,
+        price: parseFloat(productForm.price),
+        final_price: parseFloat(productForm.final_price || productForm.price),
+        stock: parseInt(productForm.stock || '0', 10),
+        category_id: productForm.category_id || categories[0]?.id || 1,
+      };
+
       const res = await fetch(url, {
         method,
         headers: {
@@ -591,53 +599,32 @@ export default function Admin() {
           'x-admin-passcode': 'admin123',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        body: JSON.stringify(productForm),
+        body: JSON.stringify(payload),
       });
 
-      if (res.ok) {
-        const data = await res.json();
+      const data = await res.json();
+
+      if (res.ok && data.success) {
         const savedProd = data.product || data;
+        const catName = categories.find((c) => c.id == savedProd.category_id)?.name || 'Toothpaste';
+        const formatted = { ...savedProd, category_name: catName };
+
         if (isEdit) {
           setProducts((prev) =>
-            prev.map((p) => (p.id === editingProduct.id ? { ...p, ...savedProd } : p))
+            prev.map((p) => (p.id === editingProduct.id ? { ...p, ...formatted } : p))
           );
         } else {
-          setProducts((prev) => [savedProd, ...prev]);
+          setProducts((prev) => [formatted, ...prev]);
         }
+        showToast('success', `Product "${productForm.title}" saved successfully!`);
+        setShowProductModal(false);
       } else {
-        // Fallback local state update
-        if (isEdit) {
-          setProducts((prev) =>
-            prev.map((p) =>
-              p.id === editingProduct.id
-                ? { ...p, ...productForm, category_name: categories.find((c) => c.id == productForm.category_id)?.name || 'General' }
-                : p
-            )
-          );
-        } else {
-          const newProd = {
-            id: Date.now(),
-            ...productForm,
-            slug: productForm.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-            category_name: categories.find((c) => c.id == productForm.category_id)?.name || 'General',
-          };
-          setProducts((prev) => [newProd, ...prev]);
-        }
+        showToast('danger', data.message || 'Failed to save product on server.');
       }
     } catch (err) {
-      // Local fallback
-      if (editingProduct) {
-        setProducts((prev) =>
-          prev.map((p) => (p.id === editingProduct.id ? { ...p, ...productForm } : p))
-        );
-      } else {
-        const newProd = { id: Date.now(), ...productForm };
-        setProducts((prev) => [newProd, ...prev]);
-      }
+      console.error('Save product error:', err);
+      showToast('danger', 'Network error while saving product.');
     }
-
-    showToast('success', `Product "${productForm.title}" saved successfully!`);
-    setShowProductModal(false);
   };
 
   const handleDeleteProduct = async (id, title) => {
@@ -2270,6 +2257,25 @@ export default function Admin() {
                 />
               </div>
 
+              <div className="mb-3">
+                <label className="form-label small fw-bold">Product Category</label>
+                <select
+                  className="form-select"
+                  value={productForm.category_id || (categories[0]?.id || 1)}
+                  onChange={(e) => setProductForm({ ...productForm, category_id: parseInt(e.target.value) })}
+                  required
+                >
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                  {categories.length === 0 && (
+                    <option value="1">Toothpaste (Default)</option>
+                  )}
+                </select>
+              </div>
+
               <div className="row g-2 mb-3">
                 <div className="col-6">
                   <label className="form-label small fw-bold">Regular Price (₹)</label>
@@ -2330,6 +2336,17 @@ export default function Admin() {
                 <label className="form-check-label fw-bold text-dark" htmlFor="bestsellerSwitch">
                   <i className="fa-solid fa-fire text-warning me-1"></i> Mark as Bestseller Product
                 </label>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label small fw-bold">Product Description</label>
+                <textarea
+                  className="form-control"
+                  rows="3"
+                  placeholder="Describe your product benefits, flavor, and ingredients..."
+                  value={productForm.description || ''}
+                  onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
+                ></textarea>
               </div>
 
               <div className="mb-3">
