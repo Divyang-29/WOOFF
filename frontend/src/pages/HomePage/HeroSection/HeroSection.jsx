@@ -4,15 +4,15 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const TOTAL_FRAMES = 150;
+const TOTAL_FRAMES = 240;
 
 /**
  * Generates frame file path with 4-digit zero-padding.
- * Matches assets in /frames/frame_0001.jpg to /frames/frame_0150.jpg
+ * Matches assets in /frames/frame_0001.png to /frames/frame_0240.png
  */
 const getFramePath = (index) => {
   const paddedIndex = String(index + 1).padStart(4, '0');
-  return `/frames/frame_${paddedIndex}.jpg`;
+  return `/frames/frame_${paddedIndex}.png`;
 };
 
 export default function HeroSection() {
