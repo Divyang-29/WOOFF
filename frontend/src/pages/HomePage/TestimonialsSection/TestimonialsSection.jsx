@@ -178,7 +178,7 @@ export default function TestimonialsSection() {
             <i className="fas fa-heart"></i>
             <span>Real Smiles & Stories</span>
           </div>
-          <h2 className="testimonials-title">Word on the street is</h2>
+          <h2 className="testimonials-title">Hear it From Parents, Dentists & Kids.</h2>
           <p className="testimonials-subtitle">
             What parents, pediatric dentists, and happy little brushers have to say about Wooff.
           </p>

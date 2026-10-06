@@ -62,19 +62,10 @@
   font-weight: 700;
   line-height: 1.2;
 
-  margin: 0 auto 1rem;
+  margin: 0 auto 1.25rem;
 
   width: fit-content;
   max-width: 90%;
-
-  /* Keeps heading readable over branches */
-  padding: 0.35rem 1.5rem;
-
-  background: rgba(247, 239, 230, 0.82);
-
-  border-radius: 20px;
-
-  box-shadow: 0 0 25px 15px rgba(247, 239, 230, 0.75);
 }
 
 
@@ -82,19 +73,14 @@
   position: relative;
   z-index: 10;
 
-  font-size: 1.15rem;
-  color: var(--primary-brown, #4A3326);
+  font-size: clamp(1.35rem, 2vw, 1.65rem);
+  font-weight: 600;
+  color: #382316;
 
-  max-width: 650px;
+  max-width: 720px;
   margin: 0 auto;
 
-  line-height: 1.6;
-
-  padding: 0.4rem 1rem;
-
-  background: rgba(247, 239, 230, 0.45);
-
-  border-radius: 15px;
+  line-height: 1.5;
 }
 
 
@@ -141,7 +127,7 @@
 
   text-align: center;
 
-  max-width: 600px;
+  max-width: 720px;
   margin: 0 auto;
 
   padding: 0 1rem 1.5rem;
@@ -149,7 +135,7 @@
 
 
 .showcase-footer h3 {
-  font-size: 2.5rem;
+  font-size: clamp(2.4rem, 3.8vw, 3rem);
   color: var(--primary-brown, #4A3326);
 
   font-weight: 700;
@@ -159,17 +145,16 @@
 
 
 .showcase-footer p {
-  font-size: 1.1rem;
-  color: var(--primary-brown, #4A3326);
+  font-size: clamp(1.25rem, 1.9vw, 1.55rem);
+  font-weight: 500;
+  color: #382316;
 
   line-height: 1.6;
 
   margin: 0 auto;
   margin-bottom: 0;
 
-  opacity: 0.85;
-
-  max-width: 480px;
+  max-width: 700px;
 }
 
 
@@ -257,19 +242,15 @@
 
   .showcase-header h2 {
     font-size: 2.2rem;
-
     max-width: 100%;
-
-    padding: 0.3rem 0.8rem;
-
-    box-shadow: 0 0 20px 10px rgba(247, 239, 230, 0.7);
+    margin-bottom: 0.8rem;
   }
 
 
   .showcase-header p {
-    font-size: 1rem;
-
-    padding: 0.3rem 0.5rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.4;
   }
 
 
@@ -294,7 +275,9 @@
 
 
   .showcase-footer p {
-    font-size: 1rem;
+    font-size: 1.15rem;
+    font-weight: 500;
+    line-height: 1.45;
   }
 
 

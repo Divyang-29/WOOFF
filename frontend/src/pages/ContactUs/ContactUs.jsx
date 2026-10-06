@@ -105,7 +105,7 @@ export default function ContactUs() {
             <div className="contact-details-list d-flex flex-column gap-3 mb-4">
               {/* Support Email */}
               <a
-                href="mailto:support@wooffkids.com"
+                href="mailto:support@woof.care"
                 className="contact-detail-card d-flex align-items-center text-decoration-none"
               >
                 <div className="contact-icon-box">
@@ -113,7 +113,7 @@ export default function ContactUs() {
                 </div>
                 <div className="contact-detail-text">
                   <span className="contact-detail-label">Support Email</span>
-                  <span className="contact-detail-value">support@wooffkids.com</span>
+                  <span className="contact-detail-value">support@woof.care</span>
                 </div>
               </a>
 
@@ -148,7 +148,7 @@ export default function ContactUs() {
               <h5 className="contact-social-heading mb-3">Follow The Pack</h5>
               <div className="d-flex flex-wrap gap-2">
                 <a
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/wooff.kids?stkn=azk0Z2Y1MjQwanFu"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Wooff on Instagram"

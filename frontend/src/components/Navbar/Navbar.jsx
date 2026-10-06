@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -7,9 +7,21 @@ import './Navbar.css';
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isPastHero, setIsPastHero] = useState(false);
   const { openCart, cartCount } = useCart();
   const { isAuthenticated, user, openAuthModal } = useAuth();
   const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsPastHero(window.scrollY > window.innerHeight * 4);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((prev) => !prev);
@@ -39,9 +51,18 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="navbar navbar-expand-lg fixed-top wooff-site-navbar">
+      <header
+        className={`navbar navbar-expand-lg wooff-site-navbar ${
+          isHomePage
+            ? isPastHero
+              ? 'fixed-top slide-down'
+              : 'position-absolute w-100 top-0'
+            : 'fixed-top'
+        }`}
+        style={{ zIndex: 1050 }}
+      >
         <div className="container nav-header-container">
-          
+
           {/* Left Desktop Navigation Links */}
           <div className="d-none d-lg-flex align-items-center">
             <ul className="navbar-nav desktop-nav-menu">
@@ -87,9 +108,9 @@ export default function Navbar() {
               </button>
             )}
 
-            <button 
-              type="button" 
-              aria-label="Shopping Cart" 
+            <button
+              type="button"
+              aria-label="Shopping Cart"
               className="btn-cart-nav"
               onClick={openCart}
             >
@@ -105,9 +126,9 @@ export default function Navbar() {
 
           {/* Mobile & Tablet Header Action Controls */}
           <div className="d-flex d-lg-none align-items-center gap-3">
-            <button 
-              type="button" 
-              aria-label="Shopping Cart" 
+            <button
+              type="button"
+              aria-label="Shopping Cart"
               className="btn-cart-nav"
               onClick={openCart}
             >
@@ -139,7 +160,7 @@ export default function Navbar() {
       {/* Off-Canvas Slide-Out Navigation Drawer for Mobile & Tablet */}
       {isMobileMenuOpen && (
         <div className="nav-offcanvas-backdrop" onClick={closeMobileMenu}>
-          <div 
+          <div
             className="nav-offcanvas-panel"
             onClick={(e) => e.stopPropagation()}
           >
@@ -148,8 +169,8 @@ export default function Navbar() {
               <Link to="/" onClick={closeMobileMenu}>
                 <img src={wooffLogo} alt="Wooff Kids Logo" className="offcanvas-logo" />
               </Link>
-              <button 
-                className="offcanvas-close-btn" 
+              <button
+                className="offcanvas-close-btn"
                 onClick={closeMobileMenu}
                 aria-label="Close Navigation"
               >

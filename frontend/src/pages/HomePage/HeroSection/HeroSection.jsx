@@ -6,17 +6,16 @@ gsap.registerPlugin(ScrollTrigger);
 
 const TOTAL_FRAMES = 240;
 
-/**
- * Generates frame file path with 4-digit zero-padding.
- * Matches assets in /frames/frame_0001.png to /frames/frame_0240.png
- */
-const getFramePath = (index) => {
+// UPDATED: Now accepts an isMobile boolean to switch folders
+const getFramePath = (index, isMobile) => {
   const paddedIndex = String(index + 1).padStart(4, '0');
-  return `/frames/frame_${paddedIndex}.png`;
+  const folder = isMobile ? 'frames-mobile' : 'frames';
+  return `/${folder}/frame_${paddedIndex}.png`;
 };
 
 export default function HeroSection() {
   const containerRef = useRef(null);
+  const viewportRef = useRef(null);
   const canvasRef = useRef(null);
   const imagesRef = useRef([]);
   const currentFrameRef = useRef(0);
@@ -24,9 +23,6 @@ export default function HeroSection() {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  /**
-   * Render frame onto the canvas using object-fit: cover logic
-   */
   const renderFrame = useCallback((index) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -40,7 +36,6 @@ export default function HeroSection() {
 
     const img = imagesRef.current[index];
     if (img && img.complete && img.naturalWidth > 0) {
-      // Simulate CSS object-fit: cover
       const hRatio = width / img.naturalWidth;
       const vRatio = height / img.naturalHeight;
       const ratio = Math.max(hRatio, vRatio);
@@ -61,9 +56,6 @@ export default function HeroSection() {
     }
   }, []);
 
-  /**
-   * Resize canvas to viewport with High-DPI support
-   */
   const handleResize = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -80,8 +72,9 @@ export default function HeroSection() {
     renderFrame(currentFrameRef.current);
   }, [renderFrame]);
 
-  // 1. Asynchronously preload ALL 150 frames into memory before starting animation
   useEffect(() => {
+    // UPDATED: Check device width once on initial load
+    const isMobile = window.innerWidth <= 768;
     let loadedCount = 0;
     const preloadedImages = [];
 
@@ -92,7 +85,6 @@ export default function HeroSection() {
         loadedCount++;
         setLoadingProgress(Math.round((loadedCount / TOTAL_FRAMES) * 100));
 
-        // When all 150 frames are fully preloaded, enable the experience
         if (loadedCount === TOTAL_FRAMES) {
           imagesRef.current = preloadedImages;
           setIsLoaded(true);
@@ -101,22 +93,22 @@ export default function HeroSection() {
 
       img.onload = onImageFinished;
       img.onerror = onImageFinished;
-      img.src = getFramePath(i);
+
+      // UPDATED: Pass the isMobile flag to fetch from the correct folder
+      img.src = getFramePath(i, isMobile);
       preloadedImages.push(img);
     }
     imagesRef.current = preloadedImages;
-  }, []);
+  }, []); // Empty dependency array ensures this heavy fetch only runs once on mount
 
-  // 2. Window resize listener
   useEffect(() => {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [handleResize]);
 
-  // 3. GSAP ScrollTrigger Scrub Timeline
   useEffect(() => {
-    if (!isLoaded || !containerRef.current || !canvasRef.current) return;
+    if (!isLoaded || !containerRef.current || !canvasRef.current || !viewportRef.current) return;
 
     handleResize();
     renderFrame(0);
@@ -124,17 +116,16 @@ export default function HeroSection() {
     const ctx = gsap.context(() => {
       const frameObj = { frame: 0 };
 
-      // Master Timeline tied to 400vh container scroll
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
+          pin: viewportRef.current,
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.8,
         },
       });
 
-      // Canvas Frame Scrub Animation (0 -> 149)
       tl.to(
         frameObj,
         {
@@ -169,7 +160,6 @@ export default function HeroSection() {
         color: '#2A1C13',
       }}
     >
-      {/* Preloader Overlay */}
       {!isLoaded && (
         <div
           className="position-fixed top-0 start-0 w-100 vh-100 z-3 d-flex flex-column align-items-center justify-content-center"
@@ -217,15 +207,15 @@ export default function HeroSection() {
         </div>
       )}
 
-      {/* Sticky Canvas Viewport (100% clear with zero overlays or blurs) */}
-      <div className="position-sticky top-0 vh-100 w-100 overflow-hidden d-flex align-items-center justify-content-center">
-        {/* The 3D Scroll Canvas */}
+      <div
+        ref={viewportRef}
+        className="top-0 vh-100 w-100 overflow-hidden d-flex align-items-center justify-content-center"
+      >
         <canvas
           ref={canvasRef}
           className="position-absolute top-0 start-0 w-100 h-100 d-block pe-none"
         />
 
-        {/* Scroll Down Prompt */}
         <div className="position-absolute bottom-0 start-50 translate-middle-x mb-4 z-2 d-flex flex-column align-items-center pe-none opacity-75">
           <span
             className="text-uppercase fw-medium mb-2"

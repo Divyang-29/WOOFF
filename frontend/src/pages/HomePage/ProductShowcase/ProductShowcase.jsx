@@ -13,29 +13,15 @@ export default function ProductShowcase() {
 
         {/* Top Text */}
         <div className="showcase-header">
-          <h2>Meet Their Daily Obsession</h2>
+          <h2>  The Toothpaste Kids Want.
+            <br />
+            The Science Moms Trust.</h2>
 
-          <p>
-            Wooff Kids takes toothpaste out of the boring aisle & into the
-            world of bold flavor, solid science, and designs so good you can't
-            help but want us on your counter.
-          </p>
+        
         </div>
 
         {/* Center Product Display */}
         <div className="showcase-center">
-
-          <div className="floating-ingredient ingredient-1">
-            🍫
-          </div>
-
-          <div className="floating-ingredient ingredient-2">
-            🍫
-          </div>
-
-          <div className="floating-ingredient ingredient-3">
-            🍃
-          </div>
 
           <img
             src={tooth_paste}
@@ -50,9 +36,9 @@ export default function ProductShowcase() {
           <h3>The Choco Obsession</h3>
 
           <p>
-            Dessert for breakfast, dentist-approved. We swapped the artificial
-            junk for real cocoa, then supercharged it with 2%
-            Nano-hydroxyapatite to actively rebuild enamel while they brush.
+            Unique flavour. Thoughtful ingredients.
+            <br />
+            Dentist-made oral care designed to turn brushing from a daily battle into a routine kids actually enjoy
           </p>
         </div>
 
