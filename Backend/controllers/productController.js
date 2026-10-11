@@ -9,6 +9,7 @@ const {
   deleteProductReview,
   getAllProductReviews,
 } = require("../models/productModel");
+const { logAdminAction } = require("../services/auditService");
 
 // Create Product Handler (Admin Only)
 const createProductHandler = async (req, res) => {
@@ -26,6 +27,9 @@ const createProductHandler = async (req, res) => {
       sku,
       estimated_delivery,
       is_bestseller,
+      variants,
+      low_stock_threshold,
+      bundle_type,
     } = req.body;
 
     if (!title || !price) {
@@ -98,12 +102,31 @@ const createProductHandler = async (req, res) => {
       primary_image,
       images,
       description: description ? description.trim() : null,
-      stock: stock ? parseInt(stock) : 0,
+      stock: stock !== undefined && stock !== "" ? parseInt(stock) : 0,
       sku: targetSku,
       estimated_delivery: estimated_delivery ? estimated_delivery.trim() : "2-4 business days",
       ingredients,
       faqs,
       is_bestseller: is_bestseller === "true" || is_bestseller === true,
+      variants: Array.isArray(variants) ? variants : (variants ? JSON.parse(variants) : []),
+      low_stock_threshold: low_stock_threshold ? parseInt(low_stock_threshold) : 10,
+      bundle_type: bundle_type || "single",
+    });
+
+    // Record Admin Audit Trail
+    await logAdminAction({
+      adminId: req.user?.id,
+      action: "CREATE_PRODUCT",
+      entityType: "product",
+      entityId: product.id,
+      details: {
+        title: product.title,
+        price: product.price,
+        sku: product.sku,
+        stock: product.stock,
+        bundle_type: product.bundle_type,
+      },
+      ipAddress: req.ip || req.headers["x-forwarded-for"] || "127.0.0.1",
     });
 
     return res.status(201).json({
@@ -218,7 +241,29 @@ const updateProductHandler = async (req, res) => {
       updateData.images = req.files.images.map((f) => f.path || f.secure_url);
     }
 
+    if (req.body.variants !== undefined) {
+      updateData.variants = Array.isArray(req.body.variants)
+        ? req.body.variants
+        : (req.body.variants ? JSON.parse(req.body.variants) : []);
+    }
+    if (req.body.low_stock_threshold !== undefined) {
+      updateData.low_stock_threshold = parseInt(req.body.low_stock_threshold) || 10;
+    }
+    if (req.body.bundle_type !== undefined) {
+      updateData.bundle_type = req.body.bundle_type;
+    }
+
     const updated = await updateProduct(parseInt(id), updateData);
+
+    // Record Admin Audit Trail
+    await logAdminAction({
+      adminId: req.user?.id,
+      action: "UPDATE_PRODUCT",
+      entityType: "product",
+      entityId: updated.id,
+      details: { title: updated.title, changes: updateData },
+      ipAddress: req.ip || req.headers["x-forwarded-for"] || "127.0.0.1",
+    });
 
     return res.status(200).json({
       success: true,
@@ -247,6 +292,16 @@ const deleteProductHandler = async (req, res) => {
         message: "Product not found.",
       });
     }
+
+    // Record Admin Audit Trail
+    await logAdminAction({
+      adminId: req.user?.id,
+      action: "DELETE_PRODUCT",
+      entityType: "product",
+      entityId: parseInt(id),
+      details: { title: deleted.title, sku: deleted.sku },
+      ipAddress: req.ip || req.headers["x-forwarded-for"] || "127.0.0.1",
+    });
 
     return res.status(200).json({
       success: true,

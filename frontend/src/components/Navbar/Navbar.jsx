@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import NotificationCenter from '../Notifications/NotificationCenter';
 import wooffLogo from '../../assets/wooff-logo.png';
 import './Navbar.css';
 
@@ -93,7 +94,9 @@ export default function Navbar() {
           </Link>
 
           {/* Right Desktop Actions */}
-          <div className="d-none d-lg-flex align-items-center gap-4">
+          <div className="d-none d-lg-flex align-items-center gap-3">
+            <NotificationCenter />
+
             {isAuthenticated ? (
               <Link to="/account" className="btn-account-link">
                 Account ✨
@@ -125,7 +128,9 @@ export default function Navbar() {
           </div>
 
           {/* Mobile & Tablet Header Action Controls */}
-          <div className="d-flex d-lg-none align-items-center gap-3">
+          <div className="d-flex d-lg-none align-items-center gap-2">
+            <NotificationCenter />
+
             <button
               type="button"
               aria-label="Shopping Cart"

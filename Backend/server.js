@@ -9,6 +9,9 @@ const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
+// Trust first proxy for correct client IP detection and rate limiting behind reverse proxies (Render, Cloudflare)
+app.set("trust proxy", 1);
+
 app.use(helmet());
 
 // Strict CORS configuration with Render/Vercel support
@@ -99,6 +102,7 @@ const {
 } = require("./controllers/razorpayController");
 const shiprocketRoutes = require("./routes/shiprocketRoutes");
 const shiprocketController = require("./controllers/shiprocketController");
+const shippingRoutes = require("./routes/shippingRoutes");
 
 // Standard Razorpay Checkout Endpoints
 app.post("/api/create-order", standardCreateOrderHandler);
@@ -112,6 +116,10 @@ app.use("/shiprocket", shiprocketRoutes);
 app.post("/get-points", shiprocketController.getLoyaltyPoints);
 app.post("/block-points", shiprocketController.blockLoyaltyPoints);
 app.post("/unblock-points", shiprocketController.unblockLoyaltyPoints);
+
+// Shipping & Delivery Timeline Estimation
+app.use("/api/shipping", shippingRoutes);
+app.use("/shipping", shippingRoutes);
 
 app.use("/api/auth", authRoutes);
 app.use("/auth", authRoutes);
@@ -170,6 +178,13 @@ app.use("/admin", adminRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/blogs", blogRoutes);
+app.use("/api/ingredients", require("./routes/ingredientRoutes"));
+app.use("/ingredients", require("./routes/ingredientRoutes"));
+app.use("/api/abandoned-carts", require("./routes/abandonedCartRoutes"));
+app.use("/abandoned-carts", require("./routes/abandonedCartRoutes"));
+app.post("/api/cart/abandoned", require("./controllers/abandonedCartController").trackAbandonedCartHandler);
+app.use("/api/notifications", require("./routes/notificationRoutes"));
+app.use("/notifications", require("./routes/notificationRoutes"));
 app.use("/blog", blogRoutes);
 
 app.get("/", (req, res) => {

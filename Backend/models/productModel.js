@@ -40,6 +40,9 @@ const createProduct = async ({
   ingredients = [],
   faqs = [],
   is_bestseller = false,
+  variants = [],
+  low_stock_threshold = 10,
+  bundle_type = "single",
 }) => {
   if (!category_id) {
     throw new Error("category_id is required. Every product must be assigned to a category.");
@@ -60,9 +63,9 @@ const createProduct = async ({
     // Insert Product
     const productQuery = `
       INSERT INTO products (
-        category_id, title, slug, price, final_price, primary_image, images, description, stock, sku, estimated_delivery, is_active, is_bestseller
+        category_id, title, slug, price, final_price, primary_image, images, description, stock, sku, estimated_delivery, is_active, is_bestseller, variants, low_stock_threshold, bundle_type
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10, $11, true, $12)
+      VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10, $11, true, $12, $13::jsonb, $14, $15)
       RETURNING *
     `;
 
@@ -79,6 +82,9 @@ const createProduct = async ({
       sku.trim(),
       estimated_delivery ? estimated_delivery.trim() : "2-4 business days",
       Boolean(is_bestseller),
+      JSON.stringify(variants || []),
+      parseInt(low_stock_threshold) || 10,
+      bundle_type || "single",
     ];
 
     const productRes = await client.query(productQuery, productValues);
@@ -278,7 +284,8 @@ const updateProduct = async (id, data) => {
 
   const allowedFields = [
     "category_id", "title", "slug", "price", "final_price",
-    "primary_image", "description", "stock", "sku", "estimated_delivery", "is_active", "is_bestseller"
+    "primary_image", "description", "stock", "sku", "estimated_delivery", "is_active", "is_bestseller",
+    "low_stock_threshold", "bundle_type"
   ];
 
   for (const field of allowedFields) {
@@ -291,6 +298,11 @@ const updateProduct = async (id, data) => {
   if (data.images !== undefined) {
     fields.push(`images = $${paramIdx++}::jsonb`);
     values.push(JSON.stringify(data.images));
+  }
+
+  if (data.variants !== undefined) {
+    fields.push(`variants = $${paramIdx++}::jsonb`);
+    values.push(JSON.stringify(data.variants));
   }
 
   if (fields.length === 0) return await getProductBySlugOrId(id, true);

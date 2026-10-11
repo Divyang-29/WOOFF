@@ -71,7 +71,28 @@ export default function PrivacyPolicy() {
 
         {/* Section 4 */}
         <section className="legal-section-card">
-          <ToothHeader number="4" title="Children's Privacy" />
+          <ToothHeader number="4" title="Return, Refund & Package Opening Verification" />
+          <div className="legal-content">
+            <p className="privacy-paragraph">
+              To protect both our customers and our team against courier tampering, transit damage, and fraudulent claims, Wooff maintains a clear and transparent return and refund verification procedure:
+            </p>
+            <div style={{ backgroundColor: '#FFF5F0', borderLeft: '4px solid #e58b57', padding: '14px 18px', borderRadius: '8px', margin: '14px 0' }}>
+              <p style={{ margin: 0, fontWeight: '700', color: '#4B2E1E', fontSize: '1rem' }}>
+                ⚠️ Mandatory Unboxing Video Required:
+              </p>
+              <p style={{ margin: '6px 0 0 0', fontSize: '0.95rem', color: '#5C4D40', lineHeight: '1.6' }}>
+                A continuous, uncut video recorded while opening the sealed parcel from scratch (with the shipping label clearly visible) is strictly required for all damage, leakage, or missing item claims. <strong>Without an unboxing video, no return or refund will be provided under any circumstances.</strong>
+              </p>
+            </div>
+            <p className="privacy-paragraph">
+              Video recordings and photographs submitted during claim investigations are kept confidential and accessed solely to adjudicate claims and prevent fraud. For complete details, see our <Link to="/returns" className="privacy-link" style={{ fontWeight: '600' }}>Refund & Returns Policy</Link>.
+            </p>
+          </div>
+        </section>
+
+        {/* Section 5 */}
+        <section className="legal-section-card">
+          <ToothHeader number="5" title="Children's Privacy" />
           <div className="legal-content">
             <p className="privacy-paragraph">
               Although Wooff develops safe, delicious, and prebiotic oral care products designed specifically
@@ -87,9 +108,9 @@ export default function PrivacyPolicy() {
           </div>
         </section>
 
-        {/* Section 5 */}
+        {/* Section 6 */}
         <section className="legal-section-card">
-          <ToothHeader number="5" title="Contact Us" />
+          <ToothHeader number="6" title="Contact Us" />
           <div className="legal-content">
             <p className="privacy-paragraph">
               If you have any questions, comments, or data requests regarding this Privacy Policy or your personal information,
@@ -98,8 +119,8 @@ export default function PrivacyPolicy() {
             <div className="privacy-contact-card mt-3">
               <p className="mb-2">
                 <strong>Email:</strong>{' '}
-                <a href="mailto:support@wooffkids.com" className="privacy-link">
-                  support@wooffkids.com
+                <a href="mailto:hello@wooff.care" className="privacy-link">
+                  hello@wooff.care
                 </a>
               </p>
               <p className="mb-0">

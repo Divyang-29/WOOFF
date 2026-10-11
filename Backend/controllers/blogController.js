@@ -6,6 +6,7 @@ const {
   updateBlog,
   deleteBlog,
 } = require("../models/blogModel");
+const { logAdminAction } = require("../services/auditService");
 
 // Get All Blogs (Public) - ordered newest first
 const getAllBlogsHandler = async (req, res) => {
@@ -138,6 +139,16 @@ const createBlogHandler = async (req, res) => {
       conclusion_takeaways: conclusion_takeaways || [],
     });
 
+    // Record Admin Audit Trail
+    await logAdminAction({
+      adminId: req.user?.id,
+      action: "CREATE_BLOG",
+      entityType: "blog",
+      entityId: newBlog.id,
+      details: { title: newBlog.title, slug: newBlog.slug },
+      ipAddress: req.ip || req.headers["x-forwarded-for"] || "127.0.0.1",
+    });
+
     return res.status(201).json({
       success: true,
       message: "Blog created successfully",
@@ -167,6 +178,17 @@ const updateBlogHandler = async (req, res) => {
     }
 
     const updated = await updateBlog(id, req.body);
+
+    // Record Admin Audit Trail
+    await logAdminAction({
+      adminId: req.user?.id,
+      action: "UPDATE_BLOG",
+      entityType: "blog",
+      entityId: parseInt(id),
+      details: { title: updated.title, changes: req.body },
+      ipAddress: req.ip || req.headers["x-forwarded-for"] || "127.0.0.1",
+    });
+
     return res.status(200).json({
       success: true,
       message: "Blog updated successfully",
@@ -194,6 +216,16 @@ const deleteBlogHandler = async (req, res) => {
         message: "Blog not found",
       });
     }
+
+    // Record Admin Audit Trail
+    await logAdminAction({
+      adminId: req.user?.id,
+      action: "DELETE_BLOG",
+      entityType: "blog",
+      entityId: parseInt(id),
+      details: { title: deleted.title },
+      ipAddress: req.ip || req.headers["x-forwarded-for"] || "127.0.0.1",
+    });
 
     return res.status(200).json({
       success: true,

@@ -1,5 +1,9 @@
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
+const pool = require("../config/db");
+const { createShiprocketFulfillment } = require("../services/shiprocketFulfillmentService");
+const { markCartsRecoveredOnOrder } = require("../models/abandonedCartModel");
+const { incrementCouponUsage } = require("../models/couponModel");
 
 /**
  * Get configured Razorpay SDK instance
@@ -134,10 +138,71 @@ const verifyPaymentHandler = async (req, res) => {
       });
     }
 
+    // Resolve Database Order ID
+    let resolvedDbOrderId = null;
+    if (order_id && !isNaN(Number(order_id))) {
+      resolvedDbOrderId = parseInt(order_id);
+    } else {
+      // Look up by Razorpay Provider Order ID
+      const txRes = await pool.query(
+        "SELECT order_id FROM payment_transactions WHERE provider_order_id = $1 LIMIT 1",
+        [targetOrderId]
+      );
+      if (txRes.rows.length > 0) {
+        resolvedDbOrderId = txRes.rows[0].order_id;
+      }
+    }
+
+    if (resolvedDbOrderId) {
+      // 1. Update Order status
+      await pool.query(
+        `UPDATE orders
+         SET payment_status = 'paid', order_status = 'processing', updated_at = CURRENT_TIMESTAMP
+         WHERE id = $1`,
+        [resolvedDbOrderId]
+      );
+
+      // 2. Update payment transaction record
+      await pool.query(
+        `UPDATE payment_transactions
+         SET status = 'paid', provider_payment_id = $1, updated_at = CURRENT_TIMESTAMP
+         WHERE order_id = $2`,
+        [targetPaymentId, resolvedDbOrderId]
+      );
+
+      // 3. Auto-recover abandoned carts & increment coupon usage
+      setImmediate(async () => {
+        try {
+          const ordMeta = await pool.query(
+            "SELECT email, phone, coupon_code FROM orders WHERE id = $1",
+            [resolvedDbOrderId]
+          );
+          if (ordMeta.rows.length > 0) {
+            const { email, phone, coupon_code } = ordMeta.rows[0];
+            if (email || phone) {
+              markCartsRecoveredOnOrder(email, phone).catch(() => {});
+            }
+            if (coupon_code) {
+              incrementCouponUsage(coupon_code).catch(() => {});
+            }
+          }
+        } catch (e) {
+          console.warn("[Post-Payment Sync Warning]:", e.message);
+        }
+      });
+
+      // 4. Asynchronously trigger Shiprocket fulfillment
+      setImmediate(() => {
+        createShiprocketFulfillment(resolvedDbOrderId).catch((err) => {
+          console.error(`[Shiprocket Dispatch Error] Order #${resolvedDbOrderId}:`, err.message);
+        });
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: "Payment verified successfully",
-      order_id: targetOrderId,
+      order_id: resolvedDbOrderId || targetOrderId,
       payment_id: targetPaymentId,
     });
   } catch (error) {

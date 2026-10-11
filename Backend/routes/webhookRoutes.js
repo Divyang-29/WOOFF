@@ -1,10 +1,17 @@
 const express = require("express");
-const { handlePaymentWebhook } = require("../controllers/webhookController");
+const {
+  handlePaymentWebhook,
+  handleShiprocketWebhook,
+} = require("../controllers/webhookController");
 
 const router = express.Router();
 
-// Unprotected Webhook Endpoint (Secured by Gateway Header Signature verification)
+// Gateway Payment Webhooks
 router.post("/payment", handlePaymentWebhook);
 router.post("/", handlePaymentWebhook);
 
+// Shiprocket Tracking Updates Webhook
+router.post("/shiprocket", handleShiprocketWebhook);
+
 module.exports = router;
+

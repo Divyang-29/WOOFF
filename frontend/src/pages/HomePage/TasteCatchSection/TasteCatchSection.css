@@ -1,0 +1,220 @@
+/* ==========================================================================
+   Taste Catch Section ("If it tastes like chocolate, won't my child just eat it?")
+   Wooff Organic Brand Theme
+   ========================================================================== */
+
+.taste-catch-section {
+  width: 100%;
+  position: relative;
+  background-color: var(--background-cream, #F7EFE6);
+  padding: 4.5rem 1.5rem 3.5rem;
+  overflow: hidden;
+}
+
+.taste-catch-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  position: relative;
+}
+
+/* ==========================================================================
+   Side Illustration Cards (Chocolate & Mint)
+   ========================================================================== */
+
+.taste-catch-side {
+  flex: 0 0 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.taste-catch-img-wrap {
+  width: 130px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+  transition: transform 0.3s ease;
+}
+
+.taste-catch-side:hover .taste-catch-img-wrap {
+  transform: translateY(-5px) scale(1.04);
+}
+
+.taste-catch-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(75, 46, 30, 0.12));
+}
+
+/* Brand badges under illustrations */
+.taste-catch-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.taste-catch-pill--choco {
+  background-color: #382314;
+  color: #FFF8EE;
+}
+
+.taste-catch-pill--mint {
+  background-color: #215933;
+  color: #FFFFFF;
+}
+
+.pill-emoji {
+  font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   Center: Question & Answer
+   ========================================================================== */
+
+.taste-catch-center {
+  flex: 1;
+  max-width: 780px;
+  text-align: center;
+  padding: 0 1rem;
+}
+
+.taste-catch-question {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.85rem, 3.2vw, 2.75rem);
+  font-weight: 500;
+  color: #382314;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  margin: 0 0 1.25rem 0;
+}
+
+.taste-catch-answer-wrap {
+  position: relative;
+  display: inline-block;
+  max-width: 680px;
+}
+
+.taste-catch-deco-quote {
+  font-family: Georgia, serif;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: rgba(169, 116, 79, 0.35);
+  position: absolute;
+  user-select: none;
+}
+
+.taste-catch-deco-quote--open {
+  top: -0.75rem;
+  left: -1.25rem;
+}
+
+.taste-catch-deco-quote--close {
+  bottom: -1rem;
+  right: -1.25rem;
+}
+
+.taste-catch-answer {
+  font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+  line-height: 1.65;
+  color: #4A3326;
+  margin: 0;
+  font-weight: 450;
+}
+
+/* Highlights */
+.highlight-catch {
+  background-color: #F8DFB8;
+  color: #382314;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 6px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.highlight-mint {
+  background-color: #D3ECD7;
+  color: #195229;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 6px;
+  text-decoration: underline;
+  text-decoration-color: #63B878;
+  text-underline-offset: 3px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .taste-catch-section {
+    padding: 3.5rem 1rem;
+  }
+
+  .taste-catch-side {
+    flex: 0 0 120px;
+  }
+
+  .taste-catch-img-wrap {
+    width: 95px;
+    height: 95px;
+  }
+
+  .taste-catch-pill {
+    font-size: 0.68rem;
+    padding: 0.3rem 0.65rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .taste-catch-section {
+    padding: 3rem 1.25rem 2.5rem;
+  }
+
+  .taste-catch-container {
+    justify-content: center;
+  }
+
+  /* Hide chocolate and mint illustrations + badges on mobile */
+  .taste-catch-side {
+    display: none !important;
+  }
+
+  .taste-catch-center {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .taste-catch-question {
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    margin-bottom: 0.85rem;
+  }
+
+  .taste-catch-answer {
+    font-size: clamp(0.95rem, 3.6vw, 1.08rem);
+    line-height: 1.6;
+  }
+
+  .taste-catch-deco-quote {
+    display: none;
+  }
+}
+

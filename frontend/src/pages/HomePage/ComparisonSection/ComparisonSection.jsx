@@ -4,16 +4,16 @@ import './ComparisonSection.css';
 export default function ComparisonSection() {
   const comparisonRows = [
     { feature: 'Biologic Dentist Developed', wooff: true, traditional: false },
+    { feature: 'Remineralizes Enamel & Fights Cavities', wooff: true, traditional: false },
+    { feature: 'Natural Theobromine & nHAp', wooff: true, traditional: false },
     { feature: 'Prebiotics + Natural Vitamins', wooff: true, traditional: false },
     { feature: 'Balances Oral Microbiome', wooff: true, traditional: false },
     { feature: '100% Safe if Swallowed', wooff: true, traditional: false },
     { feature: 'Fluoride & SLS Free', wooff: true, traditional: false },
-    { feature: 'Xylitol', wooff: true, traditional: false },
-    { feature: 'Dye & Artificial Additive Free', wooff: true, traditional: false },
-    { feature: 'Natural Theobromine & nHAp', wooff: true, traditional: false },
     { feature: 'Delicious Kid-Approved Flavours', wooff: true, traditional: false },
+    { feature: 'Xylitol', wooff: true, traditional: false },
     { feature: 'Long-Lasting Freshness of Breath', wooff: true, traditional: false },
-    { feature: 'Remineralizes Enamel & Fights Cavities', wooff: true, traditional: false },
+    { feature: 'Dye & Artificial Additive Free', wooff: true, traditional: false },
   ];
 
   return (

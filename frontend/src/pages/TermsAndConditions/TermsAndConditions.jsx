@@ -93,7 +93,7 @@ export default function TermsAndConditions() {
 
         {/* Section 4 */}
         <section className="legal-section-card">
-          <ToothHeader number="4" title="Shipping & Returns" />
+          <ToothHeader number="4" title="Shipping, Returns & Refunds" />
           <div className="legal-content">
             <p className="terms-paragraph">
               Estimated delivery timelines provided during checkout or in confirmation emails are approximate
@@ -102,8 +102,10 @@ export default function TermsAndConditions() {
             <p className="terms-paragraph">
               Due to the hygienic nature of children’s oral care and toothpaste formulas, opened tubes cannot be
               returned for restocking. However, if your order arrives damaged, defective, or incorrect, please reach
-              out within 14 days of delivery so our team can provide a replacement or resolution under our customer
-              satisfaction guidelines.
+              out within 48 hours of delivery.
+            </p>
+            <p className="terms-paragraph">
+              <strong>Mandatory Parcel Opening Video:</strong> To qualify for a return, replacement, or refund for items that arrive damaged, leaking, defective, or incorrect, customers must provide an uncut, continuous video recorded while opening the sealed package from scratch, showing the intact shipping label. <strong>Without a valid parcel unboxing video, no return or refund will be provided.</strong> For full terms, please review our <Link to="/returns" className="terms-link">Refund & Returns Policy</Link>.
             </p>
           </div>
         </section>

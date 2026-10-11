@@ -10,10 +10,13 @@ const createCoupon = async ({
   code,
   discount_type,
   discount_value,
-  min_cart_value = 0.00,
+  min_order_value = 0.00,
+  min_cart_value = null,
   max_discount_amount = null,
   is_active = true,
   usage_limit = null,
+  valid_from = null,
+  valid_until = null,
   expires_at = null,
 }) => {
   const formattedCode = formatCode(code);
@@ -25,11 +28,16 @@ const createCoupon = async ({
     throw new Error("discount_type must be either 'percentage' or 'flat'.");
   }
 
+  const effectiveMinOrder = parseFloat(min_order_value ?? min_cart_value ?? 0);
+  const effectiveValidFrom = valid_from ? new Date(valid_from) : new Date();
+  const effectiveValidUntil = (valid_until || expires_at) ? new Date(valid_until || expires_at) : null;
+
   const query = `
     INSERT INTO coupons (
-      code, discount_type, discount_value, min_cart_value, max_discount_amount, is_active, usage_limit, expires_at
+      code, discount_type, discount_value, min_order_value, min_cart_value, 
+      max_discount_amount, is_active, usage_limit, valid_from, valid_until, expires_at
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
     RETURNING *
   `;
 
@@ -37,11 +45,14 @@ const createCoupon = async ({
     formattedCode,
     discount_type,
     parseFloat(discount_value),
-    parseFloat(min_cart_value || 0),
+    effectiveMinOrder,
+    effectiveMinOrder, // sync legacy column
     max_discount_amount ? parseFloat(max_discount_amount) : null,
     Boolean(is_active),
-    usage_limit ? parseInt(usage_limit) : null,
-    expires_at ? new Date(expires_at) : null,
+    usage_limit ? parseInt(usage_limit, 10) : null,
+    effectiveValidFrom,
+    effectiveValidUntil,
+    effectiveValidUntil, // sync legacy column
   ];
 
   const result = await pool.query(query, values);
@@ -62,11 +73,11 @@ const getCouponById = async (id) => {
   return result.rows[0];
 };
 
-// Get All Coupons
+// Get All Coupons with Optional Pagination and Search
 const getAllCoupons = async (includeInactive = true) => {
   let query = "SELECT * FROM coupons";
   if (!includeInactive) {
-    query += " WHERE is_active = true AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)";
+    query += " WHERE is_active = true AND (valid_until IS NULL OR valid_until > CURRENT_TIMESTAMP) AND (expires_at IS NULL OR expires_at > CURRENT_TIMESTAMP)";
   }
   query += " ORDER BY created_at DESC";
 
@@ -95,9 +106,12 @@ const updateCoupon = async (id, data) => {
     fields.push(`discount_value = $${paramIdx++}`);
     values.push(parseFloat(data.discount_value));
   }
-  if (data.min_cart_value !== undefined) {
+  if (data.min_order_value !== undefined || data.min_cart_value !== undefined) {
+    const val = parseFloat(data.min_order_value ?? data.min_cart_value ?? 0);
+    fields.push(`min_order_value = $${paramIdx++}`);
+    values.push(val);
     fields.push(`min_cart_value = $${paramIdx++}`);
-    values.push(parseFloat(data.min_cart_value));
+    values.push(val);
   }
   if (data.max_discount_amount !== undefined) {
     fields.push(`max_discount_amount = $${paramIdx++}`);
@@ -109,11 +123,18 @@ const updateCoupon = async (id, data) => {
   }
   if (data.usage_limit !== undefined) {
     fields.push(`usage_limit = $${paramIdx++}`);
-    values.push(data.usage_limit ? parseInt(data.usage_limit) : null);
+    values.push(data.usage_limit ? parseInt(data.usage_limit, 10) : null);
   }
-  if (data.expires_at !== undefined) {
+  if (data.valid_from !== undefined) {
+    fields.push(`valid_from = $${paramIdx++}`);
+    values.push(data.valid_from ? new Date(data.valid_from) : null);
+  }
+  if (data.valid_until !== undefined || data.expires_at !== undefined) {
+    const dt = (data.valid_until || data.expires_at) ? new Date(data.valid_until || data.expires_at) : null;
+    fields.push(`valid_until = $${paramIdx++}`);
+    values.push(dt);
     fields.push(`expires_at = $${paramIdx++}`);
-    values.push(data.expires_at ? new Date(data.expires_at) : null);
+    values.push(dt);
   }
 
   if (fields.length === 0) return await getCouponById(id);
@@ -132,10 +153,23 @@ const updateCoupon = async (id, data) => {
   return result.rows[0];
 };
 
-// Delete / Toggle Active Status Coupon
+// Delete Coupon
 const deleteCoupon = async (id) => {
   const query = "DELETE FROM coupons WHERE id = $1 RETURNING *";
   const result = await pool.query(query, [id]);
+  return result.rows[0];
+};
+
+// Increment Coupon Usage Count
+const incrementCouponUsage = async (code) => {
+  const query = `
+    UPDATE coupons
+    SET used_count = used_count + 1,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE code = $1
+    RETURNING *
+  `;
+  const result = await pool.query(query, [formatCode(code)]);
   return result.rows[0];
 };
 
@@ -160,7 +194,13 @@ const validateCoupon = async (code, cartSubtotal) => {
     throw new Error(`Coupon '${formattedCode}' is no longer active.`);
   }
 
-  if (coupon.expires_at && new Date() > new Date(coupon.expires_at)) {
+  const now = new Date();
+  if (coupon.valid_from && now < new Date(coupon.valid_from)) {
+    throw new Error(`Coupon '${formattedCode}' is not active yet.`);
+  }
+
+  const expiry = coupon.valid_until || coupon.expires_at;
+  if (expiry && now > new Date(expiry)) {
     throw new Error(`Coupon '${formattedCode}' has expired.`);
   }
 
@@ -168,9 +208,9 @@ const validateCoupon = async (code, cartSubtotal) => {
     throw new Error(`Coupon '${formattedCode}' usage limit has been reached.`);
   }
 
-  const minVal = parseFloat(coupon.min_cart_value || 0);
+  const minVal = parseFloat(coupon.min_order_value || coupon.min_cart_value || 0);
   if (subtotal < minVal) {
-    throw new Error(`Cart subtotal (₹${subtotal}) does not meet the minimum requirement of ₹${minVal} for coupon '${formattedCode}'.`);
+    throw new Error(`Cart subtotal (₹${subtotal.toFixed(2)}) does not meet the minimum order requirement of ₹${minVal.toFixed(2)} for coupon '${formattedCode}'.`);
   }
 
   // Calculate discount
@@ -197,6 +237,7 @@ const validateCoupon = async (code, cartSubtotal) => {
     discount_type: coupon.discount_type,
     discount_value: val,
     discount_amount: discountAmount,
+    min_order_value: minVal,
     subtotal: subtotal,
     final_subtotal: finalSubtotal,
   };
@@ -209,5 +250,6 @@ module.exports = {
   getAllCoupons,
   updateCoupon,
   deleteCoupon,
+  incrementCouponUsage,
   validateCoupon,
 };

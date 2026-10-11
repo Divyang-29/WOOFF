@@ -4,7 +4,7 @@ import './BrandReelsSection.css';
 
 // Default asset for video playback fallback
 import jungleLoopVideo from '../../../assets/jungle-loop.mp4';
-import toothPasteImg from '../../../assets/tooth_paste.png';
+import toothPasteImg from '../../../assets/tooth_paste.webp';
 
 // Fallback video reels if API is empty or offline
 const FALLBACK_REELS = [
@@ -211,11 +211,7 @@ export default function BrandReelsSection() {
         {/* Section Header */}
         <div className="brand-reels-header d-flex flex-column flex-md-row align-items-md-end justify-content-between mb-4">
           <div className="header-text-group">
-            <span className="reels-pill-badge">✦ THIS IS WOOFF</span>
-            <h2 className="reels-title mt-2">See It In Action</h2>
-            <p className="reels-subtitle mb-0">
-              Watch real parents and happy brushers ditch the morning drama for dentist-approved cocoa science.
-            </p>
+            <h2 className="reels-title mb-0">See what our happy smiles have to say …</h2>
           </div>
 
           {/* Slider Arrow Controls */}
@@ -268,6 +264,8 @@ export default function BrandReelsSection() {
                     loop
                     muted={isMuted}
                     playsInline
+                    preload="none"
+                    poster={reel.product_photo || toothPasteImg}
                     className="reel-video"
                     onError={(e) => {
                       if (!e.target.src.includes('jungle-loop')) {

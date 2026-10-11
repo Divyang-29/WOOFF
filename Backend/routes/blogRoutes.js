@@ -1,4 +1,6 @@
 const express = require("express");
+const authMiddleware = require("../middleware/authMiddleware");
+const adminMiddleware = require("../middleware/adminMiddleware");
 const {
   getAllBlogsHandler,
   getBlogBySlugHandler,
@@ -10,15 +12,15 @@ const {
 
 const router = express.Router();
 
-// GET /api/blogs - fetch all blogs ordered by created_at DESC
+// GET /api/blogs - fetch all blogs ordered by created_at DESC (Public)
 router.get("/", getAllBlogsHandler);
 
-// GET /api/blogs/:slug - fetch single blog record where slug matches
+// GET /api/blogs/:slug - fetch single blog record where slug matches (Public)
 router.get("/:slug", getBlogBySlugHandler);
 
-// POST, PUT, DELETE (if needed for blog administration)
-router.post("/", createBlogHandler);
-router.put("/:id", updateBlogHandler);
-router.delete("/:id", deleteBlogHandler);
+// Protected Admin routes for blog management
+router.post("/", authMiddleware, adminMiddleware, createBlogHandler);
+router.put("/:id", authMiddleware, adminMiddleware, updateBlogHandler);
+router.delete("/:id", authMiddleware, adminMiddleware, deleteBlogHandler);
 
 module.exports = router;

@@ -3,18 +3,7 @@ const jwt = require("jsonwebtoken");
 // Authentication Middleware
 const authMiddleware = (req, res, next) => {
   try {
-    const adminHeader = req.headers["x-admin-passcode"] || req.headers["x-admin-key"];
     const authHeader = req.headers.authorization;
-
-    // Check for secret admin passcode header or Bearer admin123 token
-    if (
-      adminHeader === "admin123" ||
-      authHeader === "Bearer admin123" ||
-      authHeader === "admin123"
-    ) {
-      req.user = { id: 1, role: "admin", username: "Admin Superuser", phone_number: "+919999999999" };
-      return next();
-    }
 
     if (!authHeader) {
       return res.status(401).json({
@@ -23,22 +12,59 @@ const authMiddleware = (req, res, next) => {
       });
     }
 
-    const jwtToken = authHeader.includes(" ") ? authHeader.split(" ")[1] : authHeader;
+    const jwtToken = authHeader.startsWith("Bearer ")
+      ? authHeader.slice(7).trim()
+      : authHeader.trim();
+
+    if (!jwtToken) {
+      return res.status(401).json({
+        success: false,
+        message: "Access Denied. Empty Token Provided",
+      });
+    }
+
     const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
     req.user = decoded;
 
     next();
   } catch (error) {
-    // Fallback if token is admin key string
-    if (req.headers.authorization && req.headers.authorization.includes("admin123")) {
-      req.user = { id: 1, role: "admin", username: "Admin Superuser" };
-      return next();
-    }
     return res.status(401).json({
       success: false,
-      message: "Invalid Token",
+      message: error.name === "TokenExpiredError" ? "Token Expired. Please log in again." : "Invalid Token",
     });
   }
 };
 
+// Optional Authentication Middleware (Allows guest users if no token provided)
+const optionalAuthMiddleware = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      req.user = null;
+      return next();
+    }
+
+    const jwtToken = authHeader.startsWith("Bearer ")
+      ? authHeader.slice(7).trim()
+      : authHeader.trim();
+
+    if (!jwtToken) {
+      req.user = null;
+      return next();
+    }
+
+    const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
+    req.user = decoded;
+    return next();
+  } catch (error) {
+    req.user = null;
+    return next();
+  }
+};
+
+authMiddleware.authMiddleware = authMiddleware;
+authMiddleware.optionalAuthMiddleware = optionalAuthMiddleware;
+
 module.exports = authMiddleware;
+module.exports.optionalAuthMiddleware = optionalAuthMiddleware;

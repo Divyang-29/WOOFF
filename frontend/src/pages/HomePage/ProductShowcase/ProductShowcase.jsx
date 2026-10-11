@@ -1,6 +1,6 @@
 import React from 'react';
-import tooth_paste from '../../../assets/tooth_paste.png';
-import jungleBg from '../../../assets/jungle-bg.png';
+import wooffChocoTube from '../../../assets/wooff-choco-tube.png';
+import jungleBg from '../../../assets/jungle-bg.webp';
 import './ProductShowcase.css';
 
 export default function ProductShowcase() {
@@ -24,7 +24,7 @@ export default function ProductShowcase() {
         <div className="showcase-center">
 
           <img
-            src={tooth_paste}
+            src={wooffChocoTube}
             alt="Wooff Choco Flavour Toothpaste"
             className="main-product-tube"
           />

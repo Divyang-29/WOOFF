@@ -32,10 +32,22 @@ export default function HeroSection() {
     const width = canvas.width;
     const height = canvas.height;
 
-    ctx.clearRect(0, 0, width, height);
+    // Use requested frame, or fallback to closest loaded frame
+    let img = imagesRef.current[index];
+    if (!img || !img.complete || img.naturalWidth === 0) {
+      for (let j = index - 1; j >= 0; j--) {
+        if (imagesRef.current[j]?.complete && imagesRef.current[j]?.naturalWidth > 0) {
+          img = imagesRef.current[j];
+          break;
+        }
+      }
+      if (!img || !img.complete || img.naturalWidth === 0) {
+        img = imagesRef.current[0];
+      }
+    }
 
-    const img = imagesRef.current[index];
     if (img && img.complete && img.naturalWidth > 0) {
+      ctx.clearRect(0, 0, width, height);
       const hRatio = width / img.naturalWidth;
       const vRatio = height / img.naturalHeight;
       const ratio = Math.max(hRatio, vRatio);
@@ -73,33 +85,41 @@ export default function HeroSection() {
   }, [renderFrame]);
 
   useEffect(() => {
-    // UPDATED: Check device width once on initial load
     const isMobile = window.innerWidth <= 768;
-    let loadedCount = 0;
-    const preloadedImages = [];
+    const preloadedImages = new Array(TOTAL_FRAMES);
 
-    for (let i = 0; i < TOTAL_FRAMES; i++) {
-      const img = new Image();
+    // 1. Load the first frame immediately so the user sees the hero image instantly
+    const firstFrame = new Image();
+    firstFrame.src = getFramePath(0, isMobile);
 
-      const onImageFinished = () => {
-        loadedCount++;
-        setLoadingProgress(Math.round((loadedCount / TOTAL_FRAMES) * 100));
+    firstFrame.onload = () => {
+      preloadedImages[0] = firstFrame;
+      imagesRef.current = preloadedImages;
+      setIsLoaded(true);
+      setLoadingProgress(100);
+      renderFrame(0);
 
-        if (loadedCount === TOTAL_FRAMES) {
-          imagesRef.current = preloadedImages;
-          setIsLoaded(true);
+      // 2. Start fetching the other 239 frames AFTER the first one is ready
+      // Using requestIdleCallback ensures this doesn't freeze the main thread
+      const scheduleIdle =
+        typeof window !== 'undefined' && window.requestIdleCallback
+          ? window.requestIdleCallback.bind(window)
+          : (cb) => setTimeout(cb, 50);
+
+      scheduleIdle(() => {
+        for (let i = 1; i < TOTAL_FRAMES; i++) {
+          const img = new Image();
+          img.src = getFramePath(i, isMobile);
+          preloadedImages[i] = img;
         }
-      };
+        imagesRef.current = preloadedImages;
+      });
+    };
 
-      img.onload = onImageFinished;
-      img.onerror = onImageFinished;
-
-      // UPDATED: Pass the isMobile flag to fetch from the correct folder
-      img.src = getFramePath(i, isMobile);
-      preloadedImages.push(img);
-    }
-    imagesRef.current = preloadedImages;
-  }, []); // Empty dependency array ensures this heavy fetch only runs once on mount
+    firstFrame.onerror = () => {
+      setIsLoaded(true);
+    };
+  }, [renderFrame]);
 
   useEffect(() => {
     handleResize();
@@ -216,31 +236,32 @@ export default function HeroSection() {
           className="position-absolute top-0 start-0 w-100 h-100 d-block pe-none"
         />
 
-        <div className="position-absolute bottom-0 start-50 translate-middle-x mb-4 z-2 d-flex flex-column align-items-center pe-none opacity-75">
+        {/* Scroll Indicator */}
+        <div className="position-absolute bottom-0 start-50 translate-middle-x mb-4 text-center pe-none opacity-75">
           <span
-            className="text-uppercase fw-medium mb-2"
+            className="d-block text-uppercase fw-semibold mb-1"
             style={{
               fontSize: '10px',
               letterSpacing: '0.2em',
-              color: '#8C7B6A',
+              color: '#5C4D40',
             }}
           >
             Scroll to discover
           </span>
           <div
-            className="d-flex justify-content-center p-1"
+            className="d-inline-flex justify-content-center p-1"
             style={{
-              width: '20px',
-              height: '36px',
-              borderRadius: '20px',
+              width: '18px',
+              height: '32px',
+              borderRadius: '16px',
               border: '2px solid rgba(122, 78, 45, 0.4)',
             }}
           >
             <div
               className="hero-scroll-dot"
               style={{
-                width: '6px',
-                height: '8px',
+                width: '5px',
+                height: '7px',
                 backgroundColor: '#4B2E1E',
                 borderRadius: '4px',
               }}

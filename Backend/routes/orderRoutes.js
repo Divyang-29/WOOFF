@@ -1,4 +1,5 @@
 const express = require("express");
+const { optionalAuthMiddleware } = require("../middleware/authMiddleware");
 const authMiddleware = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
 
@@ -7,12 +8,16 @@ const {
   getUserOrdersHandler,
   getOrderDetailsHandler,
   updateOrderStatusHandler,
+  trackOrderByNumberHandler,
 } = require("../controllers/orderController");
 
 const router = express.Router();
 
-// Protected user order routes
-router.post("/checkout", authMiddleware, checkoutHandler);
+// Public Customer Order Tracking Route (No auth required)
+router.get("/track/:order_number", trackOrderByNumberHandler);
+
+// User order routes (/checkout supports both authenticated and guest users)
+router.post("/checkout", optionalAuthMiddleware, checkoutHandler);
 router.get("/", authMiddleware, getUserOrdersHandler);
 router.get("/:id", authMiddleware, getOrderDetailsHandler);
 

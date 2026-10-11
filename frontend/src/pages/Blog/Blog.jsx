@@ -102,12 +102,12 @@ export default function Blog() {
                   <Link to={`/blog/${postSlug}`} className="blog-card-image-link">
                     <div className="blog-card-image">
                       <img
-                        src={post.image_url || '/assets/tooth_paste.png'}
+                        src={post.image_url || '/assets/tooth_paste.webp'}
                         alt={post.title}
                         loading="lazy"
                         onError={(e) => {
                           e.currentTarget.onerror = null;
-                          e.currentTarget.src = '/assets/tooth_paste.png';
+                          e.currentTarget.src = '/assets/tooth_paste.webp';
                         }}
                       />
                     </div>

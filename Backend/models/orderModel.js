@@ -11,43 +11,103 @@ const generateOrderNumber = () => {
 };
 
 // Checkout & Create Order (Database Transaction with Coupon Integration)
-const createCheckoutOrder = async (userId, { address_id, notes, coupon_code }) => {
+const createCheckoutOrder = async (
+  userId,
+  { address_id, notes, coupon_code, email, customer_email, address, cart_items, items }
+) => {
   const client = await pool.connect();
   try {
-    // 1. Fetch delivery address
+    // 1. Fetch or resolve delivery address
     let shippingAddress = null;
-    if (address_id) {
+    let customerName = null;
+    let customerPhone = null;
+    let resolvedEmail = null;
+
+    if (address && (address.address_line_1 || address.addressLine1)) {
+      shippingAddress = {
+        address_line_1: address.address_line_1 || address.addressLine1,
+        address_line_2: address.address_line_2 || address.addressLine2 || null,
+        city: address.city,
+        state: address.state,
+        postal_code: address.pincode || address.postal_code || address.postalCode,
+        landmark: address.landmark || null,
+        address_type: address.address_type || "Home",
+      };
+      customerName = address.full_name || address.fullName || address.name || null;
+      customerPhone = address.phone || address.customer_phone || null;
+      resolvedEmail = address.email || address.customer_email || email || customer_email || null;
+    } else if (address_id && userId) {
       shippingAddress = await getAddressById(address_id, userId);
-    } else {
+    } else if (userId) {
       const addresses = await getUserAddresses(userId);
       shippingAddress = addresses.find((a) => a.is_default) || addresses[0];
     }
 
     if (!shippingAddress) {
-      throw new Error("No delivery address selected or found. Please add a shipping address.");
+      throw new Error("No delivery address selected or provided. Please enter a shipping address.");
     }
 
-    // 2. Fetch cart items
-    const cart = await getUserCart(userId);
-    if (!cart.items || cart.items.length === 0) {
+    // 2. Fetch or resolve cart items
+    let checkoutItems = [];
+    const passedItems = cart_items || items;
+    if (Array.isArray(passedItems) && passedItems.length > 0) {
+      checkoutItems = passedItems.map((it) => ({
+        product_id: it.product_id || it.id || null,
+        product_name: it.product_name || it.title || it.name || "Wooff Natural Pet Toothpaste",
+        sku: it.sku || it.product_sku || "WOOFF-TOOTHPASTE-50G",
+        unit_price: parseFloat(it.final_price || it.unit_price || it.price || 0),
+        quantity: Math.max(1, parseInt(it.quantity) || 1),
+        stock: it.stock !== undefined ? it.stock : 9999,
+      }));
+    } else if (userId) {
+      const cart = await getUserCart(userId);
+      checkoutItems = (cart.items || []).map((it) => ({
+        product_id: it.product_id || it.id,
+        product_name: it.product_name || it.title,
+        sku: it.sku || "WOOFF-TOOTHPASTE-50G",
+        unit_price: parseFloat(it.unit_price || it.final_price || it.price || 0),
+        quantity: parseInt(it.quantity) || 1,
+        stock: it.stock !== undefined ? it.stock : 9999,
+      }));
+    }
+
+    if (!checkoutItems || checkoutItems.length === 0) {
       throw new Error("Cart is empty. Add products to cart before checkout.");
     }
 
-    // 3. Verify stock availability
-    for (const item of cart.items) {
+    // 3. Verify stock availability where product_id exists
+    for (const item of checkoutItems) {
       if (item.stock < item.quantity) {
-        throw new Error(`Insufficient stock for "${item.product_name}". Requested: ${item.quantity}, Available: ${item.stock}`);
+        throw new Error(
+          `Insufficient stock for "${item.product_name}". Requested: ${item.quantity}, Available: ${item.stock}`
+        );
       }
     }
 
-    // 4. Fetch user details for phone and name snapshot
-    const userRes = await client.query("SELECT * FROM users WHERE id = $1", [userId]);
-    const user = userRes.rows[0];
+    // 4. Fetch user details if userId is present
+    let user = null;
+    if (userId) {
+      const userRes = await client.query("SELECT * FROM users WHERE id = $1", [userId]);
+      user = userRes.rows[0];
+    }
 
-    // 5. Calculate financial totals and validate coupon if provided
-    const subtotal = cart.subtotal;
-    const shipping_amount = subtotal >= 499 ? 0.00 : 49.00; // Free shipping over ₹499
-    let discount_amount = 0.00;
+    customerName = customerName || user?.username || "Customer";
+    customerPhone = customerPhone || user?.phone_number || "N/A";
+    resolvedEmail =
+      resolvedEmail ||
+      email?.trim() ||
+      customer_email?.trim() ||
+      user?.email ||
+      (user?.phone_number ? `${user.phone_number}@wooff.care` : "customer@wooff.care");
+
+    // 5. Calculate financial totals
+    const subtotal = parseFloat(
+      checkoutItems
+        .reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
+        .toFixed(2)
+    );
+    const shipping_amount = subtotal >= 499 ? 0.0 : 49.0; // Free shipping over ₹499
+    let discount_amount = 0.0;
     let appliedCouponCode = null;
 
     if (coupon_code) {
@@ -56,29 +116,31 @@ const createCheckoutOrder = async (userId, { address_id, notes, coupon_code }) =
       appliedCouponCode = couponValidation.code;
     }
 
-    const tax_amount = 0.00; // Prices are inclusive of tax
-    const total_amount = parseFloat((Math.max(0, subtotal + shipping_amount - discount_amount + tax_amount)).toFixed(2));
+    const tax_amount = 0.0; // Prices are inclusive of tax
+    const total_amount = parseFloat(
+      Math.max(0, subtotal + shipping_amount - discount_amount + tax_amount).toFixed(2)
+    );
     const order_number = generateOrderNumber();
 
     // 6. Begin Database Transaction
     await client.query("BEGIN");
 
-    // Insert Order Record with Snapshotted Shipping Address & Coupon
+    // Insert Order Record
     const orderQuery = `
       INSERT INTO orders (
         order_number, user_id, subtotal, shipping_amount, discount_amount, tax_amount, total_amount,
         currency, payment_status, order_status,
         shipping_address_line_1, shipping_address_line_2, shipping_city, shipping_state,
         shipping_postal_code, shipping_landmark, shipping_address_type,
-        customer_phone, customer_name, notes, coupon_code
+        customer_phone, customer_name, customer_email, notes, coupon_code
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
       RETURNING *
     `;
 
     const orderValues = [
       order_number,
-      userId,
+      userId || null,
       subtotal,
       shipping_amount,
       discount_amount,
@@ -94,8 +156,9 @@ const createCheckoutOrder = async (userId, { address_id, notes, coupon_code }) =
       shippingAddress.postal_code,
       shippingAddress.landmark || null,
       shippingAddress.address_type || "Home",
-      user ? user.phone_number : "N/A",
-      user ? user.username : "Customer",
+      customerPhone,
+      customerName,
+      resolvedEmail,
       notes ? notes.trim() : null,
       appliedCouponCode,
     ];
@@ -113,8 +176,17 @@ const createCheckoutOrder = async (userId, { address_id, notes, coupon_code }) =
 
     // Insert Order Items and Update Product Stock
     const createdItems = [];
-    for (const item of cart.items) {
+    for (const item of checkoutItems) {
       const line_total = parseFloat((item.unit_price * item.quantity).toFixed(2));
+
+      // Validate product_id against products table to protect foreign key constraint
+      let validProductId = null;
+      if (item.product_id) {
+        const prodCheck = await client.query("SELECT id FROM products WHERE id = $1", [item.product_id]);
+        if (prodCheck.rows.length > 0) {
+          validProductId = prodCheck.rows[0].id;
+        }
+      }
 
       const itemRes = await client.query(
         `INSERT INTO order_items (
@@ -124,7 +196,7 @@ const createCheckoutOrder = async (userId, { address_id, notes, coupon_code }) =
          RETURNING *`,
         [
           newOrder.id,
-          item.product_id,
+          validProductId,
           item.product_name,
           item.sku || "WOOFF-SKU",
           item.unit_price,
@@ -134,15 +206,19 @@ const createCheckoutOrder = async (userId, { address_id, notes, coupon_code }) =
       );
       createdItems.push(itemRes.rows[0]);
 
-      // Decrement Product Stock
-      await client.query(
-        "UPDATE products SET stock = stock - $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2",
-        [item.quantity, item.product_id]
-      );
+      // Decrement Product Stock if product exists
+      if (validProductId) {
+        await client.query(
+          "UPDATE products SET stock = GREATEST(0, stock - $1), updated_at = CURRENT_TIMESTAMP WHERE id = $2",
+          [item.quantity, validProductId]
+        );
+      }
     }
 
-    // Clear User Cart
-    await client.query("DELETE FROM cart_items WHERE user_id = $1", [userId]);
+    // Clear User Cart if logged in
+    if (userId) {
+      await client.query("DELETE FROM cart_items WHERE user_id = $1", [userId]);
+    }
 
     await client.query("COMMIT");
 
@@ -322,10 +398,150 @@ const updateOrderStatusByAdmin = async (orderId, newStatus) => {
   }
 };
 
+// Update Order Tracking Status by Shiprocket AWB Code
+const updateOrderByShiprocketAwb = async ({
+  awbCode,
+  orderId,
+  orderStatus,
+  shiprocketStatus,
+  courierName,
+  rawPayload,
+}) => {
+  const cleanAwb = awbCode ? String(awbCode).trim() : null;
+  const cleanOrderId = orderId ? String(orderId).trim() : null;
+
+  if (!cleanAwb && !cleanOrderId) {
+    throw new Error("Either awbCode or orderId is required to update tracking status.");
+  }
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    // 1. Find order primarily by AWB code
+    let orderRes = cleanAwb
+      ? await client.query("SELECT * FROM orders WHERE shiprocket_awb_code = $1 FOR UPDATE", [cleanAwb])
+      : { rows: [] };
+
+    // Fallback: Find by order_number or shiprocket_order_id
+    if (orderRes.rows.length === 0 && cleanOrderId) {
+      orderRes = await client.query(
+        "SELECT * FROM orders WHERE order_number = $1 OR shiprocket_order_id = $1 FOR UPDATE",
+        [cleanOrderId]
+      );
+    }
+
+    const order = orderRes.rows[0];
+    if (!order) {
+      console.warn(
+        `[Shiprocket Webhook] No matching order found for AWB: "${cleanAwb}" / OrderID: "${cleanOrderId}".`
+      );
+      await client.query("ROLLBACK");
+      return null;
+    }
+
+    // 2. Prepare dynamic update fields
+    const updates = [];
+    const values = [];
+
+    // Set AWB code if not yet saved on order
+    if (cleanAwb && !order.shiprocket_awb_code) {
+      values.push(cleanAwb);
+      updates.push(`shiprocket_awb_code = $${values.length}`);
+    }
+
+    if (orderStatus) {
+      values.push(orderStatus);
+      updates.push(`order_status = $${values.length}`);
+    }
+
+    if (shiprocketStatus) {
+      values.push(shiprocketStatus);
+      updates.push(`shiprocket_status = $${values.length}`);
+    }
+
+    if (courierName) {
+      values.push(courierName);
+      updates.push(`shiprocket_courier_name = $${values.length}`);
+    }
+
+    if (rawPayload) {
+      values.push(JSON.stringify(rawPayload));
+      updates.push(`shiprocket_response = $${values.length}`);
+    }
+
+    updates.push("updated_at = CURRENT_TIMESTAMP");
+
+    values.push(order.id);
+    const updateQuery = `
+      UPDATE orders
+      SET ${updates.join(", ")}
+      WHERE id = $${values.length}
+      RETURNING *
+    `;
+
+    const updatedRes = await client.query(updateQuery, values);
+    await client.query("COMMIT");
+
+    console.log(
+      `[Shiprocket Webhook Success] Updated Order #${order.id} (${order.order_number}) -> order_status: "${orderStatus || order.order_status}", shiprocket_status: "${shiprocketStatus}"`
+    );
+
+    return updatedRes.rows[0];
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
+// Get Order Tracking Information by Order Number (Public Customer Tracking)
+const getOrderByOrderNumber = async (orderNumber) => {
+  if (!orderNumber || typeof orderNumber !== "string") {
+    return null;
+  }
+
+  const cleanOrderNumber = orderNumber.trim();
+  const orderRes = await pool.query(
+    `SELECT 
+      id, order_number, order_status, payment_status, currency,
+      subtotal, shipping_amount, discount_amount, tax_amount, total_amount,
+      shipping_address_line_1, shipping_address_line_2, shipping_city, shipping_state, shipping_postal_code,
+      customer_name, customer_phone, customer_email,
+      shiprocket_order_id, shiprocket_shipment_id, shiprocket_awb_code, shiprocket_courier_name, shiprocket_status,
+      created_at, updated_at
+     FROM orders 
+     WHERE UPPER(order_number) = UPPER($1) 
+     LIMIT 1`,
+    [cleanOrderNumber]
+  );
+
+  const order = orderRes.rows[0];
+  if (!order) return null;
+
+  // Fetch Line Items for tracking display
+  const itemsRes = await pool.query(
+    `SELECT id, product_id, product_name, product_sku, unit_price, quantity, line_total 
+     FROM order_items 
+     WHERE order_id = $1 
+     ORDER BY id ASC`,
+    [order.id]
+  );
+
+  return {
+    ...order,
+    items: itemsRes.rows,
+  };
+};
+
 module.exports = {
   generateOrderNumber,
   createCheckoutOrder,
   getUserOrders,
   getOrderDetailsById,
   updateOrderStatusByAdmin,
+  updateOrderByShiprocketAwb,
+  getOrderByOrderNumber,
 };
+

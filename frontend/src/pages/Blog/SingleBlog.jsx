@@ -266,12 +266,12 @@ export default function SingleBlog() {
             {/* 4. Featured Hero Image with Caption */}
             <div className="single-blog-hero-image-container">
               <img
-                src={blog.image_url || '/assets/tooth_paste.png'}
+                src={blog.image_url || '/assets/tooth_paste.webp'}
                 alt={blog.title}
                 className="single-blog-hero-image"
                 onError={(e) => {
                   e.currentTarget.onerror = null;
-                  e.currentTarget.src = '/assets/tooth_paste.png';
+                  e.currentTarget.src = '/assets/tooth_paste.webp';
                 }}
               />
             </div>
@@ -539,10 +539,10 @@ export default function SingleBlog() {
                     <article key={rel.slug || rel.id} className="related-article-card">
                       <Link to={`/blog/${rel.slug}`} className="related-card-img-link">
                         <img
-                          src={rel.image_url || '/assets/tooth_paste.png'}
+                          src={rel.image_url || '/assets/tooth_paste.webp'}
                           alt={rel.title}
                           className="related-card-img"
-                          onError={(e) => { e.currentTarget.src = '/assets/tooth_paste.png'; }}
+                          onError={(e) => { e.currentTarget.src = '/assets/tooth_paste.webp'; }}
                         />
                       </Link>
                       <div className="related-card-body">

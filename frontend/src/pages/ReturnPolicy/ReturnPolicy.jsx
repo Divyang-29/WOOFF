@@ -30,27 +30,35 @@ export default function ReturnPolicy() {
 
         {/* Section 2: Damaged or Incorrect Orders */}
         <section className="legal-content">
-          <ToothHeader number="2" title="Damaged or Incorrect Orders" />
+          <ToothHeader number="2" title="Damaged or Incorrect Orders & Video Verification" />
           <p>
             If you receive a damaged, defective, or incorrect product, please contact us at <a href="mailto:hello@wooff.care" style={{ color: '#4B2E1E', fontWeight: '700' }}>hello@wooff.care</a> within 48 hours of delivery.
           </p>
-          <p>To help us resolve the issue quickly, please include:</p>
+          <div style={{ backgroundColor: '#FFF5F0', borderLeft: '4px solid #e58b57', padding: '14px 18px', borderRadius: '8px', margin: '16px 0' }}>
+            <p style={{ margin: 0, fontWeight: '700', color: '#4B2E1E', fontSize: '1.05rem' }}>
+              ⚠️ Mandatory Unboxing Video Requirement:
+            </p>
+            <p style={{ margin: '8px 0 0 0', fontSize: '0.95rem', color: '#5C4D40', lineHeight: '1.6' }}>
+              A continuous, uncut video recorded while opening the package from its original sealed state is strictly required for any damage, transit defect, or incorrect/missing item claim. The video must clearly capture the intact shipping label and the actual unboxing. <strong>Without an unboxing video, no return, replacement, or refund will be provided under any circumstances.</strong>
+            </p>
+          </div>
+          <p>To help us process and resolve your claim quickly, please include:</p>
           <ul>
             <li>Your order number</li>
-            <li>Clear photographs of the product</li>
-            <li>Photographs of the packaging received</li>
+            <li><strong>Mandatory unboxing video</strong> recorded while opening the sealed parcel</li>
+            <li>Clear photographs of the product and outer packaging</li>
           </ul>
-          <p>Our team will review your request and get back to you as soon as possible.</p>
+          <p>Our support team will inspect the footage and provide a resolution promptly.</p>
         </section>
 
         {/* Section 3: Refunds */}
         <section className="legal-content">
           <ToothHeader number="3" title="Refunds" />
           <p>
-            Once your refund request has been approved, the applicable amount will be refunded to your original payment method within 7–10 business days.
+            Once your return or replacement request is reviewed and approved (subject to validation of the mandatory unboxing video), the approved refund amount will be credited to your original payment method within 7–10 business days.
           </p>
           <p>
-            Please note that your bank or payment provider may require additional time for the refund to appear in your account.
+            Please note that your bank or payment provider may require additional time for the refund to reflect in your account. Without the required opening video verification for transit damage or discrepancies, refund requests cannot be processed.
           </p>
         </section>
 

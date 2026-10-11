@@ -10,7 +10,7 @@
   padding: 0;
 
   background-color: var(--background-cream, #F7EFE6);
-  background-image: url('../../../assets/jungle-bg.png');
+  background-image: url('../../../assets/jungle-bg.webp');
 
   /* Keep jungle background proportions and anchor cleanly to bottom */
   background-size: cover;

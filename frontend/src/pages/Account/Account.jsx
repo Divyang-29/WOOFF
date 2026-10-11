@@ -455,7 +455,7 @@ export default function Account() {
                         <div className="order-card-body">
                           <div className="order-product-thumbnails">
                             <img
-                              src="/assets/tooth_paste.png"
+                              src="/assets/tooth_paste.webp"
                               alt="Wooff Product"
                               className="order-thumb-img"
                             />

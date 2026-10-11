@@ -90,15 +90,15 @@ export default function ContactUs() {
           <div className="col-12 col-lg-5 contact-info-col">
             <div className="contact-badge-wrapper mb-3">
               <span className="contact-mini-badge">
-                <i className="fas fa-paw me-2"></i> WE'D LOVE TO HEAR FROM YOU
+                WE'D LOVE TO HEAR FROM YOU
               </span>
             </div>
 
             <h1 className="contact-title mb-3">Let's Chat!</h1>
 
             <p className="contact-description mb-4">
-              Have questions about our prebiotic oral care formulas, order updates, wholesale partnerships,
-              or just want to say hi? The Wooff pack is always here with tail-wagging excitement to help your family smile brighter.
+              Have questions about our oral care formulas, order updates, wholesale partnerships,
+              or just want to say hi? The Wooff pack is always here to help your family smile brighter.
             </p>
 
             {/* Contact Details List */}
@@ -117,19 +117,6 @@ export default function ContactUs() {
                 </div>
               </a>
 
-              {/* Press Inquiries */}
-              <a
-                href="mailto:press@wooffkids.com"
-                className="contact-detail-card d-flex align-items-center text-decoration-none"
-              >
-                <div className="contact-icon-box">
-                  <i className="fas fa-newspaper"></i>
-                </div>
-                <div className="contact-detail-text">
-                  <span className="contact-detail-label">Press & Partnerships</span>
-                  <span className="contact-detail-value">press@wooffkids.com</span>
-                </div>
-              </a>
 
               {/* Customer Care Hours */}
               <div className="contact-detail-card d-flex align-items-center">

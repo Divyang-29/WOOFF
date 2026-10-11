@@ -4,53 +4,53 @@ import './ProductDetails.css';
 
 export const defaultKeyIngredients = [
   {
-    id: 'theobromine',
-    title: 'Theobromine',
-    subtitle: 'Enamel Mineralization',
-    description: 'Supports enamel mineralization and may help strengthen tooth structure along with nHAp.',
-    image_url: '/images/ingredients/cacao.jpg'
-  },
-  {
     id: 'nhap',
     title: 'Nano-Hydroxyapatite',
-    subtitle: 'Remineralizing Agent',
-    description: 'Remineralizing ingredient; helps replenish minerals and support enamel.',
-    image_url: '/images/ingredients/nhap.jpg'
+    subtitle: 'Enamel Mineral Support',
+    description: 'A biomimetic mineral that closely resembles the mineral naturally found in teeth. It helps support enamel remineralization and maintain strong, healthy-looking teeth.',
+    image_url: '/images/ingredients/nhap_clean.png'
   },
   {
-    id: 'calcium-gluconate',
-    title: 'Calcium Gluconate',
-    subtitle: 'Mineral Availability',
-    description: 'Calcium source; supports mineral availability for teeth.',
-    image_url: '/images/ingredients/calcium.jpg'
+    id: 'theobromine',
+    title: 'Theobromine',
+    subtitle: 'Enamel Strength Support',
+    description: 'Derived from cocoa, theobromine has been studied for its potential to support enamel remineralization and increase enamel microhardness.',
+    image_url: '/images/ingredients/theobromine_clean.png'
   },
   {
     id: 'inulin',
     title: 'Inulin',
-    subtitle: 'Prebiotic Support',
-    description: 'Prebiotic; supports a healthier oral microbial environment.',
-    image_url: '/images/ingredients/inulin.jpg'
+    subtitle: 'Prebiotic Oral Care',
+    description: 'A naturally derived prebiotic included to support a balanced oral environment and complement the oral microbiome.',
+    image_url: '/images/ingredients/inulin_clean.png'
   },
   {
-    id: 'ascorbic-acid',
-    title: 'Ascorbic Acid / Vitamin C',
-    subtitle: 'Antioxidant Care',
-    description: 'Antioxidant; supports healthy gums and oral tissues.',
-    image_url: '/images/ingredients/vitaminc.jpg'
+    id: 'vitaminc',
+    title: 'Vitamin C',
+    subtitle: 'Antioxidant & Gum Support',
+    description: 'Vitamin C is an antioxidant that contributes to the health of oral tissues and supports a healthy gum environment.',
+    image_url: '/images/ingredients/vitaminc_clean.png'
   },
   {
     id: 'lactoferrin',
     title: 'Lactoferrin',
-    subtitle: 'Antimicrobial Protein',
-    description: 'Antimicrobial protein; helps support oral hygiene and microbial balance.',
-    image_url: '/images/ingredients/lactoferrin.jpg'
+    subtitle: 'Natural Oral Defence',
+    description: 'A naturally occurring protein found in saliva, lactoferrin has antimicrobial properties and has been studied for its role in maintaining a healthy oral microbial environment.',
+    image_url: '/images/ingredients/lactoferrin_clean.png'
   },
   {
     id: 'coq10',
     title: 'Coenzyme Q10',
-    subtitle: 'Gum Health Support',
-    description: 'Antioxidant; commonly used to support gum health.',
-    image_url: '/images/ingredients/coq10.jpg'
+    subtitle: 'Antioxidant Gum Care',
+    description: 'A naturally occurring antioxidant that has been studied in periodontal care and is included to complement the formulation’s focus on healthy gums.',
+    image_url: '/images/ingredients/coq10_clean.png'
+  },
+  {
+    id: 'calcium-gluconate',
+    title: 'Calcium Gluconate',
+    subtitle: 'Tooth Enamel Support',
+    description: 'Calcium is an essential building block of tooth enamel.',
+    image_url: '/images/ingredients/calcium_clean.png'
   }
 ];
 

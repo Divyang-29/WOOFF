@@ -1,19 +1,76 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { API_ENDPOINTS } from '../../api';
+import SalesTrendChart from '../../components/Admin/SalesTrendChart';
+import ConfirmModal from '../../components/Admin/ConfirmModal';
+import InvoiceModal from '../../components/Admin/InvoiceModal';
+import { SkeletonCard, SkeletonTable } from '../../components/Admin/SkeletonLoader';
 import './Admin.css';
 
 export default function Admin() {
-  const { user } = useAuth();
+  const { user, login } = useAuth();
 
-  // Admin Security Access Key State
+  // Admin Security Access State (Strict JWT / Role validation)
   const [adminAccessGranted, setAdminAccessGranted] = useState(() => {
-    return localStorage.getItem('wooff_admin_access') === 'true';
+    const token = localStorage.getItem('token') || localStorage.getItem('wooff_token');
+    const storedUser = localStorage.getItem('wooff_user');
+    if (storedUser && token) {
+      try {
+        const u = JSON.parse(storedUser);
+        if (u.role === 'admin') return true;
+      } catch (e) {}
+    }
+    return false;
   });
-  const [adminSecretPin, setAdminSecretPin] = useState('');
-  const [pinError, setPinError] = useState('');
+  const [adminEmail, setAdminEmail] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Active Tab: 'dashboard' | 'products' | 'categories' | 'orders' | 'blogs' | 'coupons' | 'faqs' | 'terms' | 'contact' | 'users'
+  const getAuthToken = () => localStorage.getItem('token') || localStorage.getItem('wooff_token') || '';
+  const getAuthHeader = () => (getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : {});
+
+  const handleLogoutAdmin = () => {
+    localStorage.removeItem('wooff_admin_access');
+    localStorage.removeItem('token');
+    localStorage.removeItem('wooff_token');
+    localStorage.removeItem('wooff_user');
+    setAdminAccessGranted(false);
+  };
+
+  useEffect(() => {
+    if (user && user.role === 'admin') {
+      setAdminAccessGranted(true);
+    } else if (user && user.role !== 'admin') {
+      handleLogoutAdmin();
+    }
+  }, [user]);
+
+  // Cryptographically verify Admin JWT token on mount
+  useEffect(() => {
+    const verifyAdminToken = async () => {
+      const token = getAuthToken();
+      if (!token) {
+        setAdminAccessGranted(false);
+        return;
+      }
+      try {
+        const res = await fetch(API_ENDPOINTS.ADMIN.VERIFY, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) {
+          handleLogoutAdmin();
+        } else {
+          setAdminAccessGranted(true);
+        }
+      } catch (err) {
+        console.error('Admin token verification network error:', err);
+      }
+    };
+    verifyAdminToken();
+  }, []);
+
+  // Active Tab: 'dashboard' | 'products' | 'categories' | 'ingredients' | 'orders' | 'blogs' | 'coupons' | 'faqs' | 'terms' | 'contact' | 'users' | 'reels' | 'testimonials' | 'reviews' | 'audit_logs'
   const [activeTab, setActiveTab] = useState('dashboard');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
@@ -21,126 +78,112 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [toastMsg, setToastMsg] = useState({ type: '', text: '' });
 
+  // Pagination & Filtering States for Scalability
+  const [ordersPagination, setOrdersPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 1 });
+  const [customersPagination, setCustomersPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 1 });
+  const [auditLogsPagination, setAuditLogsPagination] = useState({ page: 1, limit: 25, total: 0, totalPages: 1 });
+
+  // Search & Filter state
+  const [orderSearchQuery, setOrderSearchQuery] = useState('');
+  const [orderStatusFilter, setOrderStatusFilter] = useState('');
+  const [customerSearchQuery, setCustomerSearchQuery] = useState('');
+  const [auditActionFilter, setAuditActionFilter] = useState('');
+  const [auditEntityFilter, setAuditEntityFilter] = useState('');
+  const [auditSearchQuery, setAuditSearchQuery] = useState('');
+
   // -------------------------------------------------------------------
-  // DATASETS STATE
+  // ZERO STATIC MOCK DATA - 100% POSTGRESQL DRIVEN DATASETS
   // -------------------------------------------------------------------
   const [analytics, setAnalytics] = useState({
-    total_revenue: 12450.00,
-    active_orders_count: 8,
-    total_customers: 142,
+    total_revenue: 0,
+    this_month_revenue: 0,
+    last_month_revenue: 0,
+    revenue_growth_percent: 0,
+    total_orders_count: 0,
+    active_orders_count: 0,
+    ready_for_shipment_count: 0,
+    shipped_orders_count: 0,
+    delivered_orders_count: 0,
+    total_customers: 0,
+    new_customers_this_month: 0,
+    low_stock_count: 0,
+    out_of_stock_count: 0,
+    total_products_count: 0,
     top_selling_products: [],
+    daily_sales_trends: [],
   });
 
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      title: "Natural Bubblegum Blast Prebiotic Toothpaste",
-      slug: "natural-bubblegum-blast",
-      sku: "WF-BB-01",
-      category_name: "Prebiotic Toothpaste",
-      category_id: 1,
-      price: "299.00",
-      final_price: "249.00",
-      stock: 35,
-      primary_image: "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?auto=format&fit=crop&w=300&q=80",
-      description: "100% enamel safe prebiotic kids toothpaste.",
-    },
-    {
-      id: 2,
-      title: "Wild Strawberry Smiles Kids Gel",
-      slug: "wild-strawberry-smiles",
-      sku: "WF-SS-02",
-      category_name: "Prebiotic Toothpaste",
-      category_id: 1,
-      price: "349.00",
-      final_price: "299.00",
-      stock: 4, // Low stock!
-      primary_image: "https://images.unsplash.com/photo-1588854337236-6889d631faa8?auto=format&fit=crop&w=300&q=80",
-      description: "Delicious natural strawberry flavor with xylitol.",
-    },
-    {
-      id: 3,
-      title: "Super Minty Shield Prebiotic Care",
-      slug: "super-minty-shield",
-      sku: "WF-MS-03",
-      category_name: "Oral Care",
-      category_id: 2,
-      price: "279.00",
-      final_price: "239.00",
-      stock: 18,
-      primary_image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=300&q=80",
-      description: "Gentle minty freshness for older kids.",
-    }
-  ]);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [blogsList, setBlogsList] = useState([]);
+  const [coupons, setCoupons] = useState([]);
+  const [faqsList, setFaqsList] = useState([]);
+  const [termsData, setTermsData] = useState({ title: '', content: '', updated_at: '' });
+  const [contactMessages, setContactMessages] = useState([]);
+  const [usersList, setUsersList] = useState([]);
+  const [ingredientsList, setIngredientsList] = useState([]);
+  const [auditLogsList, setAuditLogsList] = useState([]);
 
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Prebiotic Toothpaste", slug: "prebiotic-toothpaste", description: "100% enamel safe prebiotic gels" },
-    { id: 2, name: "Oral Care Kits", slug: "oral-care-kits", description: "Complete oral health bundles for kids" },
-    { id: 3, name: "Eco Toothbrushes", slug: "eco-toothbrushes", description: "Ultra soft bamboo & silicone brushes" }
-  ]);
-
-  const [orders, setOrders] = useState([
-    { id: "ORD-1092", customer_name: "Sarah Jenkins", phone: "+91 9876543210", total_amount: "498.00", payment_status: "paid", order_status: "processing", created_at: "2026-09-21" },
-    { id: "ORD-1091", customer_name: "Alex Morgan", phone: "+91 9812345678", total_amount: "249.00", payment_status: "paid", order_status: "shipped", created_at: "2026-09-20" },
-    { id: "ORD-1090", customer_name: "Michael Chang", phone: "+91 9765432109", total_amount: "747.00", payment_status: "pending", order_status: "pending", created_at: "2026-09-20" }
-  ]);
-
-  const [blogsList, setBlogsList] = useState([
-    {
-      id: 1,
-      title: "Why Prebiotics Are Revolutionary for Kids' Dental Microbiome",
-      slug: "why-prebiotics-for-kids",
-      author: "Dr. Elena Vance",
-      content: "Prebiotics nourish friendly oral bacteria, keeping cavities and bad breath naturally at bay without harsh chemicals.",
-      image_url: "https://images.unsplash.com/photo-1588854337236-6889d631faa8?auto=format&fit=crop&w=300&q=80",
-      created_at: "2026-09-18"
-    },
-    {
-      id: 2,
-      title: "5 Fun Ways to Make Brushing Time Enjoyable for Toddlers",
-      slug: "fun-brushing-tips-toddlers",
-      author: "Wooff Smiles Team",
-      content: "Turn 2 minutes of brushing into a fun daily adventure with reward charts and delicious natural flavors.",
-      image_url: "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?auto=format&fit=crop&w=300&q=80",
-      created_at: "2026-09-10"
-    }
-  ]);
-
-  const [coupons, setCoupons] = useState([
-    { id: 1, code: "WOOFFKIDS20", discount_percent: 20, expiry_date: "2026-12-31", is_active: true },
-    { id: 2, code: "SMILE10", discount_percent: 10, expiry_date: "2026-10-15", is_active: true }
-  ]);
-
-  const [faqsList, setFaqsList] = useState([
-    { id: 1, question: "Is Wooff toothpaste safe if swallowed by toddlers?", answer: "Yes! Wooff is 100% natural, fluoride-free, and safe if swallowed in small quantities.", display_order: 1 },
-    { id: 2, question: "What are prebiotics in toothpaste?", answer: "Prebiotics are natural plant fibers that feed good oral bacteria while inhibiting harmful cavity-causing bacteria.", display_order: 2 },
-    { id: 3, question: "What age range is Wooff designed for?", answer: "Wooff is formulated specifically for kids aged 6 months to 12 years.", display_order: 3 }
-  ]);
-
-  const [termsData, setTermsData] = useState({
-    title: "Terms & Conditions",
-    content: "Welcome to Wooff Kids! By accessing or using our website, purchasing our prebiotic toothpastes, or subscribing to our products, you agree to be bound by these Terms & Conditions. All products are formulated for kids' oral hygiene. Orders are shipped within 2-4 business days.",
-    updated_at: "2026-09-21"
+  // -------------------------------------------------------------------
+  // OPERATIONAL WORKFLOW & MODAL STATES
+  // -------------------------------------------------------------------
+  // Custom Confirmation Modal (Replaces native window.confirm)
+  const [confirmConfig, setConfirmConfig] = useState({
+    isOpen: false,
+    title: 'Confirm Action',
+    message: '',
+    confirmText: 'Confirm',
+    cancelText: 'Cancel',
+    danger: true,
+    loading: false,
+    action: null,
   });
 
-  const [contactMessages, setContactMessages] = useState([
-    { id: 1, name: "Priya Sharma", email: "priya@example.com", phone_number: "+91 98765 11111", subject: "Subscription Inquiry", message: "Is the bubblegum flavor safe for toddlers aged 3?", created_at: "2026-09-21", status: "unread" },
-    { id: 2, name: "David Miller", email: "david@example.com", phone_number: "+91 98765 22222", subject: "Bulk Order Discount", message: "Do you offer wholesale discounts for pediatric dental clinics?", created_at: "2026-09-19", status: "read" }
-  ]);
+  // Printable Dynamic Packing Slip / Invoice Modal
+  const [invoiceModalState, setInvoiceModalState] = useState({
+    isOpen: false,
+    orderId: null,
+    order: null,
+  });
 
-  const [usersList, setUsersList] = useState([
-    { id: 1, username: "Sarah Jenkins", phone_number: "+919876543210", childName: "Leo", role: "user", created_at: "2026-09-15" },
-    { id: 2, username: "Admin Superuser", phone_number: "+919999999999", childName: "Maya", role: "admin", created_at: "2026-09-01" }
-  ]);
-
-  // -------------------------------------------------------------------
-  // MODAL & FORM STATES FOR FULL CRUD
-  // -------------------------------------------------------------------
+  // Product CRUD Modal State
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [productForm, setProductForm] = useState({
-    title: '', category_id: 1, price: '', final_price: '', stock: '', sku: '', primary_image: '', description: '', is_bestseller: false,
+    title: '',
+    category_id: 1,
+    price: '',
+    final_price: '',
+    stock: '',
+    sku: '',
+    primary_image: '',
+    description: '',
+    is_bestseller: false,
+    bundle_type: 'single',
+    low_stock_threshold: 10,
+    variants: [],
   });
+
+  // Hero Ingredients Formulation CMS Modal State
+  const [showIngredientModal, setShowIngredientModal] = useState(false);
+  const [editingIngredient, setEditingIngredient] = useState(null);
+  const [ingredientForm, setIngredientForm] = useState({
+    name: '',
+    slug: '',
+    sub_title: '',
+    tag: '',
+    description: '',
+    benefits: '',
+    badge_text: '',
+    icon_url: '',
+    display_order: 1,
+    is_active: true,
+  });
+
+  // Shiprocket dispatch state
+  const [fulfillingOrderId, setFulfillingOrderId] = useState(null);
+  const [cancellingOrderId, setCancellingOrderId] = useState(null);
 
   const [showBlogModal, setShowBlogModal] = useState(false);
   const [editingBlog, setEditingBlog] = useState(null);
@@ -164,7 +207,66 @@ export default function Admin() {
 
   const [showCouponModal, setShowCouponModal] = useState(false);
   const [editingCoupon, setEditingCoupon] = useState(null);
-  const [couponForm, setCouponForm] = useState({ code: '', discount_percent: 15, expiry_date: '', is_active: true });
+  const [couponForm, setCouponForm] = useState({
+    code: '',
+    discount_type: 'percentage',
+    discount_value: 15,
+    min_order_value: 0,
+    usage_limit: '',
+    valid_from: new Date().toISOString().split('T')[0],
+    valid_until: '',
+    is_active: true,
+  });
+
+  // Abandoned Carts & Revenue Recovery State
+  const [abandonedCartsList, setAbandonedCartsList] = useState([]);
+  const [abandonedStats, setAbandonedStats] = useState({
+    abandonedCount: 0,
+    potentialLostValue: 0,
+    recoveredCount: 0,
+    recoveredValue: 0,
+    conversionRate: 0,
+  });
+  const [abandonedSort, setAbandonedSort] = useState('highest_value');
+  const [abandonedStatusFilter, setAbandonedStatusFilter] = useState('all');
+  const [abandonedSearchQuery, setAbandonedSearchQuery] = useState('');
+  const [abandonedPage, setAbandonedPage] = useState(1);
+  const [abandonedTotalPages, setAbandonedTotalPages] = useState(1);
+  const [abandonedTotal, setAbandonedTotal] = useState(0);
+  const [loadingAbandonedCarts, setLoadingAbandonedCarts] = useState(false);
+  const [viewingAbandonedCart, setViewingAbandonedCart] = useState(null);
+
+  // In-App User Notifications State (Phase 5)
+  const [notificationsList, setNotificationsList] = useState([]);
+  const [notificationStats, setNotificationStats] = useState({
+    totalDispatched: 0,
+    totalBroadcasts: 0,
+    totalTargeted: 0,
+    totalReads: 0,
+  });
+  const [notificationsPage, setNotificationsPage] = useState(1);
+  const [notificationsTotalPages, setNotificationsTotalPages] = useState(1);
+  const [notificationsTotal, setNotificationsTotal] = useState(0);
+  const [notificationsLimit, setNotificationsLimit] = useState(15);
+  const [notificationSearchQuery, setNotificationSearchQuery] = useState('');
+  const [notificationTypeFilter, setNotificationTypeFilter] = useState('all');
+  const [notificationAudienceFilter, setNotificationAudienceFilter] = useState('all');
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [sendingNotification, setSendingNotification] = useState(false);
+  const [viewingNotification, setViewingNotification] = useState(null);
+
+  // Dispatch Composer Form State
+  const [notificationForm, setNotificationForm] = useState({
+    title: '',
+    message: '',
+    type: 'promotional',
+    target_audience: 'all',
+    user_id: '',
+  });
+  const [selectedCustomerPreview, setSelectedCustomerPreview] = useState(null);
+  const [customerSearchInput, setCustomerSearchInput] = useState('');
+  const [customerSearchResults, setCustomerSearchResults] = useState([]);
+  const [searchingCustomers, setSearchingCustomers] = useState(false);
 
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
@@ -213,103 +315,465 @@ export default function Admin() {
     setTimeout(() => setToastMsg({ type: '', text: '' }), 4000);
   };
 
-  // Fetch Live Analytics & Data from Backend APIs on Mount
+  // Fetch Live Analytics & Data from Backend APIs on Mount in parallel
+  const fetchAdminData = async () => {
+    try {
+      setLoading(true);
+      const headers = getAuthHeader();
+
+      const [
+        analyticsResult,
+        ordersResult,
+        customersResult,
+        productsResult,
+        categoriesResult,
+        reelsResult,
+        testimonialsResult,
+        reviewsResult,
+        blogsResult,
+        couponsResult,
+        faqsResult,
+        termsResult,
+        ingredientsResult,
+        contactResult,
+        auditLogsResult,
+        abandonedCartsResult,
+        notificationsResult,
+      ] = await Promise.allSettled([
+        fetch(API_ENDPOINTS.ADMIN.ANALYTICS, { headers }),
+        fetch(`${API_ENDPOINTS.ADMIN.ORDERS}?page=${ordersPagination.page}&limit=${ordersPagination.limit}&status=${orderStatusFilter}&search=${encodeURIComponent(orderSearchQuery)}`, { headers }),
+        fetch(`${API_ENDPOINTS.ADMIN.CUSTOMERS}?page=${customersPagination.page}&limit=${customersPagination.limit}&search=${encodeURIComponent(customerSearchQuery)}`, { headers }),
+        fetch(API_ENDPOINTS.PRODUCTS),
+        fetch(API_ENDPOINTS.CATEGORIES),
+        fetch('/api/videos'),
+        fetch('/api/testimonials'),
+        fetch('/api/products/reviews/all'),
+        fetch(API_ENDPOINTS.BLOGS),
+        fetch(API_ENDPOINTS.COUPONS, { headers }),
+        fetch(API_ENDPOINTS.FAQS),
+        fetch(API_ENDPOINTS.TERMS),
+        fetch(API_ENDPOINTS.INGREDIENTS),
+        fetch(API_ENDPOINTS.CONTACT, { headers }),
+        fetch(`${API_ENDPOINTS.ADMIN.AUDIT_LOGS}?page=${auditLogsPagination.page}&limit=${auditLogsPagination.limit}&action=${auditActionFilter}&entity_type=${auditEntityFilter}&search=${encodeURIComponent(auditSearchQuery)}`, { headers }),
+        fetch(`${API_ENDPOINTS.ADMIN.ABANDONED_CARTS}?page=${abandonedPage}&limit=15&sort=${abandonedSort}&status=${abandonedStatusFilter}&search=${encodeURIComponent(abandonedSearchQuery)}`, { headers }),
+        fetch(`${API_ENDPOINTS.ADMIN.NOTIFICATIONS}?page=${notificationsPage}&limit=${notificationsLimit}&type=${notificationTypeFilter}&audience=${notificationAudienceFilter}&search=${encodeURIComponent(notificationSearchQuery)}`, { headers }),
+      ]);
+
+      if (analyticsResult.status === 'fulfilled' && analyticsResult.value.ok) {
+        const data = await analyticsResult.value.json();
+        if (data.analytics) setAnalytics(data.analytics);
+      } else if (analyticsResult.status === 'fulfilled' && [401, 403].includes(analyticsResult.value.status)) {
+        handleLogoutAdmin();
+        showToast('danger', 'Admin session expired. Please log in again.');
+        return;
+      }
+
+      if (ordersResult.status === 'fulfilled' && ordersResult.value.ok) {
+        const oData = await ordersResult.value.json();
+        if (oData.orders && Array.isArray(oData.orders)) {
+          setOrders(oData.orders);
+          if (oData.total !== undefined) {
+            setOrdersPagination((prev) => ({
+              ...prev,
+              total: oData.total,
+              totalPages: oData.totalPages || 1,
+            }));
+          }
+        }
+      }
+
+      if (customersResult.status === 'fulfilled' && customersResult.value.ok) {
+        const cData = await customersResult.value.json();
+        if (cData.customers && Array.isArray(cData.customers)) {
+          setUsersList(cData.customers);
+          if (cData.total !== undefined) {
+            setCustomersPagination((prev) => ({
+              ...prev,
+              total: cData.total,
+              totalPages: cData.totalPages || 1,
+            }));
+          }
+        }
+      }
+
+      if (productsResult.status === 'fulfilled' && productsResult.value.ok) {
+        const pData = await productsResult.value.json();
+        const list = Array.isArray(pData) ? pData : pData?.products || [];
+        if (Array.isArray(list)) setProducts(list);
+      }
+
+      if (categoriesResult.status === 'fulfilled' && categoriesResult.value.ok) {
+        const catData = await categoriesResult.value.json();
+        const list = Array.isArray(catData) ? catData : catData?.categories || [];
+        if (Array.isArray(list)) setCategories(list);
+      }
+
+      if (ingredientsResult.status === 'fulfilled' && ingredientsResult.value.ok) {
+        const ingData = await ingredientsResult.value.json();
+        if (ingData.ingredients && Array.isArray(ingData.ingredients)) {
+          setIngredientsList(ingData.ingredients);
+        }
+      }
+
+      if (contactResult.status === 'fulfilled' && contactResult.value.ok) {
+        const cntData = await contactResult.value.json();
+        const list = cntData?.messages || (Array.isArray(cntData) ? cntData : []);
+        if (Array.isArray(list)) setContactMessages(list);
+      }
+
+      if (auditLogsResult.status === 'fulfilled' && auditLogsResult.value.ok) {
+        const aData = await auditLogsResult.value.json();
+        if (aData.logs && Array.isArray(aData.logs)) {
+          setAuditLogsList(aData.logs);
+          if (aData.total !== undefined) {
+            setAuditLogsPagination((prev) => ({
+              ...prev,
+              total: aData.total,
+              totalPages: aData.totalPages || 1,
+            }));
+          }
+        }
+      }
+
+      if (reelsResult.status === 'fulfilled' && reelsResult.value.ok) {
+        const rData = await reelsResult.value.json();
+        const list = rData?.videos || (Array.isArray(rData) ? rData : []);
+        if (Array.isArray(list)) setReelsList(list);
+      }
+
+      if (testimonialsResult.status === 'fulfilled' && testimonialsResult.value.ok) {
+        const tData = await testimonialsResult.value.json();
+        const list = Array.isArray(tData) ? tData : tData?.testimonials || tData?.data || [];
+        if (Array.isArray(list)) setTestimonialsList(list);
+      }
+
+      if (reviewsResult.status === 'fulfilled' && reviewsResult.value.ok) {
+        const rData = await reviewsResult.value.json();
+        if (rData.success && Array.isArray(rData.reviews)) setReviewsList(rData.reviews);
+      }
+
+      if (blogsResult.status === 'fulfilled' && blogsResult.value.ok) {
+        const bData = await blogsResult.value.json();
+        const list = Array.isArray(bData) ? bData : bData?.blogs || [];
+        if (Array.isArray(list)) setBlogsList(list);
+      }
+
+      if (couponsResult.status === 'fulfilled' && couponsResult.value.ok) {
+        const cData = await couponsResult.value.json();
+        const list = Array.isArray(cData) ? cData : cData?.coupons || [];
+        if (Array.isArray(list)) setCoupons(list);
+      }
+
+      if (faqsResult.status === 'fulfilled' && faqsResult.value.ok) {
+        const fData = await faqsResult.value.json();
+        const list = Array.isArray(fData) ? fData : fData?.faqs || [];
+        if (Array.isArray(list)) setFaqsList(list);
+      }
+
+      if (termsResult.status === 'fulfilled' && termsResult.value.ok) {
+        const tData = await termsResult.value.json();
+        if (tData?.terms) setTermsData(tData.terms);
+      }
+
+      if (abandonedCartsResult.status === 'fulfilled' && abandonedCartsResult.value.ok) {
+        const abData = await abandonedCartsResult.value.json();
+        if (abData.carts && Array.isArray(abData.carts)) setAbandonedCartsList(abData.carts);
+        if (abData.stats) setAbandonedStats(abData.stats);
+        if (abData.total !== undefined) setAbandonedTotal(abData.total);
+        if (abData.totalPages !== undefined) setAbandonedTotalPages(abData.totalPages);
+      }
+
+      if (notificationsResult.status === 'fulfilled' && notificationsResult.value.ok) {
+        const nData = await notificationsResult.value.json();
+        if (nData.notifications && Array.isArray(nData.notifications)) setNotificationsList(nData.notifications);
+        if (nData.stats) setNotificationStats(nData.stats);
+        if (nData.total !== undefined) setNotificationsTotal(nData.total);
+        if (nData.totalPages !== undefined) setNotificationsTotalPages(nData.totalPages);
+      }
+    } catch (err) {
+      console.error('Failed to load admin dataset:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAbandonedCarts = async () => {
+    try {
+      setLoadingAbandonedCarts(true);
+      const headers = getAuthHeader();
+      const res = await fetch(
+        `${API_ENDPOINTS.ADMIN.ABANDONED_CARTS}?page=${abandonedPage}&limit=15&sort=${abandonedSort}&status=${abandonedStatusFilter}&search=${encodeURIComponent(abandonedSearchQuery)}`,
+        { headers }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data.carts && Array.isArray(data.carts)) setAbandonedCartsList(data.carts);
+        if (data.stats) setAbandonedStats(data.stats);
+        if (data.total !== undefined) setAbandonedTotal(data.total);
+        if (data.totalPages !== undefined) setAbandonedTotalPages(data.totalPages);
+      }
+    } catch (e) {
+      console.error('Abandoned carts query error:', e);
+    } finally {
+      setLoadingAbandonedCarts(false);
+    }
+  };
+
+  const fetchNotificationsHistory = async () => {
+    try {
+      setLoadingNotifications(true);
+      const headers = getAuthHeader();
+      const res = await fetch(
+        `${API_ENDPOINTS.ADMIN.NOTIFICATIONS}?page=${notificationsPage}&limit=${notificationsLimit}&type=${notificationTypeFilter}&audience=${notificationAudienceFilter}&search=${encodeURIComponent(notificationSearchQuery)}`,
+        { headers }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data.notifications && Array.isArray(data.notifications)) setNotificationsList(data.notifications);
+        if (data.stats) setNotificationStats(data.stats);
+        if (data.total !== undefined) setNotificationsTotal(data.total);
+        if (data.totalPages !== undefined) setNotificationsTotalPages(data.totalPages);
+      }
+    } catch (e) {
+      console.error('Notifications query error:', e);
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+
+  // Search customers for targeted notification delivery
+  const handleSearchCustomersForNotification = async (query) => {
+    setCustomerSearchInput(query);
+    if (!query || query.trim().length < 2) {
+      setCustomerSearchResults([]);
+      return;
+    }
+    try {
+      setSearchingCustomers(true);
+      const headers = getAuthHeader();
+      const res = await fetch(
+        `${API_ENDPOINTS.ADMIN.CUSTOMERS}?page=1&limit=8&search=${encodeURIComponent(query.trim())}`,
+        { headers }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setCustomerSearchResults(data.customers || []);
+      }
+    } catch (err) {
+      console.error('Customer search error:', err);
+    } finally {
+      setSearchingCustomers(false);
+    }
+  };
+
+  const handleSelectTargetCustomer = (cust) => {
+    setSelectedCustomerPreview(cust);
+    setNotificationForm((prev) => ({
+      ...prev,
+      target_audience: 'specific',
+      user_id: cust.id,
+    }));
+    setCustomerSearchInput('');
+    setCustomerSearchResults([]);
+  };
+
+  // Dispatch new notification alert
+  const handleSendNotification = async (e) => {
+    if (e) e.preventDefault();
+    if (!notificationForm.title.trim()) {
+      showToast('danger', 'Please enter a notification title.');
+      return;
+    }
+    if (!notificationForm.message.trim()) {
+      showToast('danger', 'Please enter a notification message.');
+      return;
+    }
+    if (notificationForm.target_audience === 'specific' && !notificationForm.user_id) {
+      showToast('danger', 'Please select a target customer for specific delivery.');
+      return;
+    }
+
+    try {
+      setSendingNotification(true);
+      const headers = {
+        ...getAuthHeader(),
+        'Content-Type': 'application/json',
+      };
+      const res = await fetch(API_ENDPOINTS.ADMIN.NOTIFICATION_SEND, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          title: notificationForm.title.trim(),
+          message: notificationForm.message.trim(),
+          type: notificationForm.type,
+          target_audience: notificationForm.target_audience,
+          user_id: notificationForm.target_audience === 'specific' ? notificationForm.user_id : null,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('success', data.message || 'Notification dispatched successfully!');
+        setNotificationForm({
+          title: '',
+          message: '',
+          type: 'promotional',
+          target_audience: 'all',
+          user_id: '',
+        });
+        setSelectedCustomerPreview(null);
+        setCustomerSearchInput('');
+        setCustomerSearchResults([]);
+        fetchNotificationsHistory();
+      } else {
+        showToast('danger', data.message || 'Failed to dispatch notification.');
+      }
+    } catch (err) {
+      console.error('Dispatch notification error:', err);
+      showToast('danger', 'Network error while dispatching notification.');
+    } finally {
+      setSendingNotification(false);
+    }
+  };
+
+  // Retract / Delete notification alert
+  const handleDeleteNotification = (notif) => {
+    triggerConfirm({
+      title: 'Retract / Delete Notification',
+      message: `Are you sure you want to retract notification #${notif.id} "${notif.title}"? This will permanently remove it from users' inboxes.`,
+      confirmText: 'Retract Alert',
+      danger: true,
+      action: async () => {
+        try {
+          const headers = getAuthHeader();
+          const res = await fetch(API_ENDPOINTS.ADMIN.NOTIFICATION_DELETE(notif.id), {
+            method: 'DELETE',
+            headers,
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast('success', 'Notification deleted successfully.');
+            fetchNotificationsHistory();
+          } else {
+            showToast('danger', data.message || 'Failed to retract notification.');
+          }
+        } catch (err) {
+          console.error('Delete notification error:', err);
+          showToast('danger', 'Network error while deleting notification.');
+        }
+      },
+    });
+  };
+
   useEffect(() => {
     if (!adminAccessGranted) return;
-
-    const fetchAdminData = async () => {
-      try {
-        setLoading(true);
-        // Analytics
-        const analyticsRes = await fetch(API_ENDPOINTS.ADMIN.ANALYTICS);
-        if (analyticsRes.ok) {
-          const data = await analyticsRes.json();
-          if (data.analytics) setAnalytics(data.analytics);
-        }
-        // Products
-        const productsRes = await fetch(API_ENDPOINTS.PRODUCTS);
-        if (productsRes.ok) {
-          const pData = await productsRes.json();
-          const list = Array.isArray(pData) ? pData : pData?.products || [];
-          if (Array.isArray(list)) setProducts(list);
-        }
-        // Categories
-        const categoriesRes = await fetch(API_ENDPOINTS.CATEGORIES);
-        if (categoriesRes.ok) {
-          const catData = await categoriesRes.json();
-          const list = Array.isArray(catData) ? catData : catData?.categories || [];
-          if (Array.isArray(list)) setCategories(list);
-        }
-        // Video Reels
-        const reelsRes = await fetch('/api/videos');
-        if (reelsRes.ok) {
-          const rData = await reelsRes.json();
-          const list = rData?.videos || (Array.isArray(rData) ? rData : []);
-          if (Array.isArray(list)) setReelsList(list);
-        }
-        // Testimonials
-        const testimonialsRes = await fetch('/api/testimonials');
-        if (testimonialsRes.ok) {
-          const tData = await testimonialsRes.json();
-          const list = Array.isArray(tData) ? tData : tData?.testimonials || tData?.data || [];
-          if (Array.isArray(list)) setTestimonialsList(list);
-        }
-        // Reviews
-        const reviewsRes = await fetch('/api/products/reviews/all');
-        if (reviewsRes.ok) {
-          const rData = await reviewsRes.json();
-          if (rData.success && Array.isArray(rData.reviews)) setReviewsList(rData.reviews);
-        }
-        // Blogs
-        const blogsRes = await fetch(API_ENDPOINTS.BLOGS);
-        if (blogsRes.ok) {
-          const bData = await blogsRes.json();
-          const list = Array.isArray(bData) ? bData : bData?.blogs || [];
-          if (Array.isArray(list)) setBlogsList(list);
-        }
-        // Coupons
-        const couponsRes = await fetch(API_ENDPOINTS.COUPONS, {
-          headers: { 'x-admin-passcode': 'admin123' },
-        });
-        if (couponsRes.ok) {
-          const cData = await couponsRes.json();
-          const list = Array.isArray(cData) ? cData : cData?.coupons || [];
-          if (Array.isArray(list)) setCoupons(list);
-        }
-        // FAQs
-        const faqsRes = await fetch(API_ENDPOINTS.FAQS);
-        if (faqsRes.ok) {
-          const fData = await faqsRes.json();
-          const list = Array.isArray(fData) ? fData : fData?.faqs || [];
-          if (Array.isArray(list)) setFaqsList(list);
-        }
-        // Terms
-        const termsRes = await fetch(API_ENDPOINTS.TERMS);
-        if (termsRes.ok) {
-          const tData = await termsRes.json();
-          if (tData?.terms) setTermsData(tData.terms);
-        }
-      } catch (err) {
-        console.warn('Backend API note: Synchronized with local state.', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchAdminData();
-  }, [adminAccessGranted]);
+  }, [adminAccessGranted, ordersPagination.page, customersPagination.page, auditLogsPagination.page]);
 
-  // Image Upload Handler (.jpg, .png, .jpeg, .webp only)
-  const handleImageFileUpload = async (e, targetFormSetter) => {
-    const file = e.target.files[0];
+  // Debounced search for notification dispatch history
+  useEffect(() => {
+    if (!adminAccessGranted || activeTab !== 'notifications') return;
+    const timer = setTimeout(() => {
+      fetchNotificationsHistory();
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [notificationSearchQuery, notificationTypeFilter, notificationAudienceFilter, notificationsPage, notificationsLimit, activeTab]);
+
+  // Debounced search for abandoned carts
+  useEffect(() => {
+    if (!adminAccessGranted || activeTab !== 'abandoned_carts') return;
+    const timer = setTimeout(() => {
+      fetchAbandonedCarts();
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [abandonedSearchQuery, abandonedSort, abandonedStatusFilter, abandonedPage, activeTab]);
+
+  // Debounced search for orders
+  useEffect(() => {
+    if (!adminAccessGranted) return;
+    const timer = setTimeout(async () => {
+      try {
+        const headers = getAuthHeader();
+        const res = await fetch(
+          `${API_ENDPOINTS.ADMIN.ORDERS}?page=1&limit=${ordersPagination.limit}&status=${orderStatusFilter}&search=${encodeURIComponent(orderSearchQuery)}`,
+          { headers }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (data.orders) {
+            setOrders(data.orders);
+            setOrdersPagination((prev) => ({ ...prev, page: 1, total: data.total || 0, totalPages: data.totalPages || 1 }));
+          }
+        }
+      } catch (e) {
+        console.error('Orders search query error:', e);
+      }
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [orderSearchQuery, orderStatusFilter]);
+
+  // Debounced search for customers
+  useEffect(() => {
+    if (!adminAccessGranted) return;
+    const timer = setTimeout(async () => {
+      try {
+        const headers = getAuthHeader();
+        const res = await fetch(
+          `${API_ENDPOINTS.ADMIN.CUSTOMERS}?page=1&limit=${customersPagination.limit}&search=${encodeURIComponent(customerSearchQuery)}`,
+          { headers }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (data.customers) {
+            setUsersList(data.customers);
+            setCustomersPagination((prev) => ({ ...prev, page: 1, total: data.total || 0, totalPages: data.totalPages || 1 }));
+          }
+        }
+      } catch (e) {
+        console.error('Customers search query error:', e);
+      }
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [customerSearchQuery]);
+
+  // Debounced filter for audit logs
+  useEffect(() => {
+    if (!adminAccessGranted || activeTab !== 'audit_logs') return;
+    const timer = setTimeout(async () => {
+      try {
+        const headers = getAuthHeader();
+        const res = await fetch(
+          `${API_ENDPOINTS.ADMIN.AUDIT_LOGS}?page=1&limit=${auditLogsPagination.limit}&action=${auditActionFilter}&entity_type=${auditEntityFilter}&search=${encodeURIComponent(auditSearchQuery)}`,
+          { headers }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          if (data.logs) {
+            setAuditLogsList(data.logs);
+            setAuditLogsPagination((prev) => ({ ...prev, page: 1, total: data.total || 0, totalPages: data.totalPages || 1 }));
+          }
+        }
+      } catch (e) {
+        console.error('Audit logs query error:', e);
+      }
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [auditActionFilter, auditEntityFilter, auditSearchQuery, activeTab]);
+
+  // Unified Secure Asset Upload Handler (.jpg, .png, .jpeg, .webp only, max 10MB)
+  const handleSecureAssetUpload = async (file, onUploadSuccess) => {
     if (!file) return;
 
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     const validExtensions = /\.(jpg|jpeg|png|webp)$/i;
 
     if (!validTypes.includes(file.type) && !validExtensions.test(file.name)) {
-      showToast('danger', 'Invalid file format! Only JPG, JPEG, PNG, and WEBP image files are allowed.');
-      e.target.value = '';
+      showToast('danger', 'Invalid file format! Only JPG, JPEG, PNG, and WEBP images are allowed. SVG and executables are forbidden.');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('danger', 'File size exceeds 10MB! Please compress the asset before uploading.');
       return;
     }
 
@@ -320,98 +784,82 @@ export default function Admin() {
     try {
       const response = await fetch(API_ENDPOINTS.UPLOAD, {
         method: 'POST',
+        headers: getAuthHeader(),
         body: formData,
       });
       const data = await response.json();
 
       if (response.ok && data.url) {
-        targetFormSetter((prev) => ({ ...prev, primary_image: data.url, image_url: data.url }));
+        onUploadSuccess(data.url);
         showToast('success', `Uploaded "${file.name}" successfully!`);
       } else {
-        const reader = new FileReader();
-        reader.onload = () => {
-          targetFormSetter((prev) => ({ ...prev, primary_image: reader.result, image_url: reader.result }));
-          showToast('success', `Loaded "${file.name}"`);
-        };
-        reader.readAsDataURL(file);
+        showToast('danger', data.message || `Upload failed for "${file.name}".`);
       }
     } catch (err) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        targetFormSetter((prev) => ({ ...prev, primary_image: reader.result, image_url: reader.result }));
-        showToast('success', `Loaded "${file.name}"`);
-      };
-      reader.readAsDataURL(file);
+      console.error('Asset upload error:', err);
+      showToast('danger', `Network error during asset upload for "${file.name}".`);
     } finally {
       setUploadingImage(false);
     }
   };
 
-  // Generic File Upload Handler for custom fields (e.g. author_avatar)
-  const handleGenericFileUpload = async (e, fieldName, targetFormSetter) => {
-    const file = e.target.files[0];
+  const handleImageFileUpload = (e, targetFormSetter) => {
+    const file = e.target.files?.[0];
     if (!file) return;
-
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    const validExtensions = /\.(jpg|jpeg|png|webp)$/i;
-
-    if (!validTypes.includes(file.type) && !validExtensions.test(file.name)) {
-      showToast('danger', 'Invalid file format! Only JPG, JPEG, PNG, and WEBP image files are allowed.');
-      e.target.value = '';
-      return;
-    }
-
-    setUploadingImage(true);
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const response = await fetch(API_ENDPOINTS.UPLOAD, {
-        method: 'POST',
-        body: formData,
-      });
-      const data = await response.json();
-
-      if (response.ok && data.url) {
-        targetFormSetter((prev) => ({ ...prev, [fieldName]: data.url }));
-        showToast('success', `Uploaded "${file.name}" successfully!`);
-      } else {
-        const reader = new FileReader();
-        reader.onload = () => {
-          targetFormSetter((prev) => ({ ...prev, [fieldName]: reader.result }));
-          showToast('success', `Loaded "${file.name}"`);
-        };
-        reader.readAsDataURL(file);
-      }
-    } catch (err) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        targetFormSetter((prev) => ({ ...prev, [fieldName]: reader.result }));
-        showToast('info', `Loaded "${file.name}" locally`);
-      };
-      reader.readAsDataURL(file);
-    } finally {
-      setUploadingImage(false);
-    }
+    handleSecureAssetUpload(file, (url) => {
+      targetFormSetter((prev) => ({ ...prev, primary_image: url, image_url: url }));
+    });
+    e.target.value = '';
   };
 
-  // Handle Admin Key Unlock
-  const handleAdminKeyLogin = (e) => {
+  const handleGenericFileUpload = (e, fieldName, targetFormSetter) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    handleSecureAssetUpload(file, (url) => {
+      targetFormSetter((prev) => ({ ...prev, [fieldName]: url }));
+    });
+    e.target.value = '';
+  };
+
+  // Handle Strictly Validated Admin Login via POST /api/auth/login
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    setPinError('');
+    setLoginError('');
+    setIsLoggingIn(true);
 
-    if (adminSecretPin.trim() === 'admin123' || (user && user.role === 'admin')) {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: adminEmail.trim(), password: adminPassword }),
+      });
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        setLoginError(data.message || 'Invalid email or password.');
+        return;
+      }
+
+      if (data.user?.role !== 'admin') {
+        setLoginError('Access denied. This account does not possess administrator privileges.');
+        return;
+      }
+
+      // Store tokens and update authentication state
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('wooff_token', data.token);
       localStorage.setItem('wooff_admin_access', 'true');
+      if (typeof login === 'function') {
+        login(data.token, data.user);
+      }
       setAdminAccessGranted(true);
-      showToast('success', 'Admin Control Center Unlocked!');
-    } else {
-      setPinError('Invalid Admin Passcode. Hint: Use demo passcode "admin123"');
+      showToast('success', `Welcome back, ${data.user.username || 'Admin'}!`);
+    } catch (err) {
+      console.error('Admin login error:', err);
+      setLoginError('Unable to connect to authentication server. Please try again.');
+    } finally {
+      setIsLoggingIn(false);
     }
-  };
-
-  const handleLogoutAdmin = () => {
-    localStorage.removeItem('wooff_admin_access');
-    setAdminAccessGranted(false);
   };
 
   // ===================================================================
@@ -443,7 +891,7 @@ export default function Admin() {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-passcode': 'admin123',
+          ...getAuthHeader(),
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(categoryForm),
@@ -459,60 +907,75 @@ export default function Admin() {
         } else {
           setCategories((prev) => [...prev, savedCat]);
         }
+        showToast('success', `Category "${categoryForm.name}" saved successfully!`);
+        setShowCategoryModal(false);
       } else {
-        if (isEdit) {
-          setCategories((prev) =>
-            prev.map((c) => (c.id === editingCategory.id ? { ...c, ...categoryForm } : c))
-          );
-        } else {
-          const newCat = {
-            id: Date.now(),
-            ...categoryForm,
-            slug: categoryForm.slug || categoryForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-          };
-          setCategories((prev) => [...prev, newCat]);
-        }
+        const data = await res.json().catch(() => ({}));
+        showToast('danger', data.message || 'Failed to save category on server.');
       }
     } catch (err) {
-      if (editingCategory) {
-        setCategories((prev) =>
-          prev.map((c) => (c.id === editingCategory.id ? { ...c, ...categoryForm } : c))
-        );
-      } else {
-        const newCat = {
-          id: Date.now(),
-          ...categoryForm,
-          slug: categoryForm.slug || categoryForm.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-        };
-        setCategories((prev) => [...prev, newCat]);
-      }
+      console.error('Save category error:', err);
+      showToast('danger', 'Network error while saving category.');
     }
-
-    showToast('success', `Category "${categoryForm.name}" saved successfully!`);
-    setShowCategoryModal(false);
   };
 
-  const handleDeleteCategory = async (id, name) => {
-    if (!window.confirm(`Delete category "${name}"?`)) return;
+  // Custom Modal Confirmation System (Replaces native window.confirm)
+  const triggerConfirm = ({ title, message, confirmText = 'Confirm', danger = true, action }) => {
+    setConfirmConfig({
+      isOpen: true,
+      title,
+      message,
+      confirmText,
+      cancelText: 'Cancel',
+      danger,
+      loading: false,
+      action,
+    });
+  };
 
-    try {
-      const token = localStorage.getItem('token');
-      await fetch(`${API_ENDPOINTS.CATEGORIES}/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'x-admin-passcode': 'admin123',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      });
-    } catch (err) {
-      console.warn('API delete category note: update local state', err);
+  const handleModalConfirm = async () => {
+    if (confirmConfig.action) {
+      try {
+        setConfirmConfig((prev) => ({ ...prev, loading: true }));
+        await confirmConfig.action();
+      } catch (err) {
+        console.error('Confirmation action error:', err);
+      } finally {
+        setConfirmConfig((prev) => ({ ...prev, isOpen: false, loading: false }));
+      }
+    } else {
+      setConfirmConfig((prev) => ({ ...prev, isOpen: false }));
     }
-    setCategories((prev) => prev.filter((c) => c.id !== id));
-    showToast('success', `Category "${name}" deleted.`);
+  };
+
+  const handleDeleteCategory = (id, name) => {
+    triggerConfirm({
+      title: 'Delete Category',
+      message: `Are you sure you want to delete category "${name}"? Products mapped to this category may be affected.`,
+      confirmText: 'Delete Category',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(`${API_ENDPOINTS.CATEGORIES}/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeader(),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            throw new Error(data.message || 'Failed to delete category on server.');
+          }
+          setCategories((prev) => prev.filter((c) => c.id !== id));
+          showToast('success', `Category "${name}" deleted.`);
+        } catch (err) {
+          console.error('API delete category error:', err);
+          showToast('danger', err.message || 'Error deleting category.');
+        }
+      },
+    });
   };
 
   // ===================================================================
-  // 1. PRODUCTS CRUD HANDLERS
+  // 1. PRODUCTS CRUD HANDLERS (Dynamic Variants & Stock Thresholds)
   // ===================================================================
   const handleOpenAddProduct = () => {
     setEditingProduct(null);
@@ -522,10 +985,13 @@ export default function Admin() {
       price: '',
       final_price: '',
       stock: 25,
-      sku: `WF-PROD-${Math.floor(100 + Math.random() * 900)}`,
-      primary_image: 'https://images.unsplash.com/photo-1559598467-f8b76c8155d0?auto=format&fit=crop&w=300&q=80',
-      description: '100% Prebiotic & Natural Kids Toothpaste',
+      sku: `WF-PROD-${Date.now().toString(36).toUpperCase()}`,
+      primary_image: '',
+      description: '',
       is_bestseller: false,
+      bundle_type: 'single',
+      low_stock_threshold: 10,
+      variants: [],
     });
     setShowProductModal(true);
   };
@@ -534,14 +1000,17 @@ export default function Admin() {
     setEditingProduct(prod);
     setProductForm({
       title: prod.title,
-      category_id: prod.category_id || 1,
+      category_id: prod.category_id || categories[0]?.id || 1,
       price: prod.price,
       final_price: prod.final_price,
       stock: prod.stock,
       sku: prod.sku,
-      primary_image: prod.primary_image,
+      primary_image: prod.primary_image || '',
       description: prod.description || '',
       is_bestseller: !!prod.is_bestseller,
+      bundle_type: prod.bundle_type || 'single',
+      low_stock_threshold: prod.low_stock_threshold ?? 10,
+      variants: Array.isArray(prod.variants) ? prod.variants : [],
     });
     setShowProductModal(true);
   };
@@ -549,24 +1018,45 @@ export default function Admin() {
   const handleToggleBestseller = async (id, currentVal) => {
     const newVal = !currentVal;
     try {
-      const token = localStorage.getItem('token');
       await fetch(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-passcode': 'admin123',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...getAuthHeader(),
         },
         body: JSON.stringify({ is_bestseller: newVal }),
       });
+      setProducts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, is_bestseller: newVal } : p))
+      );
+      showToast('success', `Product Bestseller status updated!`);
     } catch (err) {
       console.warn('Backend update note: Syncing local state', err);
     }
+  };
 
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, is_bestseller: newVal } : p))
-    );
-    showToast('success', `Product Bestseller status updated!`);
+  const handleToggleProductActive = async (id, currentActive) => {
+    try {
+      const res = await fetch(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify({ is_active: !currentActive }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setProducts((prev) =>
+          prev.map((p) => (p.id === id ? { ...p, is_active: !currentActive } : p))
+        );
+        showToast('success', `Product visibility changed to ${!currentActive ? 'ACTIVE' : 'INACTIVE'}!`);
+      } else {
+        showToast('danger', data.message || 'Failed to toggle product status.');
+      }
+    } catch (err) {
+      showToast('danger', 'Error updating product status.');
+    }
   };
 
   const handleSaveProduct = async (e) => {
@@ -583,21 +1073,26 @@ export default function Admin() {
         : API_ENDPOINTS.PRODUCTS;
       const method = isEdit ? 'PUT' : 'POST';
 
-      const token = localStorage.getItem('token');
+      const parsedPrice = Math.max(0, parseFloat(productForm.price) || 0);
+      const parsedFinalPrice = Math.max(0, parseFloat(productForm.final_price || productForm.price) || 0);
+      const parsedStock = Math.max(0, parseInt(productForm.stock || '0', 10) || 0);
+
       const payload = {
         ...productForm,
-        price: parseFloat(productForm.price),
-        final_price: parseFloat(productForm.final_price || productForm.price),
-        stock: parseInt(productForm.stock || '0', 10),
+        price: parsedPrice,
+        final_price: parsedFinalPrice,
+        stock: parsedStock,
         category_id: productForm.category_id || categories[0]?.id || 1,
+        bundle_type: productForm.bundle_type || 'single',
+        low_stock_threshold: parseInt(productForm.low_stock_threshold) || 10,
+        variants: productForm.variants || [],
       };
 
       const res = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-passcode': 'admin123',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...getAuthHeader(),
         },
         body: JSON.stringify(payload),
       });
@@ -627,23 +1122,30 @@ export default function Admin() {
     }
   };
 
-  const handleDeleteProduct = async (id, title) => {
-    if (!window.confirm(`Are you sure you want to delete product "${title}"?`)) return;
-
-    try {
-      const token = localStorage.getItem('token');
-      await fetch(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'x-admin-passcode': 'admin123',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      });
-    } catch (err) {
-      console.warn('API delete note: update local state', err);
-    }
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-    showToast('success', `Product "${title}" deleted.`);
+  const handleDeleteProduct = (id, title) => {
+    triggerConfirm({
+      title: 'Delete Product',
+      message: `Are you sure you want to permanently delete "${title}"? This product and all associated variants will be archived.`,
+      confirmText: 'Delete Product',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeader(),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            throw new Error(data.message || 'Failed to delete product on server.');
+          }
+          setProducts((prev) => prev.filter((p) => p.id !== id));
+          showToast('success', `Product "${title}" deleted.`);
+        } catch (err) {
+          console.error('Delete product error:', err);
+          showToast('danger', err.message || 'Error deleting product.');
+        }
+      },
+    });
   };
 
   // ===================================================================
@@ -722,7 +1224,7 @@ export default function Admin() {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-passcode': 'admin123',
+          ...getAuthHeader(),
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(payload),
@@ -738,93 +1240,131 @@ export default function Admin() {
         } else {
           setBlogsList((prev) => [savedBlog, ...prev]);
         }
+        showToast('success', `Blog article "${blogForm.title}" saved!`);
+        setShowBlogModal(false);
       } else {
-        if (isEdit) {
-          setBlogsList((prev) =>
-            prev.map((b) => (b.id === editingBlog.id ? { ...b, ...payload } : b))
-          );
-        } else {
-          const newBlog = {
-            id: Date.now(),
-            ...payload,
-            created_at: new Date().toISOString().split('T')[0],
-          };
-          setBlogsList((prev) => [newBlog, ...prev]);
-        }
+        const data = await res.json().catch(() => ({}));
+        showToast('danger', data.message || 'Failed to save blog article on server.');
       }
     } catch (err) {
-      if (editingBlog) {
-        setBlogsList((prev) =>
-          prev.map((b) => (b.id === editingBlog.id ? { ...b, ...payload } : b))
-        );
-      } else {
-        const newBlog = { id: Date.now(), ...payload, created_at: new Date().toISOString().split('T')[0] };
-        setBlogsList((prev) => [newBlog, ...prev]);
-      }
+      console.error('Save blog error:', err);
+      showToast('danger', 'Network error while saving blog article.');
     }
-
-    showToast('success', `Blog article "${blogForm.title}" saved!`);
-    setShowBlogModal(false);
   };
 
-  const handleDeleteBlog = async (id, title) => {
-    if (!window.confirm(`Are you sure you want to delete article "${title}"?`)) return;
-
-    try {
-      const token = localStorage.getItem('token');
-      await fetch(`${API_ENDPOINTS.BLOGS}/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'x-admin-passcode': 'admin123',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      });
-    } catch (err) {
-      console.warn('API delete note: update local state', err);
-    }
-    setBlogsList((prev) => prev.filter((b) => b.id !== id));
-    showToast('success', `Article "${title}" deleted.`);
+  const handleDeleteBlog = (id, title) => {
+    triggerConfirm({
+      title: 'Delete Blog Article',
+      message: `Are you sure you want to delete article "${title}"?`,
+      confirmText: 'Delete Article',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(`${API_ENDPOINTS.BLOGS}/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeader(),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            throw new Error(data.message || 'Failed to delete blog article on server.');
+          }
+          setBlogsList((prev) => prev.filter((b) => b.id !== id));
+          showToast('success', `Article "${title}" deleted.`);
+        } catch (err) {
+          console.error('Delete blog error:', err);
+          showToast('danger', err.message || 'Error deleting article.');
+        }
+      },
+    });
   };
 
   // ===================================================================
-  // 3. COUPONS CRUD HANDLERS
+  // 3. COUPONS & PROMOTIONS CRUD HANDLERS
   // ===================================================================
   const handleOpenAddCoupon = () => {
     setEditingCoupon(null);
-    setCouponForm({ code: '', discount_percent: 20, expiry_date: '2026-12-31', is_active: true });
+    setCouponForm({
+      code: '',
+      discount_type: 'percentage',
+      discount_value: 15,
+      min_order_value: 0,
+      usage_limit: '',
+      valid_from: new Date().toISOString().split('T')[0],
+      valid_until: '',
+      is_active: true,
+    });
     setShowCouponModal(true);
   };
 
   const handleOpenEditCoupon = (c) => {
     setEditingCoupon(c);
-    setCouponForm({ code: c.code, discount_percent: c.discount_percent, expiry_date: c.expiry_date, is_active: c.is_active });
+    setCouponForm({
+      code: c.code || '',
+      discount_type: c.discount_type || 'percentage',
+      discount_value: c.discount_value !== undefined ? c.discount_value : (c.discount_percent || 15),
+      min_order_value: c.min_order_value || c.min_cart_value || 0,
+      usage_limit: c.usage_limit ?? '',
+      valid_from: c.valid_from ? new Date(c.valid_from).toISOString().split('T')[0] : '',
+      valid_until: (c.valid_until || c.expires_at || c.expiry_date)
+        ? new Date(c.valid_until || c.expires_at || c.expiry_date).toISOString().split('T')[0]
+        : '',
+      is_active: c.is_active !== false,
+    });
     setShowCouponModal(true);
+  };
+
+  const handleToggleCouponActive = async (id, currentVal) => {
+    try {
+      const res = await fetch(`${API_ENDPOINTS.COUPONS}/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify({ is_active: !currentVal }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setCoupons((prev) =>
+          prev.map((c) => (c.id === id ? { ...c, is_active: !currentVal } : c))
+        );
+        showToast('success', `Coupon active status updated!`);
+      } else {
+        showToast('danger', data.message || 'Failed to update coupon status.');
+      }
+    } catch (err) {
+      showToast('danger', 'Network error while updating coupon status.');
+    }
   };
 
   const handleSaveCoupon = async (e) => {
     e.preventDefault();
-    if (!couponForm.code) return;
+    if (!couponForm.code || !couponForm.discount_value) {
+      showToast('danger', 'Please enter a coupon code and discount value.');
+      return;
+    }
 
     try {
       const isEdit = !!editingCoupon;
       const url = isEdit ? `${API_ENDPOINTS.COUPONS}/${editingCoupon.id}` : API_ENDPOINTS.COUPONS;
       const method = isEdit ? 'PUT' : 'POST';
-      const token = localStorage.getItem('token');
 
       const payload = {
-        code: couponForm.code.toUpperCase(),
-        discount_type: 'percentage',
-        discount_value: parseFloat(couponForm.discount_percent),
-        expires_at: couponForm.expiry_date,
-        is_active: couponForm.is_active,
+        code: couponForm.code.trim().toUpperCase(),
+        discount_type: couponForm.discount_type,
+        discount_value: parseFloat(couponForm.discount_value),
+        min_order_value: parseFloat(couponForm.min_order_value || 0),
+        usage_limit: couponForm.usage_limit !== '' ? parseInt(couponForm.usage_limit, 10) : null,
+        valid_from: couponForm.valid_from ? new Date(couponForm.valid_from).toISOString() : null,
+        valid_until: couponForm.valid_until ? new Date(couponForm.valid_until).toISOString() : null,
+        is_active: Boolean(couponForm.is_active),
       };
 
       const res = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-passcode': 'admin123',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...getAuthHeader(),
         },
         body: JSON.stringify(payload),
       });
@@ -839,48 +1379,96 @@ export default function Admin() {
         } else {
           setCoupons((prev) => [savedCoupon, ...prev]);
         }
+        showToast('success', `Coupon "${payload.code}" saved successfully!`);
+        setShowCouponModal(false);
       } else {
-        if (isEdit) {
-          setCoupons((prev) =>
-            prev.map((c) => (c.id === editingCoupon.id ? { ...c, ...couponForm, code: couponForm.code.toUpperCase() } : c))
-          );
-        } else {
-          const newCoupon = { id: Date.now(), ...couponForm, code: couponForm.code.toUpperCase() };
-          setCoupons((prev) => [newCoupon, ...prev]);
-        }
+        const data = await res.json().catch(() => ({}));
+        showToast('danger', data.message || 'Failed to save coupon on server.');
       }
     } catch (err) {
-      if (editingCoupon) {
-        setCoupons((prev) =>
-          prev.map((c) => (c.id === editingCoupon.id ? { ...c, ...couponForm } : c))
-        );
-      } else {
-        const newCoupon = { id: Date.now(), ...couponForm };
-        setCoupons((prev) => [newCoupon, ...prev]);
-      }
+      console.error('Save coupon error:', err);
+      showToast('danger', 'Network error while saving coupon.');
     }
-
-    showToast('success', `Coupon "${couponForm.code.toUpperCase()}" saved!`);
-    setShowCouponModal(false);
   };
 
-  const handleDeleteCoupon = async (id, code) => {
-    if (!window.confirm(`Delete coupon "${code}"?`)) return;
+  const handleDeleteCoupon = (id, code) => {
+    triggerConfirm({
+      title: 'Delete Coupon',
+      message: `Are you sure you want to delete promo coupon "${code}"?`,
+      confirmText: 'Delete Coupon',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(`${API_ENDPOINTS.COUPONS}/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeader(),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            throw new Error(data.message || 'Failed to delete coupon on server.');
+          }
+          setCoupons((prev) => prev.filter((c) => c.id !== id));
+          showToast('success', `Coupon "${code}" deleted.`);
+        } catch (err) {
+          console.error('Delete coupon error:', err);
+          showToast('danger', err.message || 'Error deleting coupon.');
+        }
+      },
+    });
+  };
 
+  // ===================================================================
+  // ABANDONED CARTS & REVENUE RECOVERY HANDLERS
+  // ===================================================================
+  const handleUpdateCartRecoveryStatus = async (id, newStatus) => {
     try {
-      const token = localStorage.getItem('token');
-      await fetch(`${API_ENDPOINTS.COUPONS}/${id}`, {
-        method: 'DELETE',
+      const res = await fetch(API_ENDPOINTS.ADMIN.ABANDONED_CART_STATUS(id), {
+        method: 'PUT',
         headers: {
-          'x-admin-passcode': 'admin123',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
         },
+        body: JSON.stringify({ status: newStatus }),
       });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setAbandonedCartsList((prev) =>
+          prev.map((cart) => (cart.id === id ? { ...cart, recovery_status: newStatus } : cart))
+        );
+        showToast('success', `Cart recovery status updated to ${newStatus.toUpperCase()}!`);
+        fetchAbandonedCarts();
+      } else {
+        showToast('danger', data.message || 'Failed to update recovery status.');
+      }
     } catch (err) {
-      console.warn('API delete note: update local state', err);
+      showToast('danger', 'Error updating recovery status.');
     }
-    setCoupons((prev) => prev.filter((c) => c.id !== id));
-    showToast('success', `Coupon "${code}" deleted.`);
+  };
+
+  const handleDeleteAbandonedCart = (id, email) => {
+    triggerConfirm({
+      title: 'Delete Abandoned Cart',
+      message: `Are you sure you want to delete the abandoned cart record for ${email || 'this customer'}?`,
+      confirmText: 'Delete Record',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(API_ENDPOINTS.ADMIN.ABANDONED_CART_DELETE(id), {
+            method: 'DELETE',
+            headers: getAuthHeader(),
+          });
+          if (res.ok) {
+            setAbandonedCartsList((prev) => prev.filter((c) => c.id !== id));
+            showToast('success', 'Abandoned cart record removed.');
+            fetchAbandonedCarts();
+          } else {
+            showToast('danger', 'Failed to delete record.');
+          }
+        } catch (err) {
+          showToast('danger', 'Error connecting to server.');
+        }
+      },
+    });
   };
 
   // ===================================================================
@@ -900,20 +1488,21 @@ export default function Admin() {
 
   const handleSaveFaq = async (e) => {
     e.preventDefault();
-    if (!faqForm.question || !faqForm.answer) return;
+    if (!faqForm.question || !faqForm.answer) {
+      showToast('danger', 'Both question and answer are required.');
+      return;
+    }
 
     try {
       const isEdit = !!editingFaq;
       const url = isEdit ? `${API_ENDPOINTS.FAQS}/${editingFaq.id}` : API_ENDPOINTS.FAQS;
       const method = isEdit ? 'PUT' : 'POST';
-      const token = localStorage.getItem('token');
 
       const res = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-passcode': 'admin123',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...getAuthHeader(),
         },
         body: JSON.stringify(faqForm),
       });
@@ -928,48 +1517,42 @@ export default function Admin() {
         } else {
           setFaqsList((prev) => [...prev, savedFaq]);
         }
+        showToast('success', 'FAQ saved successfully!');
+        setShowFaqModal(false);
       } else {
-        if (isEdit) {
-          setFaqsList((prev) =>
-            prev.map((f) => (f.id === editingFaq.id ? { ...f, ...faqForm } : f))
-          );
-        } else {
-          const newFaq = { id: Date.now(), ...faqForm };
-          setFaqsList((prev) => [...prev, newFaq]);
-        }
+        const data = await res.json().catch(() => ({}));
+        showToast('danger', data.message || 'Failed to save FAQ on server.');
       }
     } catch (err) {
-      if (editingFaq) {
-        setFaqsList((prev) =>
-          prev.map((f) => (f.id === editingFaq.id ? { ...f, ...faqForm } : f))
-        );
-      } else {
-        const newFaq = { id: Date.now(), ...faqForm };
-        setFaqsList((prev) => [...prev, newFaq]);
-      }
+      console.error('Save FAQ error:', err);
+      showToast('danger', 'Network error while saving FAQ.');
     }
-
-    showToast('success', 'FAQ saved successfully!');
-    setShowFaqModal(false);
   };
 
-  const handleDeleteFaq = async (id) => {
-    if (!window.confirm('Delete this FAQ entry?')) return;
-
-    try {
-      const token = localStorage.getItem('token');
-      await fetch(`${API_ENDPOINTS.FAQS}/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'x-admin-passcode': 'admin123',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-      });
-    } catch (err) {
-      console.warn('API delete note: update local state', err);
-    }
-    setFaqsList((prev) => prev.filter((f) => f.id !== id));
-    showToast('success', 'FAQ deleted.');
+  const handleDeleteFaq = (id) => {
+    triggerConfirm({
+      title: 'Delete FAQ',
+      message: 'Are you sure you want to delete this FAQ entry?',
+      confirmText: 'Delete FAQ',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(`${API_ENDPOINTS.FAQS}/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeader(),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            throw new Error(data.message || 'Failed to delete FAQ on server.');
+          }
+          setFaqsList((prev) => prev.filter((f) => f.id !== id));
+          showToast('success', 'FAQ deleted.');
+        } catch (err) {
+          console.error('Delete FAQ error:', err);
+          showToast('danger', err.message || 'Error deleting FAQ.');
+        }
+      },
+    });
   };
 
   // ===================================================================
@@ -983,7 +1566,7 @@ export default function Admin() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-passcode': 'admin123',
+          ...getAuthHeader(),
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: JSON.stringify(termsData),
@@ -1005,37 +1588,68 @@ export default function Admin() {
   };
 
   // Orders Status Change Handler
-  const handleUpdateOrderStatus = (orderId, newStatus) => {
-    setOrders((prev) =>
-      prev.map((ord) => (ord.id === orderId ? { ...ord, order_status: newStatus } : ord))
-    );
-    showToast('success', `Order ${orderId} status updated to "${newStatus.toUpperCase()}"!`);
+  const handleUpdateOrderStatus = async (orderId, newStatus) => {
+    try {
+      const res = await fetch(`/api/orders/${orderId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify({ order_status: newStatus }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setOrders((prev) =>
+          prev.map((ord) => (ord.id === orderId ? { ...ord, order_status: newStatus } : ord))
+        );
+        showToast('success', `Order status updated to "${newStatus.toUpperCase()}"!`);
+        // Refresh live analytics
+        const aRes = await fetch(API_ENDPOINTS.ADMIN.ANALYTICS, { headers: getAuthHeader() });
+        if (aRes.ok) {
+          const aData = await aRes.json();
+          if (aData.analytics) setAnalytics(aData.analytics);
+        }
+      } else {
+        showToast('error', data.message || 'Failed to update order status');
+      }
+    } catch (err) {
+      console.error('Update order status error:', err);
+      showToast('error', 'Error updating order status');
+    }
   };
 
 
-  const handleDeleteReviewInAdmin = async (id) => {
-    if (!window.confirm('Are you sure you want to permanently delete this customer review?')) return;
-    try {
-      const res = await fetch(`/api/products/reviews/${id}`, {
-        method: 'DELETE',
-        headers: { 'x-admin-passcode': 'admin123' },
-      });
-      const data = await res.json();
-      if (data.success) {
-        setReviewsList((prev) => prev.filter((r) => r.id !== id));
-        showToast('success', 'Customer review deleted successfully!');
-        const pRes = await fetch(API_ENDPOINTS.PRODUCTS);
-        if (pRes.ok) {
-          const pData = await pRes.json();
-          const list = Array.isArray(pData) ? pData : pData?.products || [];
-          if (Array.isArray(list)) setProducts(list);
+  const handleDeleteReviewInAdmin = (id) => {
+    triggerConfirm({
+      title: 'Delete Customer Review',
+      message: 'Are you sure you want to permanently delete this customer review? Rating averages will recalculate.',
+      confirmText: 'Delete Review',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(`/api/products/reviews/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${getAuthToken()}` },
+          });
+          const data = await res.json();
+          if (data.success) {
+            setReviewsList((prev) => prev.filter((r) => r.id !== id));
+            showToast('success', 'Customer review deleted successfully!');
+            const pRes = await fetch(API_ENDPOINTS.PRODUCTS);
+            if (pRes.ok) {
+              const pData = await pRes.json();
+              const list = Array.isArray(pData) ? pData : pData?.products || [];
+              if (Array.isArray(list)) setProducts(list);
+            }
+          } else {
+            showToast('danger', data.message || 'Failed to delete review.');
+          }
+        } catch (err) {
+          showToast('danger', 'Error connecting to server.');
         }
-      } else {
-        showToast('danger', data.message || 'Failed to delete review.');
-      }
-    } catch (err) {
-      showToast('danger', 'Error connecting to server.');
-    }
+      },
+    });
   };
 
   // ===================================================================
@@ -1132,7 +1746,7 @@ export default function Admin() {
       const res = await fetch(url, {
         method,
         headers: {
-          'x-admin-passcode': 'admin123',
+          ...getAuthHeader(),
         },
         body: formData,
       });
@@ -1158,23 +1772,30 @@ export default function Admin() {
     }
   };
 
-  const handleDeleteReel = async (id) => {
-    if (!window.confirm('Delete this video reel?')) return;
-    try {
-      const res = await fetch(`/api/videos/${id}`, {
-        method: 'DELETE',
-        headers: { 'x-admin-passcode': 'admin123' },
-      });
-      const data = await res.json();
-      if (data.success) {
-        setReelsList((prev) => prev.filter((r) => r.id !== id));
-        showToast('success', 'Video reel deleted successfully.');
-      } else {
-        showToast('danger', data.message || 'Failed to delete video reel.');
-      }
-    } catch (err) {
-      showToast('danger', 'Error connecting to server.');
-    }
+  const handleDeleteReel = (id) => {
+    triggerConfirm({
+      title: 'Delete Video Reel',
+      message: 'Are you sure you want to delete this video reel?',
+      confirmText: 'Delete Reel',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(`/api/videos/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${getAuthToken()}` },
+          });
+          const data = await res.json();
+          if (data.success) {
+            setReelsList((prev) => prev.filter((r) => r.id !== id));
+            showToast('success', 'Video reel deleted successfully.');
+          } else {
+            showToast('danger', data.message || 'Failed to delete video reel.');
+          }
+        } catch (err) {
+          showToast('danger', 'Error connecting to server.');
+        }
+      },
+    });
   };
 
   // ===================================================================
@@ -1222,7 +1843,7 @@ export default function Admin() {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'x-admin-passcode': 'admin123',
+          ...getAuthHeader(),
         },
         body: JSON.stringify(payload),
       });
@@ -1246,26 +1867,264 @@ export default function Admin() {
     }
   };
 
-  const handleDeleteTestimonial = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this testimonial?')) return;
+  const handleDeleteTestimonial = (id) => {
+    triggerConfirm({
+      title: 'Delete Testimonial',
+      message: 'Are you sure you want to delete this customer testimonial?',
+      confirmText: 'Delete Testimonial',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(`/api/testimonials/${id}`, {
+            method: 'DELETE',
+            headers: { Authorization: `Bearer ${getAuthToken()}` },
+          });
+          const data = await res.json();
+          if (data.success) {
+            setTestimonialsList((prev) => prev.filter((t) => t.id !== id));
+            showToast('success', 'Testimonial deleted successfully.');
+          } else {
+            showToast('danger', data.message || 'Failed to delete testimonial.');
+          }
+        } catch (err) {
+          showToast('danger', 'Error connecting to server.');
+        }
+      },
+    });
+  };
+
+  // ===================================================================
+  // 8. LOGISTICS, CSV EXPORT & PACKING SLIP WORKFLOWS
+  // ===================================================================
+  const handleShiprocketFulfill = async (orderId) => {
     try {
-      const res = await fetch(`/api/testimonials/${id}`, {
-        method: 'DELETE',
-        headers: { 'x-admin-passcode': 'admin123' },
+      setFulfillingOrderId(orderId);
+      const res = await fetch(API_ENDPOINTS.ADMIN.ORDER_SHIPROCKET_FULFILL(orderId), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
       });
       const data = await res.json();
-      if (data.success) {
-        setTestimonialsList((prev) => prev.filter((t) => t.id !== id));
-        showToast('success', 'Testimonial deleted successfully.');
+      if (res.ok && data.success) {
+        showToast('success', `Order dispatched! Shiprocket AWB: ${data.data?.awb_code || 'Generated'}`);
+        fetchAdminData();
       } else {
-        showToast('danger', data.message || 'Failed to delete testimonial.');
+        showToast('danger', data.message || 'Shiprocket dispatch failed.');
       }
     } catch (err) {
-      showToast('danger', 'Error connecting to server.');
+      showToast('danger', 'Network error during Shiprocket dispatch.');
+    } finally {
+      setFulfillingOrderId(null);
     }
   };
 
-  // If Admin Lock Active, render Passcode Screen
+  const handleCancelOrderPrompt = (order) => {
+    triggerConfirm({
+      title: `Cancel Order #${order.order_number || order.id}`,
+      message: `Are you sure you want to cancel this order? All items will be restocked to inventory and status marked as CANCELLED.`,
+      confirmText: 'Cancel Order & Restock',
+      danger: true,
+      action: async () => {
+        try {
+          setCancellingOrderId(order.id);
+          const res = await fetch(API_ENDPOINTS.ADMIN.ORDER_CANCEL(order.id), {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...getAuthHeader(),
+            },
+            body: JSON.stringify({ reason: 'Admin panel cancellation with inventory restock' }),
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast('success', 'Order cancelled and product inventory restocked!');
+            fetchAdminData();
+          } else {
+            showToast('danger', data.message || 'Failed to cancel order.');
+          }
+        } catch (err) {
+          showToast('danger', 'Network error while cancelling order.');
+        } finally {
+          setCancellingOrderId(null);
+        }
+      },
+    });
+  };
+
+  const handleExportOrdersCsv = async () => {
+    try {
+      const url = `${API_ENDPOINTS.ADMIN.EXPORT_ORDERS_CSV}?status=${orderStatusFilter}&search=${encodeURIComponent(orderSearchQuery)}`;
+      const res = await fetch(url, { headers: getAuthHeader() });
+      if (!res.ok) throw new Error('Export failed');
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `wooff_orders_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast('success', 'Orders CSV exported successfully!');
+    } catch (err) {
+      showToast('danger', 'Failed to export orders CSV.');
+    }
+  };
+
+  const handleExportCustomersCsv = async () => {
+    try {
+      const url = `${API_ENDPOINTS.ADMIN.EXPORT_CUSTOMERS_CSV}?search=${encodeURIComponent(customerSearchQuery)}`;
+      const res = await fetch(url, { headers: getAuthHeader() });
+      if (!res.ok) throw new Error('Export failed');
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `wooff_customers_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast('success', 'Customers CSV exported successfully!');
+    } catch (err) {
+      showToast('danger', 'Failed to export customers CSV.');
+    }
+  };
+
+  const handleOpenInvoice = (order) => {
+    setInvoiceModalState({
+      isOpen: true,
+      orderId: order.id,
+      order: order,
+    });
+  };
+
+  // ===================================================================
+  // 9. HERO INGREDIENTS CMS HANDLERS
+  // ===================================================================
+  const handleOpenAddIngredient = () => {
+    setEditingIngredient(null);
+    setIngredientForm({
+      name: '',
+      slug: '',
+      sub_title: '',
+      tag: 'Formulation Asset',
+      description: '',
+      benefits: '',
+      badge_text: 'Bio-Active',
+      icon_url: '/assets/tooth_paste.webp',
+      display_order: ingredientsList.length + 1,
+      is_active: true,
+    });
+    setShowIngredientModal(true);
+  };
+
+  const handleOpenEditIngredient = (ing) => {
+    setEditingIngredient(ing);
+    setIngredientForm({
+      name: ing.name || '',
+      slug: ing.slug || '',
+      sub_title: ing.sub_title || '',
+      tag: ing.tag || '',
+      description: ing.description || '',
+      benefits: Array.isArray(ing.benefits) ? ing.benefits.join('\n') : (ing.benefits || ''),
+      badge_text: ing.badge_text || '',
+      icon_url: ing.icon_url || '',
+      display_order: ing.display_order || 1,
+      is_active: ing.is_active !== false,
+    });
+    setShowIngredientModal(true);
+  };
+
+  const handleSaveIngredient = async (e) => {
+    e.preventDefault();
+    if (!ingredientForm.name || !ingredientForm.description) {
+      showToast('danger', 'Ingredient Name and Description are required.');
+      return;
+    }
+
+    try {
+      const isEdit = !!editingIngredient;
+      const url = isEdit ? `${API_ENDPOINTS.INGREDIENTS}/${editingIngredient.id}` : API_ENDPOINTS.INGREDIENTS;
+      const method = isEdit ? 'PUT' : 'POST';
+
+      const benefitsArray = typeof ingredientForm.benefits === 'string'
+        ? ingredientForm.benefits.split('\n').map((b) => b.trim()).filter(Boolean)
+        : ingredientForm.benefits;
+
+      const payload = {
+        ...ingredientForm,
+        benefits: benefitsArray,
+        display_order: parseInt(ingredientForm.display_order) || 1,
+      };
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('success', `Ingredient "${ingredientForm.name}" saved successfully!`);
+        setShowIngredientModal(false);
+        const refRes = await fetch(API_ENDPOINTS.INGREDIENTS);
+        if (refRes.ok) {
+          const rData = await refRes.json();
+          if (rData.ingredients) setIngredientsList(rData.ingredients);
+        }
+      } else {
+        showToast('danger', data.message || 'Failed to save ingredient.');
+      }
+    } catch (err) {
+      showToast('danger', 'Network error while saving ingredient.');
+    }
+  };
+
+  const handleDeleteIngredient = (id, name) => {
+    triggerConfirm({
+      title: 'Delete Hero Ingredient',
+      message: `Are you sure you want to delete formulation ingredient "${name}"?`,
+      confirmText: 'Delete Ingredient',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(`${API_ENDPOINTS.INGREDIENTS}/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeader(),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data.message || 'Failed to delete ingredient.');
+          setIngredientsList((prev) => prev.filter((i) => i.id !== id));
+          showToast('success', `Ingredient "${name}" deleted.`);
+        } catch (err) {
+          showToast('danger', err.message || 'Error deleting ingredient.');
+        }
+      },
+    });
+  };
+
+  const handleToggleIngredientActive = async (id, currentActive) => {
+    try {
+      const res = await fetch(`${API_ENDPOINTS.INGREDIENTS}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+        body: JSON.stringify({ is_active: !currentActive }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setIngredientsList((prev) => prev.map((i) => (i.id === id ? { ...i, is_active: !currentActive } : i)));
+        showToast('success', `Ingredient status updated.`);
+      }
+    } catch (err) {
+      showToast('danger', 'Failed to update ingredient status.');
+    }
+  };
+
+  // If Admin Lock Active, render Admin Login Screen
   if (!adminAccessGranted) {
     return (
       <div className="container py-5">
@@ -1277,40 +2136,58 @@ export default function Admin() {
             Wooff Admin Control Center
           </h2>
           <p className="text-muted small mb-4">
-            Enter secret Admin Passcode to access inventory, blogs, FAQs, coupons & analytics.
+            Authorized administrator credentials required. Please sign in with your admin account.
           </p>
 
-          {pinError && (
-            <div className="alert alert-danger py-2 small mb-3 rounded-3 fw-bold">
-              {pinError}
+          {loginError && (
+            <div className="alert alert-danger py-2 small mb-3 rounded-3 fw-bold" role="alert">
+              <i className="fa-solid fa-circle-exclamation me-2"></i>
+              {loginError}
             </div>
           )}
 
-          <form onSubmit={handleAdminKeyLogin}>
+          <form onSubmit={handleAdminLogin}>
             <div className="mb-3 text-start">
-              <label className="form-label small fw-bold text-muted">Admin Secret Passcode</label>
+              <label className="form-label small fw-bold text-muted">Admin Email</label>
+              <input
+                type="email"
+                className="form-control form-control-lg rounded-3 border-2"
+                placeholder="admin@wooff.care"
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
+            </div>
+            <div className="mb-3 text-start">
+              <label className="form-label small fw-bold text-muted">Password</label>
               <input
                 type="password"
                 className="form-control form-control-lg rounded-3 border-2"
-                placeholder="Enter passcode (Demo: admin123)"
-                value={adminSecretPin}
-                onChange={(e) => setAdminSecretPin(e.target.value)}
+                placeholder="Enter password"
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
                 required
+                autoComplete="current-password"
               />
             </div>
             <button
               type="submit"
               className="admin-btn admin-btn-primary w-100 py-3 text-center justify-content-center fw-bold"
+              disabled={isLoggingIn}
             >
-              Unlock Control Center <i className="fa-solid fa-arrow-right ms-2"></i>
+              {isLoggingIn ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                  Verifying Credentials...
+                </>
+              ) : (
+                <>
+                  Sign In to Control Center <i className="fa-solid fa-arrow-right ms-2"></i>
+                </>
+              )}
             </button>
           </form>
-
-          <div className="mt-4 pt-3 border-top">
-            <span className="badge bg-warning text-dark px-3 py-2 rounded-pill">
-              <i className="fa-solid fa-lightbulb me-1"></i> Demo Passcode: <strong>admin123</strong>
-            </span>
-          </div>
         </div>
       </div>
     );
@@ -1385,6 +2262,12 @@ export default function Admin() {
             <i className="fa-solid fa-truck-fast width-20"></i> Orders & Delivery
           </button>
           <button
+            className={`admin-nav-item ${activeTab === 'abandoned_carts' ? 'active' : ''}`}
+            onClick={() => setActiveTab('abandoned_carts')}
+          >
+            <i className="fa-solid fa-cart-arrow-down width-20"></i> Abandoned Carts ({abandonedStats.abandonedCount || 0})
+          </button>
+          <button
             className={`admin-nav-item ${activeTab === 'blogs' ? 'active' : ''}`}
             onClick={() => setActiveTab('blogs')}
           >
@@ -1395,6 +2278,12 @@ export default function Admin() {
             onClick={() => setActiveTab('coupons')}
           >
             <i className="fa-solid fa-tags width-20"></i> Coupons & Offers
+          </button>
+          <button
+            className={`admin-nav-item ${activeTab === 'notifications' ? 'active' : ''}`}
+            onClick={() => setActiveTab('notifications')}
+          >
+            <i className="fa-solid fa-bell width-20"></i> User Notifications ({notificationStats.totalDispatched || 0})
           </button>
           <button
             className={`admin-nav-item ${activeTab === 'faqs' ? 'active' : ''}`}
@@ -1415,10 +2304,22 @@ export default function Admin() {
             <i className="fa-solid fa-comments width-20"></i> Support Inbox
           </button>
           <button
+            className={`admin-nav-item ${activeTab === 'ingredients' ? 'active' : ''}`}
+            onClick={() => setActiveTab('ingredients')}
+          >
+            <i className="fa-solid fa-flask-vial width-20"></i> Hero Ingredients CMS ({ingredientsList.length})
+          </button>
+          <button
             className={`admin-nav-item ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
             <i className="fa-solid fa-users width-20"></i> Customers
+          </button>
+          <button
+            className={`admin-nav-item ${activeTab === 'audit_logs' ? 'active' : ''}`}
+            onClick={() => setActiveTab('audit_logs')}
+          >
+            <i className="fa-solid fa-clipboard-list width-20"></i> Admin Audit Trail
           </button>
         </nav>
 
@@ -1445,16 +2346,20 @@ export default function Admin() {
               {activeTab === 'dashboard' && <><i className="fa-solid fa-chart-line text-warning me-2"></i> Store Analytics & Dashboard</>}
               {activeTab === 'products' && <><i className="fa-solid fa-box-open text-warning me-2"></i> Products CRUD Catalog</>}
               {activeTab === 'categories' && <><i className="fa-solid fa-folder-open text-warning me-2"></i> Product Categories</>}
+              {activeTab === 'ingredients' && <><i className="fa-solid fa-flask-vial text-warning me-2"></i> Hero Formulation Ingredients CMS</>}
               {activeTab === 'reels' && <><i className="fa-solid fa-video text-warning me-2"></i> Brand Video Reels Manager</>}
-              {activeTab === 'testimonials' && <><i className="fa-solid fa-quote-left text-warning me-2"></i> Real Smiles & Stories Testimonials</>}
+              {activeTab === 'testimonials' && <><i className="fa-solid fa-quote-left text-warning me-2"></i> Customer Testimonials</>}
               {activeTab === 'reviews' && <><i className="fa-solid fa-star text-warning me-2"></i> Customer Reviews Management</>}
-              {activeTab === 'orders' && <><i className="fa-solid fa-truck-fast text-warning me-2"></i> Customer Orders & Shipments</>}
+              {activeTab === 'orders' && <><i className="fa-solid fa-truck-fast text-warning me-2"></i> Customer Orders & Logistics Automation</>}
+              {activeTab === 'abandoned_carts' && <><i className="fa-solid fa-cart-arrow-down text-warning me-2"></i> Abandoned Cart Recovery & Revenue Rescue</>}
               {activeTab === 'blogs' && <><i className="fa-solid fa-newspaper text-warning me-2"></i> Articles & Blog Posts CRUD</>}
-              {activeTab === 'coupons' && <><i className="fa-solid fa-tags text-warning me-2"></i> Discount Coupons CRUD</>}
+              {activeTab === 'coupons' && <><i className="fa-solid fa-tags text-warning me-2"></i> Promotions Engine & Discount Coupons</>}
+              {activeTab === 'notifications' && <><i className="fa-solid fa-bell text-warning me-2"></i> In-App User Notifications Engine & Dispatch Center</>}
               {activeTab === 'faqs' && <><i className="fa-solid fa-circle-question text-warning me-2"></i> Frequently Asked Questions CRUD</>}
               {activeTab === 'terms' && <><i className="fa-solid fa-file-contract text-warning me-2"></i> Terms & Conditions Policies</>}
               {activeTab === 'contact' && <><i className="fa-solid fa-comments text-warning me-2"></i> Support Inbox</>}
-              {activeTab === 'users' && <><i className="fa-solid fa-users text-warning me-2"></i> Registered Customers</>}
+              {activeTab === 'users' && <><i className="fa-solid fa-users text-warning me-2"></i> Registered Customers & Analytics</>}
+              {activeTab === 'audit_logs' && <><i className="fa-solid fa-clipboard-list text-warning me-2"></i> Admin Security & Activity Audit Trail</>}
             </h1>
             <p className="text-muted small mb-0">Wooff Kids 100% Prebiotic Toothpaste Dynamic CRUD Control Center</p>
           </div>
@@ -1482,8 +2387,20 @@ export default function Admin() {
                 <div className="stat-icon-wrapper"><i className="fa-solid fa-wallet"></i></div>
                 <div className="stat-details">
                   <div className="stat-label">Total Revenue</div>
-                  <h3 className="stat-value">₹{analytics.total_revenue.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</h3>
-                  <div className="stat-subtext">↑ 18% this month</div>
+                  <h3 className="stat-value">₹{Number(analytics.total_revenue || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h3>
+                  <div className="stat-subtext">
+                    {analytics.last_month_revenue > 0 ? (
+                      analytics.revenue_growth_percent >= 0 ? (
+                        <span className="text-success">↑ {analytics.revenue_growth_percent}% this month</span>
+                      ) : (
+                        <span className="text-danger">↓ {Math.abs(analytics.revenue_growth_percent)}% this month</span>
+                      )
+                    ) : analytics.this_month_revenue > 0 ? (
+                      <span>₹{Number(analytics.this_month_revenue).toLocaleString('en-IN', { minimumFractionDigits: 2 })} this month</span>
+                    ) : (
+                      <span>₹0.00 this month</span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1491,8 +2408,12 @@ export default function Admin() {
                 <div className="stat-icon-wrapper"><i className="fa-solid fa-box"></i></div>
                 <div className="stat-details">
                   <div className="stat-label">Active Orders</div>
-                  <h3 className="stat-value">{orders.length} Orders</h3>
-                  <div className="stat-subtext">8 Ready for shipment</div>
+                  <h3 className="stat-value">
+                    {analytics.active_orders_count ?? orders.filter((o) => ['pending', 'confirmed', 'processing', 'shipped'].includes(o.order_status)).length} Orders
+                  </h3>
+                  <div className="stat-subtext">
+                    {analytics.ready_for_shipment_count ?? orders.filter((o) => ['confirmed', 'processing'].includes(o.order_status)).length} Ready for shipment
+                  </div>
                 </div>
               </div>
 
@@ -1501,7 +2422,11 @@ export default function Admin() {
                 <div className="stat-details">
                   <div className="stat-label">Registered Customers</div>
                   <h3 className="stat-value">{analytics.total_customers || usersList.length} Customers</h3>
-                  <div className="stat-subtext">Active customer accounts</div>
+                  <div className="stat-subtext">
+                    {analytics.new_customers_this_month > 0
+                      ? `+${analytics.new_customers_this_month} new this month`
+                      : `${analytics.total_customers || usersList.length || 0} active accounts`}
+                  </div>
                 </div>
               </div>
 
@@ -1512,9 +2437,13 @@ export default function Admin() {
                 <div className="stat-details">
                   <div className="stat-label">Low Stock Warning</div>
                   <h3 className="stat-value" style={{ color: '#C5221F' }}>
-                    {products.filter((p) => p.stock <= 10).length} Items
+                    {analytics.low_stock_count ?? products.filter((p) => p.stock <= 10).length} Items
                   </h3>
-                  <div className="stat-subtext text-danger">Stock below 10 units</div>
+                  <div className="stat-subtext text-danger">
+                    {analytics.out_of_stock_count > 0
+                      ? `${analytics.out_of_stock_count} item(s) out of stock`
+                      : 'Stock below 10 units'}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1532,6 +2461,59 @@ export default function Admin() {
                 <button className="admin-btn admin-btn-primary admin-btn-sm" onClick={() => setActiveTab('products')}>
                   Restock Inventory <i className="fa-solid fa-arrow-right ms-1"></i>
                 </button>
+              </div>
+            )}
+
+            {/* Real-Time 30-Day Revenue Velocity Chart */}
+            <div className="admin-card-box mb-4">
+              <div className="admin-card-header d-flex justify-content-between align-items-center">
+                <div>
+                  <h3 className="admin-card-title mb-1">
+                    <i className="fa-solid fa-chart-line text-primary me-2"></i> 30-Day Sales Velocity & Trends
+                  </h3>
+                  <p className="text-muted small mb-0">
+                    Real-time transaction revenue aggregation directly from PostgreSQL orders
+                  </p>
+                </div>
+                <span className="badge bg-light text-primary border px-3 py-2 fw-bold">
+                  {analytics.daily_sales_trends?.length || 30} Days Monitored
+                </span>
+              </div>
+              <div className="p-3">
+                <SalesTrendChart trends={analytics.daily_sales_trends} />
+              </div>
+            </div>
+
+            {/* Top Bestselling Products from Postgres Analytics */}
+            {analytics.top_selling_products && analytics.top_selling_products.length > 0 && (
+              <div className="admin-card-box mb-4">
+                <div className="admin-card-header">
+                  <h3 className="admin-card-title">
+                    <i className="fa-solid fa-trophy text-warning me-2"></i> Top 5 Bestselling Formulations
+                  </h3>
+                </div>
+                <div className="admin-table-container">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>SKU</th>
+                        <th className="text-center">Units Sold</th>
+                        <th className="text-end">Revenue Generated</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {analytics.top_selling_products.map((top, idx) => (
+                        <tr key={idx}>
+                          <td className="fw-bold">{top.product_name}</td>
+                          <td><code className="text-muted">{top.product_sku || 'N/A'}</code></td>
+                          <td className="text-center"><span className="badge bg-success-subtle text-success fw-bold px-3 py-1">{top.total_quantity_sold} units</span></td>
+                          <td className="text-end fw-bold text-success">₹{Number(top.total_revenue_generated || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
 
@@ -1556,16 +2538,22 @@ export default function Admin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.map((ord) => (
-                      <tr key={ord.id}>
-                        <td className="fw-bold">{ord.id}</td>
-                        <td>{ord.customer_name}</td>
-                        <td>{ord.phone}</td>
-                        <td className="fw-bold">₹{ord.total_amount}</td>
-                        <td><span className={`admin-badge badge-${ord.payment_status}`}>{ord.payment_status.toUpperCase()}</span></td>
-                        <td><span className={`admin-badge badge-${ord.order_status}`}>{ord.order_status.toUpperCase()}</span></td>
+                    {orders.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" className="text-center py-4 text-muted">No orders found yet</td>
                       </tr>
-                    ))}
+                    ) : (
+                      orders.slice(0, 5).map((ord) => (
+                        <tr key={ord.id}>
+                          <td className="fw-bold">{ord.order_number || `#${ord.id}`}</td>
+                          <td>{ord.customer_name || 'Guest'}</td>
+                          <td>{ord.phone || '-'}</td>
+                          <td className="fw-bold">₹{parseFloat(ord.total_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                          <td><span className={`admin-badge badge-${(ord.payment_status || 'pending').toLowerCase()}`}>{(ord.payment_status || 'pending').toUpperCase()}</span></td>
+                          <td><span className={`admin-badge badge-${(ord.order_status || 'pending').toLowerCase()}`}>{(ord.order_status || 'pending').toUpperCase()}</span></td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -1591,50 +2579,107 @@ export default function Admin() {
                   <tr>
                     <th>Image</th>
                     <th>Product Title & SKU</th>
+                    <th>Bundle Type</th>
                     <th>Category</th>
                     <th>Price</th>
-                    <th>Discount Price</th>
-                    <th>Stock</th>
+                    <th>Stock Alert</th>
+                    <th>Live Active</th>
                     <th>Bestseller Status</th>
                     <th>Actions (Edit / Delete)</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((prod) => (
-                    <tr key={prod.id}>
-                      <td>
-                        <img src={prod.primary_image} alt={prod.title} style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '10px' }} />
-                      </td>
-                      <td>
-                        <div className="fw-bold">{prod.title}</div>
-                        <div className="small text-muted">SKU: {prod.sku}</div>
-                      </td>
-                      <td><span className="badge bg-light text-dark border">{prod.category_name}</span></td>
-                      <td>₹{prod.price}</td>
-                      <td className="fw-bold text-success">₹{prod.final_price}</td>
-                      <td><span className={`admin-badge ${prod.stock <= 10 ? 'badge-danger' : 'badge-success'}`}>{prod.stock} units</span></td>
-                      <td>
-                        <button
-                          className={`btn btn-sm ${prod.is_bestseller ? 'btn-warning text-dark fw-bold' : 'btn-outline-secondary'}`}
-                          style={{ borderRadius: '20px', fontSize: '0.78rem' }}
-                          onClick={() => handleToggleBestseller(prod.id, prod.is_bestseller)}
-                        >
-                          <i className={`fa-solid ${prod.is_bestseller ? 'fa-fire me-1' : 'fa-circle me-1'}`}></i>
-                          {prod.is_bestseller ? 'Bestseller 🔥' : 'Mark Bestseller'}
-                        </button>
-                      </td>
-                      <td>
-                        <div className="d-flex gap-2">
-                          <button className="admin-btn admin-btn-outline admin-btn-sm" onClick={() => handleOpenEditProduct(prod)}>
-                            <i className="fa-solid fa-pen-to-square me-1"></i> Edit
-                          </button>
-                          <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => handleDeleteProduct(prod.id, prod.title)}>
-                            <i className="fa-solid fa-trash-can me-1"></i> Delete
-                          </button>
-                        </div>
+                  {products.length === 0 ? (
+                    <tr>
+                      <td colSpan="9" className="text-center py-5 text-muted">
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>📦</div>
+                        <div className="fw-bold">No products found in PostgreSQL catalog</div>
+                        <p className="small text-muted mb-3">Click "Add New Product" to create your first toothpaste variant.</p>
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    products.map((prod) => {
+                      const threshold = prod.low_stock_threshold || 10;
+                      const isLow = Number(prod.stock) <= threshold;
+                      const isOut = Number(prod.stock) <= 0;
+                      return (
+                        <tr key={prod.id}>
+                          <td>
+                            <img
+                              src={prod.primary_image || '/assets/tooth_paste.webp'}
+                              alt={prod.title}
+                              style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '10px' }}
+                            />
+                          </td>
+                          <td>
+                            <div className="fw-bold">{prod.title}</div>
+                            <div className="small text-muted">SKU: {prod.sku}</div>
+                          </td>
+                          <td>
+                            <span className="badge bg-primary-subtle text-primary border text-capitalize fw-bold">
+                              {prod.bundle_type === '3-pack'
+                                ? '3-Pack Bundle'
+                                : prod.bundle_type === '2-pack'
+                                ? '2-Pack Duo'
+                                : prod.bundle_type === 'family'
+                                ? 'Family Pack'
+                                : 'Single Tube'}
+                            </span>
+                          </td>
+                          <td><span className="badge bg-light text-dark border">{prod.category_name || 'General'}</span></td>
+                          <td>
+                            <div className="fw-bold text-success">₹{prod.final_price || prod.price}</div>
+                            {prod.final_price && prod.final_price !== prod.price && (
+                              <div className="small text-muted text-decoration-line-through">₹{prod.price}</div>
+                            )}
+                          </td>
+                          <td>
+                            {isOut ? (
+                              <span className="admin-badge badge-danger">OUT OF STOCK (0)</span>
+                            ) : isLow ? (
+                              <span className="admin-badge badge-danger">
+                                ⚠️ LOW: {prod.stock} units (min {threshold})
+                              </span>
+                            ) : (
+                              <span className="admin-badge badge-success">{prod.stock} units</span>
+                            )}
+                          </td>
+                          <td>
+                            <div className="form-check form-switch m-0">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                checked={prod.is_active !== false}
+                                onChange={() => handleToggleProductActive(prod.id, prod.is_active !== false)}
+                                title={prod.is_active !== false ? 'Live in store' : 'Archived/Hidden'}
+                              />
+                            </div>
+                          </td>
+                          <td>
+                            <button
+                              className={`btn btn-sm ${prod.is_bestseller ? 'btn-warning text-dark fw-bold' : 'btn-outline-secondary'}`}
+                              style={{ borderRadius: '20px', fontSize: '0.78rem' }}
+                              onClick={() => handleToggleBestseller(prod.id, prod.is_bestseller)}
+                            >
+                              <i className={`fa-solid ${prod.is_bestseller ? 'fa-fire me-1' : 'fa-circle me-1'}`}></i>
+                              {prod.is_bestseller ? 'Bestseller 🔥' : 'Mark Bestseller'}
+                            </button>
+                          </td>
+                          <td>
+                            <div className="d-flex gap-2">
+                              <button className="admin-btn admin-btn-outline admin-btn-sm" onClick={() => handleOpenEditProduct(prod)}>
+                                <i className="fa-solid fa-pen-to-square me-1"></i> Edit
+                              </button>
+                              <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => handleDeleteProduct(prod.id, prod.title)}>
+                                <i className="fa-solid fa-trash-can me-1"></i> Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
@@ -1757,47 +2802,231 @@ export default function Admin() {
         )}
 
         {/* -------------------------------------------------------------
-            TAB 4: ORDERS MANAGER
+            TAB 4: ORDERS MANAGER & LOGISTICS AUTOMATION
            ------------------------------------------------------------- */}
         {activeTab === 'orders' && (
           <div className="admin-card-box">
-            <div className="admin-card-header">
-              <h3 className="admin-card-title">Customer Orders Management</h3>
+            <div className="admin-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div>
+                <h3 className="admin-card-title mb-1">
+                  <i className="fa-solid fa-truck-fast text-primary me-2"></i> Orders & Logistics Operations ({ordersPagination.total || orders.length})
+                </h3>
+                <p className="text-muted small mb-0">1-click Shiprocket AWB generation, printable tax invoices, and cancellation restock.</p>
+              </div>
+
+              <div className="d-flex flex-wrap align-items-center gap-2">
+                <button
+                  type="button"
+                  className="admin-btn admin-btn-outline admin-btn-sm d-flex align-items-center gap-1"
+                  onClick={handleExportOrdersCsv}
+                  title="Export filtered orders directly to CSV"
+                >
+                  <i className="fa-solid fa-file-csv text-success"></i> Export Orders (.CSV)
+                </button>
+              </div>
             </div>
+
+            {/* Filter and Search Bar */}
+            <div className="p-3 bg-light border-bottom d-flex flex-wrap gap-3 align-items-center justify-content-between">
+              <div className="d-flex flex-grow-1 align-items-center gap-2" style={{ maxWidth: '420px' }}>
+                <div className="input-group input-group-sm">
+                  <span className="input-group-text bg-white border-2">
+                    <i className="fa-solid fa-magnifying-glass text-muted"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control form-control-sm border-2"
+                    placeholder="Search by order #, customer name, phone, email, AWB..."
+                    value={orderSearchQuery}
+                    onChange={(e) => setOrderSearchQuery(e.target.value)}
+                  />
+                  {orderSearchQuery && (
+                    <button className="btn btn-outline-secondary btn-sm" onClick={() => setOrderSearchQuery('')}>✕</button>
+                  )}
+                </div>
+              </div>
+
+              <div className="d-flex align-items-center gap-2">
+                <label className="small fw-bold text-muted mb-0">Status:</label>
+                <select
+                  className="form-select form-select-sm border-2 fw-bold"
+                  style={{ width: '160px' }}
+                  value={orderStatusFilter}
+                  onChange={(e) => setOrderStatusFilter(e.target.value)}
+                >
+                  <option value="">All Orders</option>
+                  <option value="pending">Pending</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="processing">Processing</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+
             <div className="admin-table-container">
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>Order ID</th>
-                    <th>Customer</th>
-                    <th>Phone</th>
-                    <th>Total</th>
-                    <th>Payment Status</th>
-                    <th>Update Status</th>
+                    <th>Order # & Date</th>
+                    <th>Customer & Address</th>
+                    <th>Total & Payment</th>
+                    <th>Status</th>
+                    <th>Shiprocket Logistics</th>
+                    <th>Packing Slip / Invoice</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.map((ord) => (
-                    <tr key={ord.id}>
-                      <td className="fw-bold">{ord.id}</td>
-                      <td>{ord.customer_name}</td>
-                      <td>{ord.phone}</td>
-                      <td className="fw-bold">₹{ord.total_amount}</td>
-                      <td><span className={`admin-badge badge-${ord.payment_status}`}>{ord.payment_status.toUpperCase()}</span></td>
-                      <td>
-                        <select className="form-select form-select-sm fw-bold border-2" value={ord.order_status} onChange={(e) => handleUpdateOrderStatus(ord.id, e.target.value)}>
-                          <option value="pending">Pending</option>
-                          <option value="processing">Processing</option>
-                          <option value="shipped">Shipped</option>
-                          <option value="delivered">Delivered</option>
-                          <option value="cancelled">Cancelled</option>
-                        </select>
+                  {orders.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="text-center py-5 text-muted">
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>🛒</div>
+                        <div className="fw-bold">No matching customer orders found in PostgreSQL</div>
+                        <p className="small text-muted mb-0">Orders placed by customers on the storefront will appear here live.</p>
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    orders.map((ord) => {
+                      const isFulfilling = fulfillingOrderId === ord.id;
+                      const isCancelling = cancellingOrderId === ord.id;
+                      const hasAwb = !!ord.shiprocket_awb_code;
+                      const isCancelled = ord.order_status === 'cancelled';
+
+                      return (
+                        <tr key={ord.id} style={{ opacity: isCancelled ? 0.75 : 1 }}>
+                          <td>
+                            <div className="fw-bold text-dark">{ord.order_number || `#${ord.id}`}</div>
+                            <div className="small text-muted">
+                              {ord.created_at ? new Date(ord.created_at).toLocaleDateString('en-IN', {
+                                day: 'numeric',
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              }) : 'Recent'}
+                            </div>
+                          </td>
+
+                          <td>
+                            <div className="fw-bold">{ord.customer_name || 'Guest User'}</div>
+                            <div className="small text-muted">📞 {ord.phone || ord.customer_phone || '-'}</div>
+                            <div className="small text-muted">
+                              📍 {ord.shipping_city || ord.city || ''} {ord.shipping_postal_code || ord.postal_code ? `(${ord.shipping_postal_code || ord.postal_code})` : ''}
+                            </div>
+                          </td>
+
+                          <td>
+                            <div className="fw-bold text-success">
+                              ₹{parseFloat(ord.total_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                            </div>
+                            <div>
+                              <span className={`admin-badge badge-${(ord.payment_status || 'pending').toLowerCase()}`}>
+                                {(ord.payment_status || 'pending').toUpperCase()}
+                              </span>
+                            </div>
+                          </td>
+
+                          <td>
+                            <select
+                              className="form-select form-select-sm fw-bold border-2"
+                              value={ord.order_status}
+                              onChange={(e) => handleUpdateOrderStatus(ord.id, e.target.value)}
+                              disabled={isCancelled}
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="confirmed">Confirmed</option>
+                              <option value="processing">Processing</option>
+                              <option value="shipped">Shipped</option>
+                              <option value="delivered">Delivered</option>
+                              <option value="cancelled">Cancelled</option>
+                            </select>
+                          </td>
+
+                          <td>
+                            {hasAwb ? (
+                              <div>
+                                <span className="badge bg-info-subtle text-info border font-monospace fw-bold px-2 py-1">
+                                  AWB: {ord.shiprocket_awb_code}
+                                </span>
+                                {ord.shiprocket_courier_name && (
+                                  <div className="small text-muted mt-1">{ord.shiprocket_courier_name}</div>
+                                )}
+                              </div>
+                            ) : isCancelled ? (
+                              <span className="badge bg-secondary-subtle text-muted">Order Cancelled</span>
+                            ) : (
+                              <button
+                                type="button"
+                                className="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3 py-1"
+                                onClick={() => handleShiprocketFulfill(ord.id)}
+                                disabled={isFulfilling}
+                              >
+                                {isFulfilling ? (
+                                  <><span className="spinner-border spinner-border-sm me-1"></span> Dispatching...</>
+                                ) : (
+                                  <><i className="fa-solid fa-paper-plane me-1"></i> 1-Click Shiprocket</>
+                                )}
+                              </button>
+                            )}
+                          </td>
+
+                          <td>
+                            <button
+                              type="button"
+                              className="admin-btn admin-btn-outline admin-btn-sm"
+                              onClick={() => handleOpenInvoice(ord)}
+                              title="Print dynamic invoice and packing slip"
+                            >
+                              <i className="fa-solid fa-receipt me-1 text-primary"></i> Invoice / Slip
+                            </button>
+                          </td>
+
+                          <td>
+                            {!isCancelled && (
+                              <button
+                                type="button"
+                                className="admin-btn admin-btn-danger admin-btn-sm"
+                                onClick={() => handleCancelOrderPrompt(ord)}
+                                disabled={isCancelling}
+                                title="Cancel order and restore product stock"
+                              >
+                                {isCancelling ? 'Restocking...' : <><i className="fa-solid fa-ban me-1"></i> Cancel</>}
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination Controls */}
+            {ordersPagination.totalPages > 1 && (
+              <div className="p-3 bg-light border-top d-flex justify-content-between align-items-center">
+                <span className="small text-muted">
+                  Showing Page <strong>{ordersPagination.page}</strong> of <strong>{ordersPagination.totalPages}</strong> ({ordersPagination.total} total orders)
+                </span>
+                <div className="d-flex gap-2">
+                  <button
+                    className="btn btn-sm btn-outline-secondary"
+                    disabled={ordersPagination.page <= 1}
+                    onClick={() => setOrdersPagination((p) => ({ ...p, page: p.page - 1 }))}
+                  >
+                    ← Previous
+                  </button>
+                  <button
+                    className="btn btn-sm btn-outline-secondary"
+                    disabled={ordersPagination.page >= ordersPagination.totalPages}
+                    onClick={() => setOrdersPagination((p) => ({ ...p, page: p.page + 1 }))}
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -1830,10 +3059,10 @@ export default function Admin() {
                     <tr key={blog.id}>
                       <td>
                         <img 
-                          src={blog.image_url || '/assets/tooth_paste.png'} 
+                          src={blog.image_url || '/assets/tooth_paste.webp'} 
                           alt={blog.title} 
                           style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '10px' }} 
-                          onError={(e) => { e.currentTarget.src = '/assets/tooth_paste.png'; }}
+                          onError={(e) => { e.currentTarget.src = '/assets/tooth_paste.webp'; }}
                         />
                       </td>
                       <td>
@@ -1883,50 +3112,1013 @@ export default function Admin() {
            ------------------------------------------------------------- */}
         {activeTab === 'coupons' && (
           <div className="admin-card-box">
-            <div className="admin-card-header">
-              <h3 className="admin-card-title">Promotional Discount Coupons ({coupons.length})</h3>
+            <div className="admin-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div>
+                <h3 className="admin-card-title mb-1">Promotional Discount Coupons ({coupons.length})</h3>
+                <span className="small text-muted">Manage promotional codes, percentage vs flat discounts, minimum cart thresholds, and redemption caps.</span>
+              </div>
               <button className="admin-btn admin-btn-primary" onClick={handleOpenAddCoupon}>
-                <i className="fa-solid fa-plus me-1"></i> Create Coupon
+                <i className="fa-solid fa-plus me-1"></i> Create Coupon Code
               </button>
             </div>
 
             <div className="admin-table-container">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Promo Code</th>
-                    <th>Discount %</th>
-                    <th>Expiry Date</th>
-                    <th>Status</th>
-                    <th>Actions (Edit / Delete)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {coupons.map((c) => (
-                    <tr key={c.id}>
-                      <td><code className="fw-bold fs-6">{c.code}</code></td>
-                      <td className="fw-bold text-success">{c.discount_percent}% OFF</td>
-                      <td>{c.expiry_date}</td>
-                      <td>
-                        <span className={`admin-badge ${c.is_active ? 'badge-success' : 'badge-danger'}`}>
-                          {c.is_active ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="d-flex gap-2">
-                          <button className="admin-btn admin-btn-outline admin-btn-sm" onClick={() => handleOpenEditCoupon(c)}>
-                            <i className="fa-solid fa-pen-to-square me-1"></i> Edit
-                          </button>
-                          <button className="admin-btn admin-btn-danger admin-btn-sm" onClick={() => handleDeleteCoupon(c.id, c.code)}>
-                            <i className="fa-solid fa-trash-can me-1"></i> Delete
-                          </button>
-                        </div>
-                      </td>
+              {coupons.length === 0 ? (
+                <div className="text-center py-5 text-muted">
+                  <i className="fa-solid fa-tags fa-3x mb-3 text-secondary"></i>
+                  <h5 className="fw-bold text-dark">No Promotional Discount Codes</h5>
+                  <p className="small mb-3">Create your first percentage or flat discount coupon to drive store sales.</p>
+                  <button className="admin-btn admin-btn-primary" onClick={handleOpenAddCoupon}>
+                    <i className="fa-solid fa-plus me-1"></i> Create First Coupon
+                  </button>
+                </div>
+              ) : (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Promo Code</th>
+                      <th>Discount Offer</th>
+                      <th>Min Order Value</th>
+                      <th>Usage Limits</th>
+                      <th>Validity Window</th>
+                      <th>Live Status</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {coupons.map((c) => {
+                      const isExpired = c.valid_until && new Date() > new Date(c.valid_until);
+                      const isScheduled = c.valid_from && new Date() < new Date(c.valid_from);
+                      const usageLimitText = c.usage_limit ? `${c.used_count || 0} / ${c.usage_limit}` : `${c.used_count || 0} used (No limit)`;
+                      const minOrder = parseFloat(c.min_order_value || c.min_cart_value || 0);
+
+                      return (
+                        <tr key={c.id}>
+                          <td>
+                            <code className="fw-bold fs-6 text-dark bg-light px-2 py-1 rounded border">
+                              {c.code}
+                            </code>
+                          </td>
+                          <td>
+                            <span className="badge bg-success-subtle text-success border border-success-subtle fw-bold px-2 py-1 fs-6">
+                              {c.discount_type === 'flat' ? `₹${parseFloat(c.discount_value)} FLAT` : `${parseFloat(c.discount_value || c.discount_percent || 0)}% OFF`}
+                            </span>
+                            {c.max_discount_amount && (
+                              <div className="small text-muted mt-1">Cap: ₹{c.max_discount_amount}</div>
+                            )}
+                          </td>
+                          <td>
+                            <span className="fw-bold text-dark">{minOrder > 0 ? `₹${minOrder.toFixed(2)}` : 'None (₹0)'}</span>
+                          </td>
+                          <td>
+                            <div className="small fw-bold text-dark">{usageLimitText}</div>
+                            {c.usage_limit && (
+                              <div className="progress mt-1" style={{ height: '5px', width: '100px' }}>
+                                <div
+                                  className="progress-bar bg-primary"
+                                  style={{
+                                    width: `${Math.min(100, Math.round(((c.used_count || 0) / c.usage_limit) * 100))}%`,
+                                  }}
+                                ></div>
+                              </div>
+                            )}
+                          </td>
+                          <td>
+                            <div className="small">
+                              {c.valid_until ? (
+                                <>
+                                  <span className={isExpired ? 'text-danger fw-bold' : 'text-muted'}>
+                                    Until {new Date(c.valid_until).toLocaleDateString()}
+                                  </span>
+                                  {isExpired && <span className="badge bg-danger ms-1 small">Expired</span>}
+                                  {isScheduled && <span className="badge bg-info text-dark ms-1 small">Upcoming</span>}
+                                </>
+                              ) : (
+                                <span className="text-muted">No Expiration</span>
+                              )}
+                            </div>
+                          </td>
+                          <td>
+                            <div className="form-check form-switch mb-0">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id={`couponSwitch-${c.id}`}
+                                checked={!!c.is_active}
+                                onChange={() => handleToggleCouponActive(c.id, c.is_active)}
+                              />
+                              <label className="form-check-label small fw-bold" htmlFor={`couponSwitch-${c.id}`}>
+                                {c.is_active ? 'Active' : 'Disabled'}
+                              </label>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="d-flex gap-2">
+                              <button
+                                className="admin-btn admin-btn-outline admin-btn-sm"
+                                onClick={() => handleOpenEditCoupon(c)}
+                                title="Edit Coupon"
+                              >
+                                <i className="fa-solid fa-pen-to-square me-1"></i> Edit
+                              </button>
+                              <button
+                                className="admin-btn admin-btn-danger admin-btn-sm"
+                                onClick={() => handleDeleteCoupon(c.id, c.code)}
+                                title="Delete Coupon"
+                              >
+                                <i className="fa-solid fa-trash-can"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
             </div>
+          </div>
+        )}
+
+        {/* -------------------------------------------------------------
+            TAB: ABANDONED CARTS & REVENUE RECOVERY
+           ------------------------------------------------------------- */}
+        {activeTab === 'abandoned_carts' && (
+          <div className="admin-card-box">
+            {/* Top KPI Metrics Row */}
+            <div className="row g-3 mb-4">
+              <div className="col-12 col-sm-6 col-xl-3">
+                <div className="p-3 rounded-4 bg-white border border-danger-subtle shadow-sm h-100">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="small text-muted fw-bold">Potential Lost Sales</span>
+                    <span className="badge bg-danger-subtle text-danger rounded-pill px-2 py-1">At Risk</span>
+                  </div>
+                  <h3 className="fw-bold mb-1 text-danger">₹{abandonedStats.potentialLostValue.toLocaleString()}</h3>
+                  <span className="small text-muted">{abandonedStats.abandonedCount} abandoned carts pending</span>
+                </div>
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-3">
+                <div className="p-3 rounded-4 bg-white border border-warning-subtle shadow-sm h-100">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="small text-muted fw-bold">Open Abandonments</span>
+                    <span className="badge bg-warning-subtle text-warning-emphasis rounded-pill px-2 py-1">Drop-offs</span>
+                  </div>
+                  <h3 className="fw-bold mb-1 text-dark">{abandonedStats.abandonedCount}</h3>
+                  <span className="small text-muted">Awaiting customer recovery outreach</span>
+                </div>
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-3">
+                <div className="p-3 rounded-4 bg-white border border-success-subtle shadow-sm h-100">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="small text-muted fw-bold">Recovered Revenue</span>
+                    <span className="badge bg-success-subtle text-success rounded-pill px-2 py-1">Rescued</span>
+                  </div>
+                  <h3 className="fw-bold mb-1 text-success">₹{abandonedStats.recoveredValue.toLocaleString()}</h3>
+                  <span className="small text-muted">{abandonedStats.recoveredCount} carts converted</span>
+                </div>
+              </div>
+
+              <div className="col-12 col-sm-6 col-xl-3">
+                <div className="p-3 rounded-4 bg-white border border-primary-subtle shadow-sm h-100">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="small text-muted fw-bold">Recovery Win Rate</span>
+                    <span className="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">Efficiency</span>
+                  </div>
+                  <h3 className="fw-bold mb-1 text-primary">{abandonedStats.conversionRate}%</h3>
+                  <span className="small text-muted">Total conversion of drop-offs</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Filter & Controls Bar */}
+            <div className="admin-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div>
+                <h3 className="admin-card-title mb-1">Abandoned Cart Recovery ({abandonedTotal})</h3>
+                <span className="small text-muted">Inspect drop-offs, recover abandoned orders via WhatsApp/Email, and track potential revenue.</span>
+              </div>
+
+              <div className="d-flex flex-wrap align-items-center gap-2">
+                {/* Search */}
+                <div className="input-group input-group-sm" style={{ width: '220px' }}>
+                  <span className="input-group-text bg-light border-end-0"><i className="fa-solid fa-magnifying-glass text-muted"></i></span>
+                  <input
+                    type="text"
+                    className="form-control border-start-0"
+                    placeholder="Search name, email, phone..."
+                    value={abandonedSearchQuery}
+                    onChange={(e) => {
+                      setAbandonedSearchQuery(e.target.value);
+                      setAbandonedPage(1);
+                    }}
+                  />
+                </div>
+
+                {/* Status Filter */}
+                <select
+                  className="form-select form-select-sm"
+                  style={{ width: '150px' }}
+                  value={abandonedStatusFilter}
+                  onChange={(e) => {
+                    setAbandonedStatusFilter(e.target.value);
+                    setAbandonedPage(1);
+                  }}
+                >
+                  <option value="all">All Statuses</option>
+                  <option value="abandoned">Abandoned (Open)</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="recovered">Recovered (Paid)</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+
+                {/* Sort Filter - Mandatory 'Highest Potential Value' */}
+                <select
+                  className="form-select form-select-sm fw-bold border-warning text-dark"
+                  style={{ width: '210px' }}
+                  value={abandonedSort}
+                  onChange={(e) => {
+                    setAbandonedSort(e.target.value);
+                    setAbandonedPage(1);
+                  }}
+                >
+                  <option value="highest_value">🔥 Highest Potential Value</option>
+                  <option value="recent">🕒 Most Recent Drop-off</option>
+                  <option value="lowest_value">📉 Lowest Value</option>
+                </select>
+
+                <button
+                  className="admin-btn admin-btn-outline admin-btn-sm"
+                  onClick={fetchAbandonedCarts}
+                  title="Refresh abandoned carts"
+                >
+                  <i className={`fa-solid fa-arrows-rotate ${loadingAbandonedCarts ? 'fa-spin' : ''}`}></i>
+                </button>
+              </div>
+            </div>
+
+            {/* Table */}
+            <div className="admin-table-container">
+              {loadingAbandonedCarts ? (
+                <SkeletonTable rows={5} />
+              ) : abandonedCartsList.length === 0 ? (
+                <div className="text-center py-5 text-muted">
+                  <i className="fa-solid fa-cart-arrow-down fa-3x mb-3 text-secondary"></i>
+                  <h5 className="fw-bold text-dark">No Abandoned Checkouts Found</h5>
+                  <p className="small mb-0">Every customer who reached checkout completed their purchase or no drop-offs match your search filter.</p>
+                </div>
+              ) : (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Customer Info & Contact</th>
+                      <th>Cart Items Preview</th>
+                      <th>Potential Cart Value</th>
+                      <th>Drop-Off Stage & Time</th>
+                      <th>Recovery Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {abandonedCartsList.map((cart) => {
+                      const items = Array.isArray(cart.items) ? cart.items : [];
+                      const cleanPhone = (cart.phone || '').replace(/\D/g, '');
+                      const isHighValue = parseFloat(cart.total_value) >= 500;
+
+                      return (
+                        <tr key={cart.id}>
+                          {/* Customer Details */}
+                          <td>
+                            <div className="fw-bold text-dark">{cart.customer_name || 'Guest Shopper'}</div>
+                            <div className="small text-muted">{cart.email || 'No email provided'}</div>
+                            {cart.phone && (
+                              <div className="d-flex align-items-center gap-2 mt-1">
+                                <span className="small text-muted font-monospace">{cart.phone}</span>
+                                <a
+                                  href={`https://wa.me/91${cleanPhone}?text=${encodeURIComponent(`Hi ${cart.customer_name || 'there'}, we noticed you left some Wooff Kids Prebiotic Toothpaste in your cart! Here is an exclusive discount code to complete your smile care: WOOFF10`)}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="badge bg-success text-white text-decoration-none px-2 py-1"
+                                  title="Chat on WhatsApp"
+                                >
+                                  <i className="fa-brands fa-whatsapp me-1"></i> WhatsApp
+                                </a>
+                              </div>
+                            )}
+                          </td>
+
+                          {/* Cart Items Preview */}
+                          <td>
+                            <div className="d-flex align-items-center gap-2">
+                              {items.slice(0, 2).map((it, itIdx) => (
+                                <div key={itIdx} className="d-flex align-items-center gap-1 border rounded p-1 bg-light small">
+                                  {it.image && (
+                                    <img src={it.image} alt="" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+                                  )}
+                                  <span className="fw-bold">{it.title || 'Product'}</span>
+                                  <span className="badge bg-secondary">x{it.quantity || 1}</span>
+                                </div>
+                              ))}
+                              {items.length > 2 && (
+                                <span className="badge bg-secondary">+{items.length - 2} more</span>
+                              )}
+                              <button
+                                className="btn btn-sm btn-link p-0 text-decoration-none small text-primary ms-1"
+                                onClick={() => setViewingAbandonedCart(cart)}
+                              >
+                                View All ({items.length})
+                              </button>
+                            </div>
+                          </td>
+
+                          {/* Potential Value */}
+                          <td>
+                            <div className="d-flex align-items-center gap-2">
+                              <span className="fw-bold fs-6 text-dark">₹{parseFloat(cart.total_value || 0).toLocaleString()}</span>
+                              {isHighValue && (
+                                <span className="badge bg-danger text-white small px-2 py-1">High Value</span>
+                              )}
+                            </div>
+                          </td>
+
+                          {/* Funnel Step & Timestamp */}
+                          <td>
+                            <span className="badge bg-light text-dark border small text-capitalize mb-1 d-inline-block">
+                              <i className="fa-solid fa-shoe-prints me-1 text-warning"></i>
+                              {String(cart.checkout_step || 'shipping_details').replace(/_/g, ' ')}
+                            </span>
+                            <div className="small text-muted">
+                              {new Date(cart.created_at).toLocaleString('en-IN', {
+                                day: 'numeric',
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </div>
+                          </td>
+
+                          {/* Recovery Status Dropdown */}
+                          <td>
+                            <select
+                              className={`form-select form-select-sm fw-bold border-2 ${
+                                cart.recovery_status === 'recovered'
+                                  ? 'border-success text-success'
+                                  : cart.recovery_status === 'contacted'
+                                  ? 'border-primary text-primary'
+                                  : 'border-warning text-warning-emphasis'
+                              }`}
+                              style={{ width: '135px' }}
+                              value={cart.recovery_status}
+                              onChange={(e) => handleUpdateCartRecoveryStatus(cart.id, e.target.value)}
+                            >
+                              <option value="abandoned">⚠️ Abandoned</option>
+                              <option value="contacted">📞 Contacted</option>
+                              <option value="recovered">✅ Recovered</option>
+                              <option value="cancelled">❌ Cancelled</option>
+                            </select>
+                          </td>
+
+                          {/* Actions */}
+                          <td>
+                            <div className="d-flex gap-2">
+                              <button
+                                className="admin-btn admin-btn-outline admin-btn-sm"
+                                onClick={() => setViewingAbandonedCart(cart)}
+                                title="Inspect Cart Payload"
+                              >
+                                <i className="fa-solid fa-eye me-1"></i> Inspect
+                              </button>
+                              <button
+                                className="admin-btn admin-btn-danger admin-btn-sm"
+                                onClick={() => handleDeleteAbandonedCart(cart.id, cart.email || cart.customer_name)}
+                                title="Remove Record"
+                              >
+                                <i className="fa-solid fa-trash-can"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* Pagination Controls */}
+            {abandonedTotalPages > 1 && (
+              <div className="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                <span className="small text-muted">
+                  Showing page {abandonedPage} of {abandonedTotalPages} ({abandonedTotal} total drop-offs)
+                </span>
+                <div className="d-flex gap-2">
+                  <button
+                    className="admin-btn admin-btn-outline admin-btn-sm"
+                    disabled={abandonedPage <= 1}
+                    onClick={() => setAbandonedPage((p) => Math.max(1, p - 1))}
+                  >
+                    <i className="fa-solid fa-chevron-left me-1"></i> Previous
+                  </button>
+                  <button
+                    className="admin-btn admin-btn-outline admin-btn-sm"
+                    disabled={abandonedPage >= abandonedTotalPages}
+                    onClick={() => setAbandonedPage((p) => p + 1)}
+                  >
+                    Next <i className="fa-solid fa-chevron-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* -------------------------------------------------------------
+            TAB: IN-APP USER NOTIFICATIONS ENGINE & DISPATCH CENTER
+           ------------------------------------------------------------- */}
+        {activeTab === 'notifications' && (
+          <div className="admin-card-box">
+            {/* Top KPI Metrics Row */}
+            <div className="row g-3 mb-4">
+              <div className="col-12 col-sm-6 col-xl-3">
+                <div className="p-3 rounded-4 bg-white border border-primary-subtle shadow-sm h-100">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="small text-muted fw-bold">Total Dispatches</span>
+                    <span className="badge bg-primary-subtle text-primary rounded-pill px-2 py-1">Lifetime</span>
+                  </div>
+                  <h3 className="fw-bold mb-1 text-primary">{notificationStats.totalDispatched.toLocaleString()}</h3>
+                  <span className="small text-muted">All-time notification alerts sent</span>
+                </div>
+              </div>
+              <div className="col-12 col-sm-6 col-xl-3">
+                <div className="p-3 rounded-4 bg-white border border-info-subtle shadow-sm h-100">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="small text-muted fw-bold">Global Broadcasts</span>
+                    <span className="badge bg-info-subtle text-info rounded-pill px-2 py-1">All Users</span>
+                  </div>
+                  <h3 className="fw-bold mb-1 text-info">{notificationStats.totalBroadcasts.toLocaleString()}</h3>
+                  <span className="small text-muted">Sent to all registered accounts</span>
+                </div>
+              </div>
+              <div className="col-12 col-sm-6 col-xl-3">
+                <div className="p-3 rounded-4 bg-white border border-warning-subtle shadow-sm h-100">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="small text-muted fw-bold">Targeted 1-on-1 Alerts</span>
+                    <span className="badge bg-warning-subtle text-warning rounded-pill px-2 py-1">Specific</span>
+                  </div>
+                  <h3 className="fw-bold mb-1 text-warning">{notificationStats.totalTargeted.toLocaleString()}</h3>
+                  <span className="small text-muted">Personalized direct alerts</span>
+                </div>
+              </div>
+              <div className="col-12 col-sm-6 col-xl-3">
+                <div className="p-3 rounded-4 bg-white border border-success-subtle shadow-sm h-100">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <span className="small text-muted fw-bold">Total Engagement</span>
+                    <span className="badge bg-success-subtle text-success rounded-pill px-2 py-1">Reads</span>
+                  </div>
+                  <h3 className="fw-bold mb-1 text-success">{notificationStats.totalReads.toLocaleString()}</h3>
+                  <span className="small text-muted">Customer in-app read events</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Compose & Dispatch Alert Form Card */}
+            <div className="card border-0 shadow-sm rounded-4 mb-4" style={{ background: '#f8fafc' }}>
+              <div className="card-body p-4">
+                <div className="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
+                  <div>
+                    <h5 className="fw-bold text-dark mb-1">
+                      <i className="fa-solid fa-paper-plane text-warning me-2"></i> Compose New Notification Alert
+                    </h5>
+                    <p className="small text-muted mb-0">
+                      Instantly broadcast announcements or send targeted personal messages to a customer.
+                    </p>
+                  </div>
+                  <span className="badge bg-warning-subtle text-warning rounded-pill px-3 py-2 fw-semibold">
+                    100% Dynamic In-App Delivery
+                  </span>
+                </div>
+
+                <div className="row g-4">
+                  {/* Left Column: Form Controls */}
+                  <div className="col-12 col-lg-7">
+                    <form onSubmit={handleSendNotification}>
+                      {/* Target Audience Selector */}
+                      <div className="mb-3">
+                        <label className="form-label fw-bold small text-dark mb-2">
+                          1. Target Audience <span className="text-danger">*</span>
+                        </label>
+                        <div className="d-flex gap-3">
+                          <label className={`card p-3 flex-fill cursor-pointer border ${notificationForm.target_audience === 'all' ? 'border-primary bg-primary-subtle shadow-sm' : 'bg-white'}`} style={{ cursor: 'pointer' }}>
+                            <div className="d-flex align-items-center gap-2">
+                              <input
+                                type="radio"
+                                name="target_audience"
+                                checked={notificationForm.target_audience === 'all'}
+                                onChange={() => {
+                                  setNotificationForm((prev) => ({ ...prev, target_audience: 'all', user_id: '' }));
+                                  setSelectedCustomerPreview(null);
+                                  setCustomerSearchInput('');
+                                  setCustomerSearchResults([]);
+                                }}
+                              />
+                              <div>
+                                <div className="fw-bold text-dark small">📢 All Registered Users</div>
+                                <div className="text-muted" style={{ fontSize: '11px' }}>Global in-app broadcast</div>
+                              </div>
+                            </div>
+                          </label>
+
+                          <label className={`card p-3 flex-fill cursor-pointer border ${notificationForm.target_audience === 'specific' ? 'border-primary bg-primary-subtle shadow-sm' : 'bg-white'}`} style={{ cursor: 'pointer' }}>
+                            <div className="d-flex align-items-center gap-2">
+                              <input
+                                type="radio"
+                                name="target_audience"
+                                checked={notificationForm.target_audience === 'specific'}
+                                onChange={() => setNotificationForm((prev) => ({ ...prev, target_audience: 'specific' }))}
+                              />
+                              <div>
+                                <div className="fw-bold text-dark small">👤 Specific Customer</div>
+                                <div className="text-muted" style={{ fontSize: '11px' }}>Search by name, email, or phone</div>
+                              </div>
+                            </div>
+                          </label>
+                        </div>
+
+                        {/* Customer Search Box if Specific Audience */}
+                        {notificationForm.target_audience === 'specific' && (
+                          <div className="mt-3 p-3 bg-white rounded-3 border">
+                            {selectedCustomerPreview ? (
+                              <div className="d-flex align-items-center justify-content-between p-2 rounded-2 bg-light border">
+                                <div className="d-flex align-items-center gap-2">
+                                  <div className="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center fw-bold" style={{ width: '36px', height: '36px', fontSize: '13px' }}>
+                                    {(selectedCustomerPreview.username || selectedCustomerPreview.email || 'U')[0].toUpperCase()}
+                                  </div>
+                                  <div>
+                                    <div className="fw-bold small text-dark">
+                                      {selectedCustomerPreview.username || selectedCustomerPreview.fullName || 'User'} (ID #{selectedCustomerPreview.id})
+                                    </div>
+                                    <div className="text-muted" style={{ fontSize: '11px' }}>
+                                      {selectedCustomerPreview.email || selectedCustomerPreview.phone_number || 'No contact email'}
+                                    </div>
+                                  </div>
+                                </div>
+                                <button
+                                  type="button"
+                                  className="btn btn-sm btn-outline-secondary"
+                                  onClick={() => {
+                                    setSelectedCustomerPreview(null);
+                                    setNotificationForm((prev) => ({ ...prev, user_id: '' }));
+                                  }}
+                                >
+                                  Change
+                                </button>
+                              </div>
+                            ) : (
+                              <div>
+                                <label className="form-label small text-muted mb-1">
+                                  Search Customer to Target:
+                                </label>
+                                <div className="input-group">
+                                  <span className="input-group-text bg-light border-end-0">
+                                    <i className="fa-solid fa-magnifying-glass text-muted"></i>
+                                  </span>
+                                  <input
+                                    type="text"
+                                    className="form-control border-start-0"
+                                    placeholder="Type customer name, email, or phone..."
+                                    value={customerSearchInput}
+                                    onChange={(e) => handleSearchCustomersForNotification(e.target.value)}
+                                  />
+                                </div>
+                                {searchingCustomers && (
+                                  <div className="text-muted small mt-2">
+                                    <i className="fa-solid fa-spinner fa-spin me-1"></i> Searching customers...
+                                  </div>
+                                )}
+                                {customerSearchResults.length > 0 && (
+                                  <div className="list-group mt-2 shadow-sm rounded-2 border overflow-hidden" style={{ maxHeight: '180px', overflowY: 'auto' }}>
+                                    {customerSearchResults.map((cust) => (
+                                      <button
+                                        type="button"
+                                        key={cust.id}
+                                        className="list-group-item list-group-item-action text-start p-2 d-flex justify-content-between align-items-center"
+                                        onClick={() => handleSelectTargetCustomer(cust)}
+                                      >
+                                        <div>
+                                          <div className="fw-bold small text-dark">
+                                            {cust.username || cust.fullName || 'User'} (ID #{cust.id})
+                                          </div>
+                                          <div className="text-muted" style={{ fontSize: '11px' }}>
+                                            {cust.email || cust.phone_number || 'No contact'}
+                                          </div>
+                                        </div>
+                                        <span className="badge bg-primary rounded-pill small">Select</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Notification Type & Title Row */}
+                      <div className="row g-3 mb-3">
+                        <div className="col-12 col-md-5">
+                          <label className="form-label fw-bold small text-dark mb-1">
+                            2. Notification Type <span className="text-danger">*</span>
+                          </label>
+                          <select
+                            className="form-select"
+                            value={notificationForm.type}
+                            onChange={(e) => setNotificationForm((prev) => ({ ...prev, type: e.target.value }))}
+                          >
+                            <option value="promotional">🎉 Promotional & Discounts</option>
+                            <option value="order_update">📦 Order & Logistics Milestone</option>
+                            <option value="system">🔔 System & Brand Announcements</option>
+                          </select>
+                        </div>
+                        <div className="col-12 col-md-7">
+                          <label className="form-label fw-bold small text-dark mb-1">
+                            3. Title / Heading <span className="text-danger">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder="e.g. Special Weekend Offer: 20% Off!"
+                            value={notificationForm.title}
+                            onChange={(e) => setNotificationForm((prev) => ({ ...prev, title: e.target.value }))}
+                            maxLength={255}
+                            required
+                          />
+                        </div>
+                      </div>
+
+                      {/* Message Body */}
+                      <div className="mb-4">
+                        <div className="d-flex justify-content-between align-items-center mb-1">
+                          <label className="form-label fw-bold small text-dark mb-0">
+                            4. Message Body <span className="text-danger">*</span>
+                          </label>
+                          <span className="text-muted" style={{ fontSize: '11px' }}>
+                            {notificationForm.message.length} characters
+                          </span>
+                        </div>
+                        <textarea
+                          className="form-control"
+                          rows={3}
+                          placeholder="Compose the full message content visible to the customer in their in-app notification center..."
+                          value={notificationForm.message}
+                          onChange={(e) => setNotificationForm((prev) => ({ ...prev, message: e.target.value }))}
+                          required
+                        />
+                      </div>
+
+                      {/* Dispatch Actions */}
+                      <div className="d-flex align-items-center justify-content-end gap-2">
+                        <button
+                          type="button"
+                          className="admin-btn admin-btn-outline"
+                          onClick={() => {
+                            setNotificationForm({
+                              title: '',
+                              message: '',
+                              type: 'promotional',
+                              target_audience: 'all',
+                              user_id: '',
+                            });
+                            setSelectedCustomerPreview(null);
+                            setCustomerSearchInput('');
+                            setCustomerSearchResults([]);
+                          }}
+                        >
+                          Clear Form
+                        </button>
+                        <button
+                          type="submit"
+                          className="admin-btn admin-btn-primary px-4"
+                          disabled={sendingNotification || !notificationForm.title.trim() || !notificationForm.message.trim()}
+                        >
+                          {sendingNotification ? (
+                            <>
+                              <i className="fa-solid fa-spinner fa-spin me-2"></i> Dispatching...
+                            </>
+                          ) : (
+                            <>
+                              <i className="fa-solid fa-paper-plane me-2"></i> Dispatch Alert Now
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+
+                  {/* Right Column: Live Interactive User Preview Card */}
+                  <div className="col-12 col-lg-5">
+                    <label className="form-label fw-bold small text-muted mb-2">
+                      Live Customer In-App Popover Preview:
+                    </label>
+                    <div className="p-3 bg-white rounded-4 border shadow-sm" style={{ maxWidth: '380px', margin: '0 auto' }}>
+                      <div className="d-flex align-items-center justify-content-between pb-2 mb-2 border-bottom">
+                        <span className="small fw-bold text-dark">
+                          <i className="fa-solid fa-bell text-warning me-1"></i> Notification Center
+                        </span>
+                        <span className="badge bg-warning-subtle text-warning" style={{ fontSize: '10px' }}>
+                          1 new
+                        </span>
+                      </div>
+
+                      <div className="p-2 rounded-3" style={{ background: '#fffbeb', border: '1px solid #fef3c7' }}>
+                        <div className="d-flex gap-2">
+                          <div
+                            className="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
+                            style={{
+                              width: '32px',
+                              height: '32px',
+                              background:
+                                notificationForm.type === 'promotional'
+                                  ? '#fdf2f8'
+                                  : notificationForm.type === 'order_update'
+                                  ? '#eff6ff'
+                                  : '#fef3c7',
+                              color:
+                                notificationForm.type === 'promotional'
+                                  ? '#db2777'
+                                  : notificationForm.type === 'order_update'
+                                  ? '#2563eb'
+                                  : '#d97706',
+                              fontSize: '14px',
+                            }}
+                          >
+                            {notificationForm.type === 'promotional' && <i className="fa-solid fa-gift"></i>}
+                            {notificationForm.type === 'order_update' && <i className="fa-solid fa-truck-fast"></i>}
+                            {notificationForm.type === 'system' && <i className="fa-solid fa-bell"></i>}
+                          </div>
+                          <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                            <div className="fw-bold small text-dark text-truncate">
+                              {notificationForm.title || 'Notification Title Preview'}
+                            </div>
+                            <div className="text-muted mt-1" style={{ fontSize: '12px', lineHeight: '1.35', wordBreak: 'break-word' }}>
+                              {notificationForm.message || 'The customer will see your message body rendered dynamically here in real time.'}
+                            </div>
+                            <div className="d-flex align-items-center gap-2 mt-2" style={{ fontSize: '10px', color: '#94a3b8' }}>
+                              <span>Just now</span>
+                              <span>• {notificationForm.type.replace('_', ' ').toUpperCase()}</span>
+                            </div>
+                          </div>
+                          <span className="rounded-circle" style={{ width: '7px', height: '7px', background: '#d97706', marginTop: '4px' }}></span>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 p-2 rounded-2 bg-light text-muted text-center" style={{ fontSize: '11px' }}>
+                        <i className="fa-solid fa-shield-halved me-1"></i> Target:{' '}
+                        <strong>
+                          {notificationForm.target_audience === 'all'
+                            ? 'All Registered Users'
+                            : selectedCustomerPreview
+                            ? `${selectedCustomerPreview.username || 'User'} (ID #${selectedCustomerPreview.id})`
+                            : 'Specific Customer Pending Selection'}
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Dispatch History Table Card */}
+            <div className="admin-card-header d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+              <div>
+                <h3 className="admin-card-title mb-1">
+                  Dispatch History ({notificationsTotal})
+                </h3>
+                <p className="text-muted small mb-0">Server-side paginated log of dispatched alerts and real-time read metrics.</p>
+              </div>
+
+              {/* Filters & Search */}
+              <div className="d-flex flex-wrap align-items-center gap-2">
+                <div className="admin-search-box">
+                  <i className="fa-solid fa-magnifying-glass admin-search-icon"></i>
+                  <input
+                    type="text"
+                    placeholder="Search by title, message, customer..."
+                    className="admin-search-input"
+                    value={notificationSearchQuery}
+                    onChange={(e) => {
+                      setNotificationSearchQuery(e.target.value);
+                      setNotificationsPage(1);
+                    }}
+                  />
+                  {notificationSearchQuery && (
+                    <button
+                      className="btn btn-sm btn-link text-muted p-0 ms-1"
+                      onClick={() => setNotificationSearchQuery('')}
+                    >
+                      <i className="fa-solid fa-xmark"></i>
+                    </button>
+                  )}
+                </div>
+
+                <select
+                  className="form-select form-select-sm"
+                  style={{ width: 'auto' }}
+                  value={notificationTypeFilter}
+                  onChange={(e) => {
+                    setNotificationTypeFilter(e.target.value);
+                    setNotificationsPage(1);
+                  }}
+                >
+                  <option value="all">All Types</option>
+                  <option value="promotional">Promotional</option>
+                  <option value="order_update">Order Update</option>
+                  <option value="system">System</option>
+                </select>
+
+                <select
+                  className="form-select form-select-sm"
+                  style={{ width: 'auto' }}
+                  value={notificationAudienceFilter}
+                  onChange={(e) => {
+                    setNotificationAudienceFilter(e.target.value);
+                    setNotificationsPage(1);
+                  }}
+                >
+                  <option value="all">All Audiences</option>
+                  <option value="broadcast">Broadcasts Only</option>
+                  <option value="specific">Targeted Only</option>
+                </select>
+
+                <button
+                  className="admin-btn admin-btn-outline admin-btn-sm"
+                  onClick={fetchNotificationsHistory}
+                  title="Refresh Table"
+                >
+                  <i className={`fa-solid fa-rotate-right ${loadingNotifications ? 'fa-spin' : ''}`}></i>
+                </button>
+              </div>
+            </div>
+
+            {/* Table or Empty State */}
+            <div className="admin-table-container">
+              {loadingNotifications ? (
+                <div className="text-center py-5">
+                  <div className="spinner-border text-warning" role="status"></div>
+                  <p className="text-muted small mt-2">Loading notification dispatches...</p>
+                </div>
+              ) : notificationsList.length === 0 ? (
+                <div className="text-center py-5">
+                  <i className="fa-regular fa-bell-slash fa-3x text-muted opacity-50 mb-3"></i>
+                  <h5 className="fw-bold text-dark">No Notifications Found</h5>
+                  <p className="text-muted small">
+                    {notificationSearchQuery || notificationTypeFilter !== 'all' || notificationAudienceFilter !== 'all'
+                      ? 'No notification dispatches match your filter criteria.'
+                      : 'No notifications have been dispatched yet. Compose an alert above to get started.'}
+                  </p>
+                </div>
+              ) : (
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '130px' }}>ID & Type</th>
+                      <th>Title & Message Content</th>
+                      <th>Target Audience</th>
+                      <th>Read State</th>
+                      <th>Dispatched At</th>
+                      <th className="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {notificationsList.map((notif) => {
+                      const isBroadcast = notif.user_id === null;
+                      return (
+                        <tr key={notif.id}>
+                          <td>
+                            <div className="d-flex align-items-center gap-2">
+                              <span className="fw-bold small text-muted">#{notif.id}</span>
+                              <span
+                                className={`badge ${
+                                  notif.type === 'promotional'
+                                    ? 'bg-danger-subtle text-danger'
+                                    : notif.type === 'order_update'
+                                    ? 'bg-primary-subtle text-primary'
+                                    : 'bg-warning-subtle text-warning'
+                                } rounded-pill`}
+                                style={{ fontSize: '11px' }}
+                              >
+                                {notif.type}
+                              </span>
+                            </div>
+                          </td>
+                          <td style={{ maxWidth: '320px' }}>
+                            <div className="fw-bold text-dark mb-1">{notif.title}</div>
+                            <div
+                              className="text-muted small text-truncate"
+                              style={{ maxWidth: '300px' }}
+                              title={notif.message}
+                            >
+                              {notif.message}
+                            </div>
+                          </td>
+                          <td>
+                            {isBroadcast ? (
+                              <span className="badge bg-purple-subtle text-purple border rounded-pill px-2 py-1">
+                                <i className="fa-solid fa-bullhorn me-1"></i> All Users (Broadcast)
+                              </span>
+                            ) : (
+                              <div>
+                                <div className="fw-bold small text-dark">
+                                  <i className="fa-solid fa-user me-1 text-primary"></i>
+                                  {notif.recipient_username || 'Customer'} (ID #{notif.user_id})
+                                </div>
+                                <div className="text-muted" style={{ fontSize: '11px' }}>
+                                  {notif.recipient_phone || notif.recipient_email || 'No contact email'}
+                                </div>
+                              </div>
+                            )}
+                          </td>
+                          <td>
+                            {isBroadcast ? (
+                              <span className="badge bg-light text-dark border rounded-pill px-2 py-1">
+                                <i className="fa-solid fa-envelope-open me-1 text-muted"></i>
+                                {notif.read_count || 0} user reads
+                              </span>
+                            ) : notif.is_read ? (
+                              <span className="badge bg-success-subtle text-success rounded-pill px-2 py-1">
+                                <i className="fa-solid fa-check-double me-1"></i> Read
+                              </span>
+                            ) : (
+                              <span className="badge bg-warning-subtle text-warning rounded-pill px-2 py-1">
+                                <i className="fa-solid fa-clock me-1"></i> Unread
+                              </span>
+                            )}
+                          </td>
+                          <td>
+                            <div className="small text-dark fw-medium">
+                              {new Date(notif.created_at).toLocaleDateString('en-IN', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                              })}
+                            </div>
+                            <div className="text-muted" style={{ fontSize: '11px' }}>
+                              {new Date(notif.created_at).toLocaleTimeString('en-IN', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <div className="d-flex align-items-center justify-content-end gap-1">
+                              <button
+                                className="admin-btn-action"
+                                title="View Notification Payload"
+                                onClick={() => setViewingNotification(notif)}
+                              >
+                                <i className="fa-solid fa-eye text-primary"></i>
+                              </button>
+                              <button
+                                className="admin-btn-action text-danger"
+                                title="Retract / Delete Notification"
+                                onClick={() => handleDeleteNotification(notif)}
+                              >
+                                <i className="fa-solid fa-trash-can"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* Server-Side Pagination Footer */}
+            {!loadingNotifications && notificationsList.length > 0 && (
+              <div className="d-flex flex-wrap align-items-center justify-content-between p-3 border-top mt-2">
+                <span className="text-muted small">
+                  Showing page {notificationsPage} of {notificationsTotalPages} ({notificationsTotal} total dispatches)
+                </span>
+                <div className="d-flex align-items-center gap-2">
+                  <button
+                    className="admin-btn admin-btn-outline admin-btn-sm"
+                    disabled={notificationsPage <= 1}
+                    onClick={() => setNotificationsPage((p) => Math.max(1, p - 1))}
+                  >
+                    <i className="fa-solid fa-chevron-left me-1"></i> Previous
+                  </button>
+                  <button
+                    className="admin-btn admin-btn-outline admin-btn-sm"
+                    disabled={notificationsPage >= notificationsTotalPages}
+                    onClick={() => setNotificationsPage((p) => p + 1)}
+                  >
+                    Next <i className="fa-solid fa-chevron-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -2058,31 +4250,401 @@ export default function Admin() {
            ------------------------------------------------------------- */}
         {activeTab === 'users' && (
           <div className="admin-card-box">
-            <div className="admin-card-header">
-              <h3 className="admin-card-title">Registered Customers ({usersList.length})</h3>
+            <div className="admin-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div>
+                <h3 className="admin-card-title mb-1">
+                  <i className="fa-solid fa-users text-primary me-2"></i> Registered Customers ({customersPagination.total || usersList.length})
+                </h3>
+                <p className="text-muted small mb-0">Live customer profiles, verified orders, and total lifetime spend.</p>
+              </div>
+
+              <div className="d-flex align-items-center gap-2">
+                <button
+                  type="button"
+                  className="admin-btn admin-btn-outline admin-btn-sm d-flex align-items-center gap-1"
+                  onClick={handleExportCustomersCsv}
+                  title="Export customer directory to CSV"
+                >
+                  <i className="fa-solid fa-file-csv text-success"></i> Export Customers (.CSV)
+                </button>
+              </div>
             </div>
+
+            {/* Customer Search Filter */}
+            <div className="p-3 bg-light border-bottom d-flex align-items-center" style={{ maxWidth: '420px' }}>
+              <div className="input-group input-group-sm">
+                <span className="input-group-text bg-white border-2">
+                  <i className="fa-solid fa-magnifying-glass text-muted"></i>
+                </span>
+                <input
+                  type="text"
+                  className="form-control form-control-sm border-2"
+                  placeholder="Search customer username, email, phone, child..."
+                  value={customerSearchQuery}
+                  onChange={(e) => setCustomerSearchQuery(e.target.value)}
+                />
+                {customerSearchQuery && (
+                  <button className="btn btn-outline-secondary btn-sm" onClick={() => setCustomerSearchQuery('')}>✕</button>
+                )}
+              </div>
+            </div>
+
             <div className="admin-table-container">
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>User Name</th>
+                    <th>Customer Name & Email</th>
                     <th>Phone Number</th>
                     <th>Child's Name</th>
-                    <th>Role</th>
+                    <th>Total Orders</th>
+                    <th>Total Lifetime Spend</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {usersList.map((usr) => (
-                    <tr key={usr.id}>
-                      <td className="fw-bold">{usr.username}</td>
-                      <td>{usr.phone_number || 'N/A'}</td>
-                      <td><i className="fa-solid fa-child me-1 text-warning"></i> {usr.childName || 'N/A'}</td>
-                      <td><span className={`admin-badge ${usr.role === 'admin' ? 'badge-paid' : 'badge-pending'}`}>{usr.role.toUpperCase()}</span></td>
+                  {usersList.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="text-center py-5 text-muted">
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>👥</div>
+                        <div className="fw-bold">No registered customer accounts found</div>
+                        <p className="small text-muted mb-0">Customer signups from the storefront will appear here dynamically.</p>
+                      </td>
                     </tr>
-                  ))}
+                  ) : (
+                    usersList.map((usr) => (
+                      <tr key={usr.id}>
+                        <td>
+                          <div className="fw-bold">{usr.username}</div>
+                          <div className="small text-muted">{usr.email}</div>
+                        </td>
+                        <td>{usr.phone_number || usr.phone || 'N/A'}</td>
+                        <td><i className="fa-solid fa-child me-1 text-warning"></i> {usr.child_name || usr.childName || 'N/A'}</td>
+                        <td><span className="badge bg-light text-dark border px-2 py-1">{usr.total_orders || 0} orders</span></td>
+                        <td className="fw-bold text-success">₹{parseFloat(usr.total_spent || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
+
+            {/* Pagination Controls */}
+            {customersPagination.totalPages > 1 && (
+              <div className="p-3 bg-light border-top d-flex justify-content-between align-items-center">
+                <span className="small text-muted">
+                  Showing Page <strong>{customersPagination.page}</strong> of <strong>{customersPagination.totalPages}</strong> ({customersPagination.total} total customers)
+                </span>
+                <div className="d-flex gap-2">
+                  <button
+                    className="btn btn-sm btn-outline-secondary"
+                    disabled={customersPagination.page <= 1}
+                    onClick={() => setCustomersPagination((p) => ({ ...p, page: p.page - 1 }))}
+                  >
+                    ← Previous
+                  </button>
+                  <button
+                    className="btn btn-sm btn-outline-secondary"
+                    disabled={customersPagination.page >= customersPagination.totalPages}
+                    onClick={() => setCustomersPagination((p) => ({ ...p, page: p.page + 1 }))}
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* -------------------------------------------------------------
+            TAB: HERO INGREDIENTS FORMULATION CMS
+           ------------------------------------------------------------- */}
+        {activeTab === 'ingredients' && (
+          <div className="admin-card-box">
+            <div className="admin-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div>
+                <h3 className="admin-card-title mb-1">
+                  <i className="fa-solid fa-flask-vial text-primary me-2"></i> Hero Formulation Ingredients CMS ({ingredientsList.length})
+                </h3>
+                <p className="text-muted small mb-0">
+                  Manage active formulation ingredients (nHAp, Theobromine, Prebiotics, etc.) shown dynamically across the store.
+                </p>
+              </div>
+
+              <button className="admin-btn admin-btn-primary" onClick={handleOpenAddIngredient}>
+                <i className="fa-solid fa-plus me-1"></i> Add New Ingredient
+              </button>
+            </div>
+
+            <div className="admin-table-container">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Icon</th>
+                    <th>Ingredient & Tag</th>
+                    <th>Subtitle</th>
+                    <th>Key Formulation Benefits</th>
+                    <th>Badge</th>
+                    <th>Active</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ingredientsList.length === 0 ? (
+                    <tr>
+                      <td colSpan="8" className="text-center py-5 text-muted">
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>🧪</div>
+                        <div className="fw-bold">No hero ingredients recorded in PostgreSQL</div>
+                        <p className="small text-muted mb-3">Click "Add New Ingredient" to create active formulation entries.</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    ingredientsList.map((ing) => (
+                      <tr key={ing.id}>
+                        <td className="fw-bold text-muted text-center" style={{ width: '50px' }}>
+                          #{ing.display_order}
+                        </td>
+                        <td>
+                          <img
+                            src={ing.icon_url || '/assets/tooth_paste.webp'}
+                            alt={ing.name}
+                            style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px', background: '#f8fafc', padding: '4px' }}
+                          />
+                        </td>
+                        <td>
+                          <div className="fw-bold text-dark">{ing.name}</div>
+                          <div className="small"><code className="text-muted">{ing.slug}</code></div>
+                          {ing.tag && <span className="badge bg-light text-primary border mt-1">{ing.tag}</span>}
+                        </td>
+                        <td className="small text-muted" style={{ maxWidth: '200px' }}>
+                          {ing.sub_title}
+                        </td>
+                        <td style={{ maxWidth: '280px' }}>
+                          {Array.isArray(ing.benefits) && ing.benefits.length > 0 ? (
+                            <ul className="mb-0 ps-3 small text-muted">
+                              {ing.benefits.map((b, bIdx) => (
+                                <li key={bIdx}>{b}</li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <span className="small text-muted">No bullet points</span>
+                          )}
+                        </td>
+                        <td>
+                          {ing.badge_text ? (
+                            <span className="badge bg-warning-subtle text-dark border fw-bold px-2 py-1">
+                              {ing.badge_text}
+                            </span>
+                          ) : (
+                            <span className="text-muted small">-</span>
+                          )}
+                        </td>
+                        <td>
+                          <div className="form-check form-switch m-0">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              role="switch"
+                              checked={ing.is_active !== false}
+                              onChange={() => handleToggleIngredientActive(ing.id, ing.is_active !== false)}
+                              title={ing.is_active !== false ? 'Active in CMS' : 'Hidden'}
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <div className="d-flex gap-2">
+                            <button
+                              className="admin-btn admin-btn-outline admin-btn-sm"
+                              onClick={() => handleOpenEditIngredient(ing)}
+                            >
+                              <i className="fa-solid fa-pen-to-square me-1"></i> Edit
+                            </button>
+                            <button
+                              className="admin-btn admin-btn-danger admin-btn-sm"
+                              onClick={() => handleDeleteIngredient(ing.id, ing.name)}
+                            >
+                              <i className="fa-solid fa-trash-can me-1"></i> Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* -------------------------------------------------------------
+            TAB: ADMIN AUDIT TRAIL ACTIVITY LOGS
+           ------------------------------------------------------------- */}
+        {activeTab === 'audit_logs' && (
+          <div className="admin-card-box">
+            <div className="admin-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div>
+                <h3 className="admin-card-title mb-1">
+                  <i className="fa-solid fa-clipboard-list text-primary me-2"></i> Security & Activity Audit Trail ({auditLogsPagination.total || auditLogsList.length})
+                </h3>
+                <p className="text-muted small mb-0">Immutable records of all administrator mutations across PostgreSQL tables.</p>
+              </div>
+
+              <span className="badge bg-danger-subtle text-danger border px-3 py-2 fw-bold">
+                <i className="fa-solid fa-shield-halved me-1"></i> RBAC Security Audited
+              </span>
+            </div>
+
+            {/* Audit Filters */}
+            <div className="p-3 bg-light border-bottom d-flex flex-wrap gap-3 align-items-center justify-content-between">
+              <div className="d-flex flex-grow-1 align-items-center gap-2" style={{ maxWidth: '360px' }}>
+                <div className="input-group input-group-sm">
+                  <span className="input-group-text bg-white border-2">
+                    <i className="fa-solid fa-magnifying-glass text-muted"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control form-control-sm border-2"
+                    placeholder="Search action or entity..."
+                    value={auditSearchQuery}
+                    onChange={(e) => setAuditSearchQuery(e.target.value)}
+                  />
+                  {auditSearchQuery && (
+                    <button className="btn btn-outline-secondary btn-sm" onClick={() => setAuditSearchQuery('')}>✕</button>
+                  )}
+                </div>
+              </div>
+
+              <div className="d-flex flex-wrap align-items-center gap-2">
+                <div className="d-flex align-items-center gap-1">
+                  <label className="small fw-bold text-muted mb-0">Action:</label>
+                  <select
+                    className="form-select form-select-sm border-2 fw-bold"
+                    style={{ width: '160px' }}
+                    value={auditActionFilter}
+                    onChange={(e) => setAuditActionFilter(e.target.value)}
+                  >
+                    <option value="">All Actions</option>
+                    <option value="CREATE_PRODUCT">CREATE_PRODUCT</option>
+                    <option value="UPDATE_PRODUCT">UPDATE_PRODUCT</option>
+                    <option value="DELETE_PRODUCT">DELETE_PRODUCT</option>
+                    <option value="UPDATE_ORDER_STATUS">UPDATE_ORDER_STATUS</option>
+                    <option value="CANCEL_ORDER">CANCEL_ORDER</option>
+                    <option value="SHIPROCKET_FULFILL">SHIPROCKET_FULFILL</option>
+                    <option value="CREATE_BLOG">CREATE_BLOG</option>
+                    <option value="UPDATE_BLOG">UPDATE_BLOG</option>
+                    <option value="DELETE_BLOG">DELETE_BLOG</option>
+                    <option value="CREATE_INGREDIENT">CREATE_INGREDIENT</option>
+                    <option value="UPDATE_INGREDIENT">UPDATE_INGREDIENT</option>
+                    <option value="DELETE_INGREDIENT">DELETE_INGREDIENT</option>
+                  </select>
+                </div>
+
+                <div className="d-flex align-items-center gap-1">
+                  <label className="small fw-bold text-muted mb-0">Entity:</label>
+                  <select
+                    className="form-select form-select-sm border-2 fw-bold"
+                    style={{ width: '140px' }}
+                    value={auditEntityFilter}
+                    onChange={(e) => setAuditEntityFilter(e.target.value)}
+                  >
+                    <option value="">All Entities</option>
+                    <option value="product">Products</option>
+                    <option value="order">Orders</option>
+                    <option value="blog">Blogs</option>
+                    <option value="ingredient">Ingredients</option>
+                    <option value="category">Categories</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="admin-table-container">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Action</th>
+                    <th>Entity Type</th>
+                    <th>Entity ID</th>
+                    <th>Admin ID</th>
+                    <th>IP Address</th>
+                    <th>Audit Details</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {auditLogsList.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="text-center py-5 text-muted">
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>📝</div>
+                        <div className="fw-bold">No admin audit activity logs found</div>
+                        <p className="small text-muted mb-0">All future administrator mutations will be logged here with cryptographic timestamps.</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    auditLogsList.map((log) => {
+                      const isDanger = log.action.includes('DELETE') || log.action.includes('CANCEL');
+                      const isSuccess = log.action.includes('CREATE') || log.action.includes('FULFILL');
+                      const badgeClass = isDanger ? 'badge-danger' : isSuccess ? 'badge-success' : 'badge-warning';
+
+                      return (
+                        <tr key={log.id}>
+                          <td className="small text-muted" style={{ whiteSpace: 'nowrap' }}>
+                            {log.created_at ? new Date(log.created_at).toLocaleString('en-IN', {
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit',
+                            }) : 'Recent'}
+                          </td>
+                          <td>
+                            <span className={`admin-badge ${badgeClass} font-monospace fw-bold`}>
+                              {log.action}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="badge bg-light text-dark border text-uppercase">{log.entity_type}</span>
+                          </td>
+                          <td className="fw-bold font-monospace">#{log.entity_id}</td>
+                          <td className="small text-muted">{log.admin_id ? `Admin #${log.admin_id}` : 'System'}</td>
+                          <td className="small font-monospace text-muted">{log.ip_address || '127.0.0.1'}</td>
+                          <td style={{ maxWidth: '340px' }}>
+                            <div className="small font-monospace text-truncate" title={JSON.stringify(log.details)}>
+                              {typeof log.details === 'object' ? JSON.stringify(log.details) : String(log.details || '-')}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Controls */}
+            {auditLogsPagination.totalPages > 1 && (
+              <div className="p-3 bg-light border-top d-flex justify-content-between align-items-center">
+                <span className="small text-muted">
+                  Showing Page <strong>{auditLogsPagination.page}</strong> of <strong>{auditLogsPagination.totalPages}</strong> ({auditLogsPagination.total} total logs)
+                </span>
+                <div className="d-flex gap-2">
+                  <button
+                    className="btn btn-sm btn-outline-secondary"
+                    disabled={auditLogsPagination.page <= 1}
+                    onClick={() => setAuditLogsPagination((p) => ({ ...p, page: p.page - 1 }))}
+                  >
+                    ← Previous
+                  </button>
+                  <button
+                    className="btn btn-sm btn-outline-secondary"
+                    disabled={auditLogsPagination.page >= auditLogsPagination.totalPages}
+                    onClick={() => setAuditLogsPagination((p) => ({ ...p, page: p.page + 1 }))}
+                  >
+                    Next →
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -2094,7 +4656,7 @@ export default function Admin() {
             <div className="admin-card-header d-flex justify-content-between align-items-center">
               <div>
                 <h3 className="admin-card-title mb-1">Brand Video Reels ({reelsList.length})</h3>
-                <p className="text-muted small mb-0">Manage video reels shown in "See It In Action" section on Home page and link each reel to a product.</p>
+                <p className="text-muted small mb-0">Manage video reels shown in "See what our happy smiles have to say …" section on Home page and link each reel to a product.</p>
               </div>
               <button className="admin-btn admin-btn-primary" onClick={handleOpenAddReel}>
                 <i className="fa-solid fa-plus me-1"></i> Upload New Reel Video
@@ -2175,7 +4737,7 @@ export default function Admin() {
             <div className="admin-card-header d-flex justify-content-between align-items-center">
               <div>
                 <h3 className="admin-card-title mb-1">Customer Testimonials ({testimonialsList.length})</h3>
-                <p className="text-muted small mb-0">Manage customer stories, dentist reviews, and quotes displayed in "Real Smiles & Stories" section on Home page.</p>
+                <p className="text-muted small mb-0">Manage customer stories, dentist reviews, and quotes displayed in the Testimonials section on Home page.</p>
               </div>
               <button className="admin-btn admin-btn-primary" onClick={handleOpenAddTestimonial}>
                 <i className="fa-solid fa-plus me-1"></i> Add New Testimonial
@@ -2320,6 +4882,32 @@ export default function Admin() {
                     value={productForm.stock}
                     onChange={(e) => setProductForm({ ...productForm, stock: e.target.value })}
                     required
+                  />
+                </div>
+              </div>
+
+              <div className="row g-2 mb-3">
+                <div className="col-6">
+                  <label className="form-label small fw-bold">Bundle Configuration</label>
+                  <select
+                    className="form-select"
+                    value={productForm.bundle_type || 'single'}
+                    onChange={(e) => setProductForm({ ...productForm, bundle_type: e.target.value })}
+                  >
+                    <option value="single">Single Tube (Standard)</option>
+                    <option value="bundle-2">2-Pack Bundle</option>
+                    <option value="bundle-3">3-Pack Bundle</option>
+                    <option value="family">Family Pack</option>
+                  </select>
+                </div>
+                <div className="col-6">
+                  <label className="form-label small fw-bold">Low-Stock Alert Level</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="10"
+                    value={productForm.low_stock_threshold ?? 10}
+                    onChange={(e) => setProductForm({ ...productForm, low_stock_threshold: e.target.value })}
                   />
                 </div>
               </div>
@@ -2588,57 +5176,328 @@ export default function Admin() {
       )}
 
       {/* -------------------------------------------------------------
-          COUPON ADD/EDIT MODAL
+          PROMOTIONS & COUPON ADD/EDIT MODAL
          ------------------------------------------------------------- */}
       {showCouponModal && (
         <div className="admin-modal-backdrop" onClick={() => setShowCouponModal(false)}>
-          <div className="admin-modal-card" onClick={(e) => e.stopPropagation()}>
+          <div className="admin-modal-card" style={{ maxWidth: '600px' }} onClick={(e) => e.stopPropagation()}>
             <h3 className="fw-bold mb-3" style={{ color: '#4B2E1E' }}>
-              {editingCoupon ? 'Edit Coupon' : 'Create Discount Coupon'}
+              {editingCoupon ? `Edit Coupon: ${editingCoupon.code}` : 'Generate Promotional Discount Code'}
             </h3>
 
             <form onSubmit={handleSaveCoupon}>
-              <div className="mb-3">
-                <label className="form-label small fw-bold">Coupon Code</label>
-                <input
-                  type="text"
-                  className="form-control text-uppercase fw-bold"
-                  placeholder="e.g. SMILE25"
-                  value={couponForm.code}
-                  onChange={(e) => setCouponForm({ ...couponForm, code: e.target.value })}
-                  required
-                />
+              <div className="row g-2 mb-3">
+                <div className="col-7">
+                  <label className="form-label small fw-bold">Coupon Code <span className="text-danger">*</span></label>
+                  <input
+                    type="text"
+                    className="form-control text-uppercase fw-bold font-monospace"
+                    placeholder="e.g. WOOFF25"
+                    value={couponForm.code}
+                    onChange={(e) => setCouponForm({ ...couponForm, code: e.target.value.toUpperCase() })}
+                    required
+                  />
+                  <span className="small text-muted">Auto-formatted in uppercase for customers.</span>
+                </div>
+                <div className="col-5">
+                  <label className="form-label small fw-bold">Discount Type <span className="text-danger">*</span></label>
+                  <select
+                    className="form-select fw-bold"
+                    value={couponForm.discount_type}
+                    onChange={(e) => setCouponForm({ ...couponForm, discount_type: e.target.value })}
+                    required
+                  >
+                    <option value="percentage">Percentage (% OFF)</option>
+                    <option value="flat">Flat Rate (₹ OFF)</option>
+                  </select>
+                </div>
               </div>
 
               <div className="row g-2 mb-3">
                 <div className="col-6">
-                  <label className="form-label small fw-bold">Discount %</label>
+                  <label className="form-label small fw-bold">
+                    {couponForm.discount_type === 'percentage' ? 'Discount Percentage (%) *' : 'Discount Amount (₹) *'}
+                  </label>
                   <input
                     type="number"
-                    className="form-control"
-                    placeholder="20"
-                    value={couponForm.discount_percent}
-                    onChange={(e) => setCouponForm({ ...couponForm, discount_percent: e.target.value })}
+                    step="0.01"
+                    min="1"
+                    max={couponForm.discount_type === 'percentage' ? '100' : '100000'}
+                    className="form-control fw-bold"
+                    placeholder={couponForm.discount_type === 'percentage' ? '20' : '150'}
+                    value={couponForm.discount_value}
+                    onChange={(e) => setCouponForm({ ...couponForm, discount_value: e.target.value })}
                     required
                   />
                 </div>
                 <div className="col-6">
-                  <label className="form-label small fw-bold">Expiry Date</label>
+                  <label className="form-label small fw-bold">Minimum Order Value (₹)</label>
+                  <input
+                    type="number"
+                    step="1"
+                    min="0"
+                    className="form-control"
+                    placeholder="0 (No minimum)"
+                    value={couponForm.min_order_value}
+                    onChange={(e) => setCouponForm({ ...couponForm, min_order_value: e.target.value })}
+                  />
+                  <span className="small text-muted">Cart subtotal required to apply code.</span>
+                </div>
+              </div>
+
+              <div className="row g-2 mb-3">
+                <div className="col-6">
+                  <label className="form-label small fw-bold">Valid From Date</label>
                   <input
                     type="date"
                     className="form-control"
-                    value={couponForm.expiry_date}
-                    onChange={(e) => setCouponForm({ ...couponForm, expiry_date: e.target.value })}
-                    required
+                    value={couponForm.valid_from}
+                    onChange={(e) => setCouponForm({ ...couponForm, valid_from: e.target.value })}
                   />
                 </div>
+                <div className="col-6">
+                  <label className="form-label small fw-bold">Valid Until (Expiration Date)</label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={couponForm.valid_until}
+                    onChange={(e) => setCouponForm({ ...couponForm, valid_until: e.target.value })}
+                  />
+                  <span className="small text-muted">Leave empty for lifetime promo codes.</span>
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label small fw-bold">Total Redemptions Cap (Usage Limit)</label>
+                <input
+                  type="number"
+                  min="1"
+                  className="form-control"
+                  placeholder="e.g. 500 (Leave blank for unlimited)"
+                  value={couponForm.usage_limit}
+                  onChange={(e) => setCouponForm({ ...couponForm, usage_limit: e.target.value })}
+                />
+                <span className="small text-muted">Limits maximum number of times this code can be used across all shoppers.</span>
+              </div>
+
+              <div className="form-check form-switch mb-3 p-3 bg-light rounded-3 border">
+                <input
+                  className="form-check-input ms-0 me-2"
+                  type="checkbox"
+                  role="switch"
+                  id="couponActiveToggle"
+                  checked={!!couponForm.is_active}
+                  onChange={(e) => setCouponForm({ ...couponForm, is_active: e.target.checked })}
+                />
+                <label className="form-check-label fw-bold text-dark" htmlFor="couponActiveToggle">
+                  Enable Coupon Code (Immediately Active on Storefront Checkout)
+                </label>
               </div>
 
               <div className="d-flex justify-content-end gap-2 mt-4">
                 <button type="button" className="admin-btn admin-btn-outline" onClick={() => setShowCouponModal(false)}>Cancel</button>
-                <button type="submit" className="admin-btn admin-btn-primary">{editingCoupon ? 'Save Coupon' : 'Create Coupon'}</button>
+                <button type="submit" className="admin-btn admin-btn-primary">
+                  {editingCoupon ? 'Save Coupon Changes' : 'Launch Promo Code'}
+                </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* -------------------------------------------------------------
+          ABANDONED CART ITEM INSPECTION MODAL
+         ------------------------------------------------------------- */}
+      {viewingAbandonedCart && (
+        <div className="admin-modal-backdrop" onClick={() => setViewingAbandonedCart(null)}>
+          <div className="admin-modal-card" style={{ maxWidth: '650px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h3 className="fw-bold mb-0" style={{ color: '#4B2E1E' }}>
+                  <i className="fa-solid fa-cart-arrow-down text-warning me-2"></i>
+                  Abandoned Cart #{viewingAbandonedCart.id}
+                </h3>
+                <span className="small text-muted">
+                  Dropped off on {new Date(viewingAbandonedCart.created_at).toLocaleString()}
+                </span>
+              </div>
+              <button className="btn-close" onClick={() => setViewingAbandonedCart(null)}></button>
+            </div>
+
+            {/* Customer Contact Box */}
+            <div className="p-3 bg-light rounded-3 border mb-3">
+              <div className="fw-bold text-dark mb-1">
+                {viewingAbandonedCart.customer_name || 'Guest Shopper'}
+              </div>
+              <div className="small text-muted">
+                <i className="fa-solid fa-envelope me-1"></i> {viewingAbandonedCart.email || 'No email entered'}
+              </div>
+              {viewingAbandonedCart.phone && (
+                <div className="small text-muted mt-1 d-flex align-items-center gap-2">
+                  <span><i className="fa-solid fa-phone me-1"></i> {viewingAbandonedCart.phone}</span>
+                  <a
+                    href={`https://wa.me/91${viewingAbandonedCart.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hi ${viewingAbandonedCart.customer_name || 'there'}, your Wooff Kids Prebiotic Toothpaste cart is waiting! Use code WOOFF10 for 10% off: https://wooff.care/checkout`)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="badge bg-success text-white text-decoration-none px-2 py-1"
+                  >
+                    <i className="fa-brands fa-whatsapp me-1"></i> WhatsApp Recovery
+                  </a>
+                </div>
+              )}
+              <div className="small text-muted mt-1">
+                <i className="fa-solid fa-shoe-prints me-1 text-warning"></i> Funnel Stage: <strong className="text-capitalize">{String(viewingAbandonedCart.checkout_step || 'shipping_details').replace(/_/g, ' ')}</strong>
+              </div>
+            </div>
+
+            {/* Items Table */}
+            <div className="table-responsive mb-3 border rounded-3">
+              <table className="table table-sm table-striped mb-0">
+                <thead className="table-light small">
+                  <tr>
+                    <th>Product</th>
+                    <th>Configuration</th>
+                    <th>Qty</th>
+                    <th>Unit Price</th>
+                    <th className="text-end">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(Array.isArray(viewingAbandonedCart.items) ? viewingAbandonedCart.items : []).map((it, idx) => {
+                    const price = parseFloat(it.final_price || it.price || it.unit_price || 0);
+                    const qty = parseInt(it.quantity || 1, 10);
+                    return (
+                      <tr key={idx} className="small align-middle">
+                        <td>
+                          <div className="d-flex align-items-center gap-2">
+                            {it.image && (
+                              <img src={it.image} alt="" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+                            )}
+                            <span className="fw-bold">{it.title || it.name || 'Toothpaste'}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <span className="badge bg-light text-dark border small text-capitalize">
+                            {it.bundle_type || 'Single Tube'}
+                          </span>
+                        </td>
+                        <td>{qty}</td>
+                        <td>₹{price.toFixed(2)}</td>
+                        <td className="text-end fw-bold">₹{(price * qty).toFixed(2)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="d-flex justify-content-between align-items-center p-3 bg-light rounded-3 border mb-4">
+              <span className="fw-bold text-dark">Total Potential Cart Value:</span>
+              <span className="fw-bold fs-5 text-danger">₹{parseFloat(viewingAbandonedCart.total_value || 0).toLocaleString()}</span>
+            </div>
+
+            <div className="d-flex justify-content-between align-items-center">
+              <div className="d-flex align-items-center gap-2">
+                <span className="small fw-bold text-muted">Recovery Status:</span>
+                <select
+                  className="form-select form-select-sm"
+                  style={{ width: '140px' }}
+                  value={viewingAbandonedCart.recovery_status}
+                  onChange={(e) => {
+                    handleUpdateCartRecoveryStatus(viewingAbandonedCart.id, e.target.value);
+                    setViewingAbandonedCart((prev) => ({ ...prev, recovery_status: e.target.value }));
+                  }}
+                >
+                  <option value="abandoned">Abandoned</option>
+                  <option value="contacted">Contacted</option>
+                  <option value="recovered">Recovered</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <button className="admin-btn admin-btn-outline" onClick={() => setViewingAbandonedCart(null)}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* -------------------------------------------------------------
+          NOTIFICATION PAYLOAD INSPECTION MODAL
+         ------------------------------------------------------------- */}
+      {viewingNotification && (
+        <div className="admin-modal-backdrop" onClick={() => setViewingNotification(null)}>
+          <div className="admin-modal-card p-4" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '580px' }}>
+            <div className="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+              <div>
+                <span
+                  className={`badge ${
+                    viewingNotification.type === 'promotional'
+                      ? 'bg-danger-subtle text-danger'
+                      : viewingNotification.type === 'order_update'
+                      ? 'bg-primary-subtle text-primary'
+                      : 'bg-warning-subtle text-warning'
+                  } me-2 text-uppercase`}
+                  style={{ fontSize: '11px' }}
+                >
+                  {viewingNotification.type}
+                </span>
+                <span className="fw-bold small text-muted">Alert #{viewingNotification.id}</span>
+              </div>
+              <button
+                className="btn-close"
+                onClick={() => setViewingNotification(null)}
+                aria-label="Close"
+              ></button>
+            </div>
+
+            <h4 className="fw-bold text-dark mb-2">{viewingNotification.title}</h4>
+
+            <div className="p-3 bg-light rounded-3 mb-3 border">
+              <label className="text-muted small fw-bold mb-1 d-block">Message Content</label>
+              <div className="text-dark" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>
+                {viewingNotification.message}
+              </div>
+            </div>
+
+            <div className="row g-2 mb-3">
+              <div className="col-6">
+                <div className="p-2 bg-light rounded-2 border">
+                  <div className="text-muted small">Target Audience</div>
+                  <div className="fw-bold small text-dark mt-1">
+                    {viewingNotification.user_id === null ? (
+                      <span className="text-purple">📢 All Registered Users</span>
+                    ) : (
+                      <span>👤 {viewingNotification.recipient_username || 'User'} (ID #{viewingNotification.user_id})</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="p-2 bg-light rounded-2 border">
+                  <div className="text-muted small">Engagement / Status</div>
+                  <div className="fw-bold small text-dark mt-1">
+                    {viewingNotification.user_id === null ? (
+                      <span>{viewingNotification.read_count || 0} user read receipts</span>
+                    ) : viewingNotification.is_read ? (
+                      <span className="text-success"><i className="fa-solid fa-check-double me-1"></i> Read</span>
+                    ) : (
+                      <span className="text-warning"><i className="fa-solid fa-clock me-1"></i> Unread</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="d-flex justify-content-between align-items-center pt-2 border-top">
+              <span className="text-muted small">
+                Dispatched: {new Date(viewingNotification.created_at).toLocaleString('en-IN')}
+              </span>
+              <button className="admin-btn admin-btn-outline" onClick={() => setViewingNotification(null)}>
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -2950,6 +5809,158 @@ export default function Admin() {
           </div>
         </div>
       )}
+
+      {/* -------------------------------------------------------------
+          HERO INGREDIENT ADD/EDIT MODAL (Dynamic Formulation CMS)
+         ------------------------------------------------------------- */}
+      {showIngredientModal && (
+        <div className="admin-modal-backdrop" onClick={() => setShowIngredientModal(false)}>
+          <div className="admin-modal-card" style={{ maxWidth: '650px' }} onClick={(e) => e.stopPropagation()}>
+            <h3 className="fw-bold mb-3" style={{ color: '#4B2E1E' }}>
+              {editingIngredient ? `Edit Ingredient: ${editingIngredient.name}` : 'Add Formulation Hero Ingredient'}
+            </h3>
+
+            <form onSubmit={handleSaveIngredient}>
+              <div className="row g-2 mb-3">
+                <div className="col-8">
+                  <label className="form-label small fw-bold">Ingredient Name *</label>
+                  <input
+                    type="text"
+                    className="form-control fw-bold"
+                    placeholder="e.g. Nano-Hydroxyapatite (nHAp)"
+                    value={ingredientForm.name}
+                    onChange={(e) => setIngredientForm({ ...ingredientForm, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="col-4">
+                  <label className="form-label small fw-bold">Display Order</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    value={ingredientForm.display_order}
+                    onChange={(e) => setIngredientForm({ ...ingredientForm, display_order: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="row g-2 mb-3">
+                <div className="col-6">
+                  <label className="form-label small fw-bold">Scientific / Brand Subtitle</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. 100% Non-Toxic Fluoride Alternative"
+                    value={ingredientForm.sub_title}
+                    onChange={(e) => setIngredientForm({ ...ingredientForm, sub_title: e.target.value })}
+                  />
+                </div>
+                <div className="col-6">
+                  <label className="form-label small fw-bold">Badge Text</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. Enamel Restoration"
+                    value={ingredientForm.badge_text}
+                    onChange={(e) => setIngredientForm({ ...ingredientForm, badge_text: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="row g-2 mb-3">
+                <div className="col-6">
+                  <label className="form-label small fw-bold">Category Tag</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. Remineralization"
+                    value={ingredientForm.tag}
+                    onChange={(e) => setIngredientForm({ ...ingredientForm, tag: e.target.value })}
+                  />
+                </div>
+                <div className="col-6">
+                  <label className="form-label small fw-bold">Icon / Illustration Asset</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="/assets/tooth_paste.webp"
+                    value={ingredientForm.icon_url}
+                    onChange={(e) => setIngredientForm({ ...ingredientForm, icon_url: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label small fw-bold">Clinical & Biological Mechanism *</label>
+                <textarea
+                  className="form-control"
+                  rows="3"
+                  placeholder="Explain scientific mechanism and safety benefits for kids oral care..."
+                  value={ingredientForm.description}
+                  onChange={(e) => setIngredientForm({ ...ingredientForm, description: e.target.value })}
+                  required
+                ></textarea>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label small fw-bold">Key Benefits (One bullet per line)</label>
+                <textarea
+                  className="form-control font-monospace small"
+                  rows="4"
+                  placeholder="Rebuilds microscopic enamel lesions&#10;Blocks tooth sensitivity naturally&#10;Safe if swallowed by toddlers"
+                  value={ingredientForm.benefits}
+                  onChange={(e) => setIngredientForm({ ...ingredientForm, benefits: e.target.value })}
+                ></textarea>
+              </div>
+
+              <div className="form-check form-switch mb-3 p-3 bg-light rounded-3 border">
+                <input
+                  className="form-check-input ms-0 me-2"
+                  type="checkbox"
+                  role="switch"
+                  id="ingredientActiveSwitch"
+                  checked={!!ingredientForm.is_active}
+                  onChange={(e) => setIngredientForm({ ...ingredientForm, is_active: e.target.checked })}
+                />
+                <label className="form-check-label fw-bold text-dark" htmlFor="ingredientActiveSwitch">
+                  Active (Syncs dynamically with customer-facing formulation UI)
+                </label>
+              </div>
+
+              <div className="d-flex justify-content-end gap-2 mt-4">
+                <button type="button" className="admin-btn admin-btn-outline" onClick={() => setShowIngredientModal(false)}>Cancel</button>
+                <button type="submit" className="admin-btn admin-btn-primary">
+                  {editingIngredient ? 'Update Ingredient' : 'Add Hero Ingredient'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* -------------------------------------------------------------
+          CONFIRMATION MODAL (Replacing native window.confirm)
+         ------------------------------------------------------------- */}
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        title={confirmConfig.title}
+        message={confirmConfig.message}
+        confirmText={confirmConfig.confirmText}
+        cancelText={confirmConfig.cancelText}
+        danger={confirmConfig.danger}
+        onConfirm={handleModalConfirm}
+        onCancel={() => setConfirmConfig((prev) => ({ ...prev, isOpen: false }))}
+      />
+
+      {/* -------------------------------------------------------------
+          PRINTABLE PACKING SLIP & TAX INVOICE MODAL
+         ------------------------------------------------------------- */}
+      <InvoiceModal
+        isOpen={invoiceModalState.isOpen}
+        orderId={invoiceModalState.orderId}
+        initialOrder={invoiceModalState.order}
+        onClose={() => setInvoiceModalState({ isOpen: false, orderId: null, order: null })}
+      />
 
     </div>
   );

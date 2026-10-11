@@ -17,12 +17,13 @@ export default function Footer() {
               />
             </Link>
             <p className="footer-desc mb-3">
-              Making kids’ oral care fun, safe, and prebiotic-powered.
-              Formulated with nHAp and prebiotic inulin for strong enamel and happy smiles.
+              Making kids’ oral care fun, safe, and science-led.
+              <br />
+              Powered by nano-hydroxyapatite, theobromine, inulin, vitamin C, CoQ10, and lactoferrin.
             </p>
             <div className="footer-badge-wrapper">
               <span className="footer-badge">
-                🦷 India’s 1st Prebiotic Kids Oralcare
+                🦷 A New Era of Kids’ Oral Care in India
               </span>
             </div>
           </div>
@@ -64,8 +65,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li className="mb-2">
-                <Link to="/shipping" className="footer-link">
-                  Shipping & Tracking
+                <Link to="/track" className="footer-link">
+                  Track Your Order
                 </Link>
               </li>
               <li className="mb-2">
@@ -110,7 +111,7 @@ export default function Footer() {
               <Link to="/terms-and-conditions" className="footer-legal-link">
                 Terms & Conditions
               </Link>
-              <Link to="/cookies" className="footer-legal-link">
+              <Link to="/privacy-policy#cookies" className="footer-legal-link">
                 Cookie Preferences
               </Link>
             </div>

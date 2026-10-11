@@ -1,5 +1,7 @@
+import { Suspense, lazy } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import Login from '../../pages/Login/Login';
+
+const Login = lazy(() => import('../../pages/Login/Login'));
 
 export default function AuthModal() {
   const { isAuthModalOpen, authModalMode, closeAuthModal } = useAuth();
@@ -7,10 +9,12 @@ export default function AuthModal() {
   if (!isAuthModalOpen) return null;
 
   return (
-    <Login
-      initialMode={authModalMode}
-      isModal={true}
-      onClose={closeAuthModal}
-    />
+    <Suspense fallback={null}>
+      <Login
+        initialMode={authModalMode}
+        isModal={true}
+        onClose={closeAuthModal}
+      />
+    </Suspense>
   );
 }

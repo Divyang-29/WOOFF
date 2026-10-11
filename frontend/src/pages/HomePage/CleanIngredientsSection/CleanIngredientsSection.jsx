@@ -4,46 +4,53 @@ import './CleanIngredientsSection.css';
 
 const INGREDIENTS = [
   {
-    id: 'theobromine',
-    name: 'Theobromine',
-    desc: 'Naturally occurring cocoa compound supporting enamel mineralization and delicious flavor',
-    image: '/images/ingredients/theobromine_clean.png',
-  },
-  {
     id: 'nhap',
-    name: 'Nano-Hydroxyapatite (nHAp)',
-    desc: 'Non-toxic mineral rebuilding and remineralizing 97% of tooth enamel safely without fluoride',
+    name: 'Nano-Hydroxyapatite',
+    category: 'Enamel Mineral Support',
+    desc: 'A biomimetic mineral that closely resembles the mineral naturally found in teeth. It helps support enamel remineralization.',
     image: '/images/ingredients/nhap_clean.png',
   },
   {
-    id: 'calcium',
-    name: 'Calcium Gluconate',
-    desc: 'Bioavailable calcium building block ensuring teeth stay strong and resilient',
-    image: '/images/ingredients/calcium_clean.png',
+    id: 'theobromine',
+    name: 'Theobromine',
+    category: 'Enamel Strength Support',
+    desc: 'Derived from cocoa, theobromine has been studied for its potential to support enamel remineralization',
+    image: '/images/ingredients/theobromine_clean.png',
   },
   {
     id: 'inulin',
     name: 'Inulin',
-    desc: 'Natural prebiotic feeding beneficial bacteria to maintain a balanced oral microbiome',
+    category: 'Prebiotic Oral Care',
+    desc: 'A naturally derived prebiotic included to support a balanced oral environment and complement the oral microbiome.',
     image: '/images/ingredients/inulin_clean.png',
   },
   {
     id: 'vitaminc',
-    name: 'Ascorbic Acid / Vitamin C',
-    desc: 'Vital antioxidant supporting healthy, resilient gums and delicate oral tissues',
+    name: 'Vitamin C',
+    category: 'Antioxidant & Gum Support',
+    desc: 'Vitamin C is an antioxidant that contributes to the health of oral tissues and supports a healthy gum environment.',
     image: '/images/ingredients/vitaminc_clean.png',
   },
   {
     id: 'lactoferrin',
     name: 'Lactoferrin',
-    desc: 'Gentle antimicrobial protein maintaining oral hygiene balance around the clock',
+    category: 'Natural Oral Defence',
+    desc: 'A naturally occurring protein found in saliva, lactoferrin has antimicrobial properties.',
     image: '/images/ingredients/lactoferrin_clean.png',
   },
   {
     id: 'coq10',
-    name: 'Coenzyme Q10 (CoQ10)',
-    desc: 'Cellular antioxidant supporting delicate gum health and soft-tissue vitality',
+    name: 'Coenzyme Q10',
+    category: 'Antioxidant Gum Care',
+    desc: 'A naturally occurring antioxidant that has been studied in periodontal care.',
     image: '/images/ingredients/coq10_clean.png',
+  },
+  {
+    id: 'calcium',
+    name: 'Calcium Gluconate',
+    category: 'Tooth Enamel Support',
+    desc: 'Calcium is an essential building block of tooth enamel.',
+    image: '/images/ingredients/calcium_clean.png',
   },
 ];
 
@@ -74,6 +81,7 @@ export default function CleanIngredientsSection() {
                 />
               </div>
               <h3 className="clean-ingredient-title">{item.name}</h3>
+              <span className="clean-ingredient-category">{item.category}</span>
               <p className="clean-ingredient-desc">{item.desc}</p>
             </div>
           ))}
@@ -93,6 +101,7 @@ export default function CleanIngredientsSection() {
                   />
                 </div>
                 <h3 className="clean-ingredient-title">{item.name}</h3>
+                <span className="clean-ingredient-category">{item.category}</span>
                 <p className="clean-ingredient-desc">{item.desc}</p>
               </div>
             ))}

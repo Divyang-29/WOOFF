@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import chocoToothpasteImg from '../../../assets/choco-toothpaste-pieces.jpg';
 import './DiscoverySection.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -48,12 +49,12 @@ export default function DiscoverySection() {
             <Link to="/products" className="btn-wooff-primary">Grab a Tube</Link>
           </div>
           <div className="col-md-6 order-1 order-md-2 discovery-image p-4 text-center pb-0 pb-md-4">
-            {/* Placeholder for the product image */}
             <img
-              src="https://placehold.co/600x400/F7EFE6/4B2E1E?text=Choco+Tube+Mockup"
-              alt="Wooff Chocolate Toothpaste"
+              src={chocoToothpasteImg}
+              alt="Wooff Kids Chocolate Prebiotic Toothpaste"
               className="img-fluid"
-/>
+              loading="lazy"
+            />
           </div>
         </div>
       </div>

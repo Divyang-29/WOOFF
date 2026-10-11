@@ -1,0 +1,11 @@
+# Allow all search engine crawlers
+User-agent: *
+Allow: /
+
+# Disallow administrative dashboard and backend API endpoints
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/
+
+# Canonical XML Sitemap
+Sitemap: https://wooff-frontend.onrender.com/sitemap.xml

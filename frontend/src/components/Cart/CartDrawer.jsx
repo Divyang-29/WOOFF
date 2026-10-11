@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import './CartDrawer.css';
 
 export default function CartDrawer() {
+  const navigate = useNavigate();
   const {
     cartItems,
     isCartOpen,
@@ -126,10 +127,11 @@ export default function CartDrawer() {
             className="checkout-btn" 
             disabled={cartItems.length === 0}
             onClick={() => {
-              alert(`Proceeding to checkout for ₹${cartSubtotal.toFixed(2)}`);
+              closeCart();
+              navigate('/checkout');
             }}
           >
-            Checkout
+            Proceed to Checkout • ₹{cartSubtotal.toFixed(2)}
           </button>
 
           <p className="cart-footer-note">Taxes and shipping calculated at checkout</p>

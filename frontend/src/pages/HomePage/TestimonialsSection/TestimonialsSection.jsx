@@ -38,6 +38,7 @@ export default function TestimonialsSection() {
   const [testimonials, setTestimonials] = useState(DEFAULT_TESTIMONIALS);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
@@ -96,16 +97,16 @@ export default function TestimonialsSection() {
     };
   }, []);
 
-  // Automatic carousel timer so reviews cycle on their own
+  // Automatic carousel timer with relaxed pacing and pause-on-hover
   useEffect(() => {
-    if (testimonials.length <= 1) return;
+    if (testimonials.length <= 1 || isPaused) return;
 
     const autoPlayTimer = setInterval(() => {
       setCurrentIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
-    }, 4000);
+    }, 7500);
 
     return () => clearInterval(autoPlayTimer);
-  }, [testimonials.length]);
+  }, [testimonials.length, isPaused]);
 
   const totalReviews = testimonials.length;
   const safeIndex = totalReviews > 0 ? currentIndex % totalReviews : 0;
@@ -174,19 +175,14 @@ export default function TestimonialsSection() {
       <div className="container">
         {/* Section Heading */}
         <div className="testimonials-header text-center">
-          <div className="testimonials-badge">
-            <i className="fas fa-heart"></i>
-            <span>Real Smiles & Stories</span>
-          </div>
-          <h2 className="testimonials-title">Hear it From Parents, Dentists & Kids.</h2>
-          <p className="testimonials-subtitle">
-            What parents, pediatric dentists, and happy little brushers have to say about Wooff.
-          </p>
+          <h2 className="testimonials-title mb-0">Hear it From Parents, Dentists & Kids.</h2>
         </div>
 
         {/* Carousel / Navigation Controls & Brutalist Card */}
         <div
           className="testimonials-carousel-wrapper"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './BenefitsSection.css';
 
-import nhapImg from '../../../assets/nHAp.png';
-import prebioticImg from '../../../assets/prebiotic.png';
-import swallowedImg from '../../../assets/Swallowed.png';
-import chocoImg from '../../../assets/choco.png';
+import nhapImg from '../../../assets/nHAp.webp';
+import prebioticImg from '../../../assets/prebiotic.webp';
+import swallowedImg from '../../../assets/Swallowed.webp';
+import chocoImg from '../../../assets/choco.webp';
 
 const fallbackImageMap = {
   'Stronger Enamel': nhapImg,

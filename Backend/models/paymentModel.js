@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const pool = require("../config/db");
 const { getOrderDetailsById } = require("./orderModel");
+const { createShiprocketFulfillment } = require("../services/shiprocketFulfillmentService");
 
 // Initialize Payment Transaction
 const initializePayment = async (orderId, userId, paymentProvider = "razorpay") => {
@@ -130,6 +131,13 @@ const verifyPaymentSignature = async ({
       );
 
       await client.query("COMMIT");
+
+      // Asynchronously trigger Shiprocket fulfillment (non-blocking, fire-and-forget)
+      setImmediate(() => {
+        createShiprocketFulfillment(orderId).catch((err) => {
+          console.error(`[Shiprocket Background Dispatch Error] Order #${orderId}:`, err.message);
+        });
+      });
 
       const updatedOrder = await getOrderDetailsById(orderId, userId, false);
       return {
@@ -261,6 +269,16 @@ const processWebhookEvent = async (webhookBody, signatureHeader, rawBody = null)
     }
 
     await client.query("COMMIT");
+
+    // Asynchronously trigger Shiprocket fulfillment on successful payment capture (non-blocking)
+    if (event === "payment.captured" || event === "order.paid") {
+      setImmediate(() => {
+        createShiprocketFulfillment(order.id).catch((err) => {
+          console.error(`[Shiprocket Webhook Background Dispatch Error] Order #${order.id}:`, err.message);
+        });
+      });
+    }
+
     return { success: true, message: `Webhook processed for event: ${event}` };
   } catch (error) {
     await client.query("ROLLBACK");

@@ -1,6 +1,7 @@
 import HeroSection from './HeroSection/HeroSection';
 import CertificatesSection from './CertificatesSection/CertificatesSection';
 import ProductShowcase from './ProductShowcase/ProductShowcase';
+import TasteCatchSection from './TasteCatchSection/TasteCatchSection';
 import CleanIngredientsSection from './CleanIngredientsSection/CleanIngredientsSection';
 import ComparisonSection from './ComparisonSection/ComparisonSection';
 import BrandReelsSection from './BrandReelsSection/BrandReelsSection';
@@ -14,6 +15,7 @@ export default function HomePage() {
       <HeroSection />
       <CertificatesSection />
       <ProductShowcase />
+      <TasteCatchSection />
       <CleanIngredientsSection />
       <DiscoverySection />
       <BenefitsSection />

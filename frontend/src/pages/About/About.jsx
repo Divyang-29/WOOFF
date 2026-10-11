@@ -20,41 +20,32 @@ export default function About() {
 
   const timelineData = [
     {
-      year: '2022',
-      badge: 'THE BEGINNING',
+      year: '',
+      badge: '',
       title: 'Where the morning battle began',
-      text: 'As a pediatric dental specialist, moms kept asking me the same two questions every day: "Which toothpaste is actually safe if my child swallows it?" and "Why does brushing have to end in tears and tantrums every single morning?" Traditional kids toothpastes were filled with artificial dyes, harsh foaming agents, and toxic fluoride warning labels. I knew there had to be a better, kinder way.',
-      image: 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80',
+      text: 'As a dentist, one question I was constantly asked by parents was, "Which toothpaste is best for my child?" But behind that question was a bigger problem. Kids didn\'t want to brush their teeth. Mornings were full of tantrums, negotiations, and the daily struggle of getting children to brush. I wanted to find a way to make brushing something kids would actually look forward to. Funny enough, paediatric dentistry was the department I used to struggle with the most in college. Seeing children in pain was something I never liked. And perhaps that was one of the reasons I wanted to create something that could make their oral-care journey a little happier.',
+      image: '/images/founders-car.jpg',
       caption: 'The pediatric oral care struggle'
     },
     {
-      year: '2023',
-      badge: 'THE SPARK',
-      title: '“What if toothpaste tasted like chocolate?”',
-      text: 'One evening over coffee, my partner casually remarked: "Kids love chocolate. What if toothpaste tasted like real cacao? Maybe they would actually look forward to brushing." We laughed at first, but the idea stuck. Researching cocoa beans led to a massive revelation: Theobromine, a natural extract from cocoa, is clinically proven to support enamel remineralization!',
-      image: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=800&q=80',
+      year: 'February 2026',
+      badge: '',
+      title: 'New era of oral care',
+      text: 'But the more I researched, the more I realised I didn\'t just want to make toothpaste that tasted good. I wanted to create better oral care for Indian kids. As a dentist, I knew oral health wasn\'t just about teeth. The gums, soft tissues, and the oral microbiome matter too. So I began exploring ingredients beyond conventional toothpaste formulations, including nano-hydroxyapatite, prebiotics, vitamins, lactoferrin, and antioxidants. I wanted to bring together a delicious brushing experience and a thoughtfully developed formula that considered children\'s overall oral health. And that\'s how we began building our hero formulation for Woof Kids.',
+      image: '/images/research-notes.jpg',
       caption: 'Discovering Theobromine & Natural Cocoa Extract'
     },
     {
-      year: '2024',
-      badge: 'THE FORMULATION',
-      title: 'Designing a 100% prebiotic, fluoride-free formula',
-      text: 'We set out to create a holistic oral-care formula for young mouths. We combined Nano-Hydroxyapatite (nHAp) — the bio-identical mineral that makes up 97% of natural tooth enamel — with prebiotic Inulin to nurture good bacteria and Vitamin C to protect delicate gum tissues. Every single ingredient was chosen with purpose.',
-      image: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=800&q=80',
+      year: 'May - July 2026',
+      badge: '',
+      title: 'Making a brand out of our idea',
+      text: 'Then came the real work: speaking to manufacturers, researching ingredients, testing formulations, reviewing sample after sample, and refining everything until we found the right combination. At the same time, we were creating a design that children would connect with. That\'s where our little monkey came in. Monkeys are known for imitation, and we loved the idea that children might see our monkey brushing its teeth and want to imitate it.',
+      image: '/images/packaging-samples.jpg',
       caption: 'Formulating with nHAp & Prebiotic Nutrients'
     },
     {
-      year: '2025',
-      badge: 'PEDIATRIC SCIENCE',
-      title: 'Backed by pediatric dental research',
-      text: '"Children\'s oral health requires a gentle yet effective approach. By combining nano-hydroxyapatite for enamel remineralization with prebiotic nutrients to balance the oral microbiome, we protect young smiles safely without harsh chemicals."',
-      author: 'Dr. Shrushti Bhankhariya — Pediatric Science Board Member',
-      image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=800&q=80',
-      caption: 'Pediatric Dental Board & Clinical Testing'
-    },
-    {
-      year: '2026',
-      badge: 'WOOFF LAUNCH',
+      year: 'September 2026',
+      badge: '',
       title: 'Brushing just got delicious!',
       text: 'After months of formulation, testing, and refining, Wooff Kids was officially born. A dentist-created kids toothpaste designed around one simple belief: brushing shouldn\'t be a battle — it should be a fun, delicious moment kids look forward to and parents feel 100% confident about!',
       image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=800&q=80',
@@ -334,25 +325,25 @@ export default function About() {
         <section className="timeline-journey-wrapper" ref={wrapperRef}>
           {/* Curvy Path SVG */}
           {svgSize.width > 0 && svgSize.height > 0 && (
-            <svg 
-              className="timeline-curvy-svg" 
-              width={svgSize.width} 
+            <svg
+              className="timeline-curvy-svg"
+              width={svgSize.width}
               height={svgSize.height}
               viewBox={`0 0 ${svgSize.width} ${svgSize.height}`}
             >
-              <path 
+              <path
                 id="timelineCurvedPath"
                 ref={pathRef}
-                d={pathD} 
+                d={pathD}
                 className="timeline-curvy-path"
               />
             </svg>
           )}
 
           {/* Animated Wooff Founders Car along the Curvy Timeline Path */}
-          <div 
-            ref={carRef} 
-            className="timeline-animated-car" 
+          <div
+            ref={carRef}
+            className="timeline-animated-car"
             aria-label="Wooff founders car traveling along timeline"
           />
 
@@ -360,23 +351,24 @@ export default function About() {
             {timelineData.map((item, index) => {
               const isEven = index % 2 === 0;
               return (
-                <div key={item.year} className={`timeline-row ${isEven ? 'row-left' : 'row-right'}`}>
-                  
+                <div key={item.badge || item.year || index} className={`timeline-row ${isEven ? 'row-left' : 'row-right'}`}>
+
                   {/* Left Column Content */}
                   <div className="timeline-col col-content-left">
                     {isEven ? (
                       <div className="story-img-card-wrap">
-                        <img 
-                          src={item.image} 
-                          alt={item.title} 
-                          className="story-timeline-img" 
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="story-timeline-img"
                           onLoad={updateTimelinePath}
                         />
                         <span className="story-img-caption">{item.caption}</span>
                       </div>
                     ) : (
                       <div className="story-text-card">
-                        <span className="timeline-section-badge">{item.badge}</span>
+                        {item.year ? <span className="story-card-date-badge">{item.year}</span> : null}
+                        {item.badge ? <span className="timeline-section-badge">{item.badge}</span> : null}
                         <h2>{item.title}</h2>
                         <div className="story-divider-rule"></div>
                         <p>{item.text}</p>
@@ -387,7 +379,7 @@ export default function About() {
 
                   {/* Center Node: Year & Dot on curvy line */}
                   <div className="timeline-center-node">
-                    <span className="timeline-year-text">{item.year}</span>
+                    {item.year ? <span className="timeline-year-text">{item.year}</span> : null}
                     <div className="timeline-node-dot"></div>
                   </div>
 
@@ -395,7 +387,8 @@ export default function About() {
                   <div className="timeline-col col-content-right">
                     {isEven ? (
                       <div className="story-text-card">
-                        <span className="timeline-section-badge">{item.badge}</span>
+                        {item.year ? <span className="story-card-date-badge">{item.year}</span> : null}
+                        {item.badge ? <span className="timeline-section-badge">{item.badge}</span> : null}
                         <h2>{item.title}</h2>
                         <div className="story-divider-rule"></div>
                         <p>{item.text}</p>
@@ -403,10 +396,10 @@ export default function About() {
                       </div>
                     ) : (
                       <div className="story-img-card-wrap">
-                        <img 
-                          src={item.image} 
-                          alt={item.title} 
-                          className="story-timeline-img" 
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="story-timeline-img"
                           onLoad={updateTimelinePath}
                         />
                         <span className="story-img-caption">{item.caption}</span>
@@ -444,15 +437,15 @@ export default function About() {
           <div className="founder-card-inner">
             <span className="story-section-badge">FROM THE FOUNDER</span>
             <blockquote className="founder-statement">
-              "We built Wooff so parents never have to choose between clinical safety and a happy, tantrum-free morning."
+              "Brushing should be something kids love, not a daily hassle. That’s why we created flavours they love, making brushing fun, enjoyable, and easier for parents."
             </blockquote>
             <div className="founder-signature-block">
               <div className="founder-avatar-circle">
-                <i className="fa-solid fa-user-doctor"></i>
+                <i className="fa-solid fa-user"></i>
               </div>
               <div className="founder-details">
-                <h3>Dr. Shrushti Bhankhariya</h3>
-                <p>Pediatric Dental Specialist & Founder</p>
+                <h3>Divy Patel</h3>
+                <p>Founder</p>
               </div>
             </div>
           </div>

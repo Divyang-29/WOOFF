@@ -804,8 +804,38 @@
   padding: 0;
 }
 
-.btn-pincode-check:hover {
+.btn-pincode-check:hover:not(:disabled) {
   opacity: 0.75;
+}
+
+.btn-pincode-check:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pincode-error-message {
+  font-size: 0.84rem;
+  color: #b91c1c;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.4;
+  animation: fadeInPincodeError 0.2s ease-in-out;
+}
+
+@keyframes fadeInPincodeError {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .delivery-results-box {
@@ -818,6 +848,7 @@
   gap: 0.5rem;
   width: 100%;
   box-sizing: border-box;
+  animation: fadeInPincodeError 0.25s ease-in-out;
 }
 
 .del-res-item {

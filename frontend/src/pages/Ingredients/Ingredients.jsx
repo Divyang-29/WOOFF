@@ -1,62 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Banner from '../../components/Banner/Banner';
+import { API_ENDPOINTS } from '../../api';
 import './Ingredients.css';
 
-const INGREDIENTS_DATA = [
-  {
-    id: 'theobromine',
-    name: "Theobromine",
-    category: "Enamel Mineralization",
-    desc: "The magic of cocoa! It is a naturally occurring compound found in chocolate that has been shown to support enamel mineralization. Paired with nHAp, it helps strengthen tiny teeth while making brushing actually taste delicious.",
-    icon: "/images/ingredients/theobromine_clean.png"
-  },
-  {
-    id: 'nhap',
-    name: "Nano-Hydroxyapatite (nHAp)",
-    category: "Remineralizing Superhero",
-    desc: "The superhero ingredient. nHAp is a non-toxic mineral that naturally makes up 97% of your tooth enamel. It binds directly to teeth to rebuild, protect, and remineralize safely, without the toxicity concerns of traditional fluoride.",
-    icon: "/images/ingredients/nhap_clean.png"
-  },
-  {
-    id: 'calcium-gluconate',
-    name: "Calcium Gluconate",
-    category: "Mineral Availability",
-    desc: "The foundational building block. This provides a highly bioavailable source of calcium, ensuring your child's teeth have the essential minerals they need to stay strong, hard, and healthy as they grow.",
-    icon: "/images/ingredients/calcium_clean.png"
-  },
-  {
-    id: 'inulin',
-    name: "Inulin",
-    category: "Prebiotic Microbiome Support",
-    desc: "A happy mouth means happy teeth. Inulin is a natural prebiotic that feeds the beneficial bacteria in the mouth. This promotes a balanced, healthy oral microbiome to naturally crowd out the bad, cavity-causing bugs.",
-    icon: "/images/ingredients/inulin_clean.png"
-  },
-  {
-    id: 'vitamin-c',
-    name: "Ascorbic Acid / Vitamin C",
-    category: "Antioxidant & Tissue Care",
-    desc: "Not just for immune support! Ascorbic Acid (Vitamin C) is a vital antioxidant that supports healthy, resilient gums and oral tissues, keeping the soft-tissue foundation of your child's smile strong.",
-    icon: "/images/ingredients/vitaminc_clean.png"
-  },
-  {
-    id: 'lactoferrin',
-    name: "Lactoferrin",
-    category: "Antimicrobial Protein",
-    desc: "The gentle protector. This naturally occurring antimicrobial protein works around the clock to help maintain excellent oral hygiene by keeping the microbial balance of the mouth perfectly in check.",
-    icon: "/images/ingredients/lactoferrin_clean.png"
-  },
-  {
-    id: 'coq10',
-    name: "Coenzyme Q10 (CoQ10)",
-    category: "Gum Health Antioxidant",
-    desc: "A powerful antioxidant that works behind the scenes. CoQ10 is widely used and studied for supporting overall gum health, ensuring the delicate soft tissues in the mouth stay just as healthy as the enamel.",
-    icon: "/images/ingredients/coq10_clean.png"
+// Map ingredient slugs/names to the botanical clean illustrations used in homescreen CleanIngredientsSection
+const INGREDIENT_CLEAN_MAP = {
+  'nano-hydroxyapatite': '/images/ingredients/nhap_clean.png',
+  'theobromine': '/images/ingredients/theobromine_clean.png',
+  'prebiotics-inulin': '/images/ingredients/inulin_clean.png',
+  'inulin': '/images/ingredients/inulin_clean.png',
+  'vitamin-c': '/images/ingredients/vitaminc_clean.png',
+  'coenzyme-q10': '/images/ingredients/coq10_clean.png',
+  'coq10': '/images/ingredients/coq10_clean.png',
+  'lactoferrin': '/images/ingredients/lactoferrin_clean.png',
+  'calcium-gluconate': '/images/ingredients/calcium_clean.png',
+  'calcium': '/images/ingredients/calcium_clean.png',
+};
+
+const resolveIngredientIcon = (item) => {
+  if (!item) return '/images/ingredients/nhap_clean.png';
+  if (item.icon_url && item.icon_url.includes('/images/ingredients/') && item.icon_url.endsWith('_clean.png')) {
+    return item.icon_url;
   }
-];
+  const slug = (item.slug || '').toLowerCase();
+  const name = (item.name || '').toLowerCase();
+
+  if (slug.includes('hydroxyapatite') || name.includes('hydroxyapatite') || name.includes('nhap')) {
+    return '/images/ingredients/nhap_clean.png';
+  }
+  if (slug.includes('theobromine') || name.includes('theobromine') || name.includes('cacao') || name.includes('cocoa')) {
+    return '/images/ingredients/theobromine_clean.png';
+  }
+  if (slug.includes('inulin') || name.includes('inulin') || name.includes('prebiotic')) {
+    return '/images/ingredients/inulin_clean.png';
+  }
+  if (slug.includes('vitamin-c') || name.includes('vitamin c') || name.includes('ascorbic')) {
+    return '/images/ingredients/vitaminc_clean.png';
+  }
+  if (slug.includes('lactoferrin') || name.includes('lactoferrin')) {
+    return '/images/ingredients/lactoferrin_clean.png';
+  }
+  if (slug.includes('coq10') || slug.includes('coenzyme') || name.includes('coq10') || name.includes('coenzyme')) {
+    return '/images/ingredients/coq10_clean.png';
+  }
+  if (slug.includes('calcium') || name.includes('calcium')) {
+    return '/images/ingredients/calcium_clean.png';
+  }
+  return item.icon_url || '/images/ingredients/nhap_clean.png';
+};
 
 export default function Ingredients() {
+  const [ingredients, setIngredients] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const [openItem, setOpenItem] = useState(null);
+
+  useEffect(() => {
+    async function fetchIngredients() {
+      try {
+        setLoading(true);
+        const res = await fetch(API_ENDPOINTS.INGREDIENTS);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.ingredients)) {
+            // Keep active ingredients sorted by display_order
+            setIngredients(data.ingredients.filter((item) => item.is_active !== false));
+          } else if (Array.isArray(data)) {
+            setIngredients(data.filter((item) => item.is_active !== false));
+          } else {
+            setIngredients([]);
+          }
+        } else {
+          setIngredients([]);
+        }
+      } catch (err) {
+        console.error('Failed to load dynamic ingredients:', err);
+        setIngredients([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchIngredients();
+  }, []);
 
   const toggleItem = (id) => {
     setOpenItem(openItem === id ? null : id);
@@ -73,53 +98,6 @@ export default function Ingredients() {
         <p className="ingredients-sub-heading">
           Wooff is made with naturally sourced ingredients that serve a purpose. No toxic chemicals, nothing unnecessary, and 100% safe if swallowed.
         </p>
-
-        {/* Flavors Summary Cards - Distinct Visual Themes */}
-        <div className="flavors-summary-row">
-          
-          <div className="flavor-summary-card flavor-citrus">
-            <div className="flavor-card-badge">Zesty Sunshine</div>
-            <div className="flavor-card-header">
-              <div className="flavor-info">
-                <h3>Meet Citrus</h3>
-                <span className="flavor-tagline">Bright, refreshing & packed with Vitamin C</span>
-              </div>
-              <div className="flavor-icon-wrap">
-                <img src="/images/ingredients/vitaminc_clean.png" alt="Citrus Slice" className="flavor-icon-img" />
-              </div>
-            </div>
-            <p className="flavor-ingredients-text">
-              <strong>Key Formula:</strong> Theobromine, Nano-Hydroxyapatite, Calcium Gluconate, Ascorbic Acid (Vitamin C), Inulin Prebiotic, Lactoferrin, CoQ10 Pure.
-            </p>
-            <div className="flavor-chips">
-              <span className="flavor-chip"><i className="fa-solid fa-lemon me-1"></i> Tangy Citrus</span>
-              <span className="flavor-chip"><i className="fa-solid fa-shield-halved me-1"></i> Enamel Shield</span>
-              <span className="flavor-chip"><i className="fa-solid fa-heart-pulse me-1"></i> Gum Antioxidant</span>
-            </div>
-          </div>
-
-          <div className="flavor-summary-card flavor-cacao">
-            <div className="flavor-card-badge cacao-badge">Decadent Cacao</div>
-            <div className="flavor-card-header">
-              <div className="flavor-info">
-                <h3>Meet Cacao</h3>
-                <span className="flavor-tagline">Rich, creamy chocolate enamel remineralizer</span>
-              </div>
-              <div className="flavor-icon-wrap">
-                <img src="/images/ingredients/theobromine_clean.png" alt="Cacao Beans" className="flavor-icon-img" />
-              </div>
-            </div>
-            <p className="flavor-ingredients-text">
-              <strong>Key Formula:</strong> Natural Cocoa Extract, Theobromine, Nano-Hydroxyapatite, Calcium Gluconate, Vitamin C, Inulin Prebiotic, Lactoferrin, CoQ10.
-            </p>
-            <div className="flavor-chips">
-              <span className="flavor-chip cacao-chip"><i className="fa-solid fa-cookie-bite me-1"></i> Real Cocoa</span>
-              <span className="flavor-chip cacao-chip"><i className="fa-solid fa-tooth me-1"></i> Enamel Power</span>
-              <span className="flavor-chip cacao-chip"><i className="fa-solid fa-leaf me-1"></i> Prebiotic Care</span>
-            </div>
-          </div>
-
-        </div>
       </div>
 
       {/* Main Interactive Ingredients Section Container */}
@@ -128,41 +106,69 @@ export default function Ingredients() {
           
           {/* Ingredients Accordion List Column */}
           <div className="ingredients-list-column">
-            {INGREDIENTS_DATA.map((item) => {
-              const isOpen = showAll || openItem === item.id;
-              return (
-                <div 
-                  key={item.id} 
-                  className={`ingredient-accordion-item ${isOpen ? 'is-open' : ''}`}
-                  onClick={() => toggleItem(item.id)}
-                >
-                  <div className="ingredient-item-header">
-                    <div className="ingredient-title-meta">
-                      <h3 className="ingredient-item-name">{item.name}</h3>
-                      <span className="ingredient-item-category">{item.category}</span>
+            {loading ? (
+              <div className="p-4 text-center text-muted">
+                <i className="fa-solid fa-circle-notch fa-spin fs-3 mb-2 d-block"></i>
+                <span>Loading active bio-active ingredients...</span>
+              </div>
+            ) : ingredients.length === 0 ? (
+              <div className="p-4 text-center text-muted">
+                <i className="fa-solid fa-flask-vial fs-3 mb-2 d-block text-secondary"></i>
+                <p className="fw-bold mb-0">No active formulation ingredients configured.</p>
+              </div>
+            ) : (
+              ingredients.map((item) => {
+                const isOpen = showAll || openItem === item.id;
+                const iconSrc = resolveIngredientIcon(item);
+                return (
+                  <div 
+                    key={item.id} 
+                    className={`ingredient-accordion-item ${isOpen ? 'is-open' : ''}`}
+                    onClick={() => toggleItem(item.id)}
+                  >
+                    <div className="ingredient-item-header">
+                      <div className="ingredient-title-meta">
+                        <h3 className="ingredient-item-name">{item.name}</h3>
+                        <span className="ingredient-item-category">{item.tag || item.sub_title || 'Hero Formulation'}</span>
+                      </div>
+
+                      <div className="ingredient-item-right">
+                        {item.badge_text && (
+                          <span className="badge bg-light text-dark border me-2 small px-2 py-1">
+                            {item.badge_text}
+                          </span>
+                        )}
+                        <img 
+                          src={iconSrc} 
+                          alt={item.name} 
+                          className="ingredient-item-icon" 
+                          onError={(e) => { e.target.src = '/images/ingredients/nhap_clean.png'; }}
+                        />
+                        <button className="accordion-toggle-btn" aria-label="Toggle details">
+                          {isOpen ? '−' : '+'}
+                        </button>
+                      </div>
                     </div>
 
-                    <div className="ingredient-item-right">
-                      {item.icon && (
-                        <img src={item.icon} alt={item.name} className="ingredient-item-icon" />
-                      )}
-                      <button className="accordion-toggle-btn" aria-label="Toggle details">
-                        {isOpen ? '−' : '+'}
-                      </button>
-                    </div>
+                    {isOpen && (
+                      <div className="ingredient-item-body">
+                        <p>{item.description}</p>
+                        {Array.isArray(item.benefits) && item.benefits.length > 0 && (
+                          <ul className="mb-0 mt-2 ps-3 small text-muted">
+                            {item.benefits.map((benefit, bIdx) => (
+                              <li key={bIdx}>{benefit}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
                   </div>
-
-                  {isOpen && (
-                    <div className="ingredient-item-body">
-                      <p>{item.desc}</p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
 
-          {/* Clinical Research Card (Sits under accordion on mobile, sticky left on desktop) */}
+          {/* Clinical Research Card */}
           <div className="research-sticky-card">
             <div className="research-card-content">
               <h2>Science-Backed Pediatric Formulation</h2>
