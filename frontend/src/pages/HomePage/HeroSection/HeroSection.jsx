@@ -232,6 +232,9 @@ export default function HeroSection() {
         ref={viewportRef}
         className="top-0 vh-100 w-100 overflow-hidden d-flex align-items-center justify-content-center"
       >
+        {/* Semantic H1 for Homepage SEO Crawlers */}
+        <h1 className="visually-hidden">Chocolate-Flavoured Toothpaste for Kids</h1>
+
         <canvas
           ref={canvasRef}
           className="position-absolute top-0 start-0 w-100 h-100 d-block pe-none"

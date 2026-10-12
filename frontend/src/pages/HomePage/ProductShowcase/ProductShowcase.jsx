@@ -13,11 +13,10 @@ export default function ProductShowcase() {
 
         {/* Top Text */}
         <div className="showcase-header">
+          <h1 className="showcase-h1-badge">Chocolate-Flavoured Toothpaste for Kids</h1>
           <h2>  The Toothpaste Kids Want.
             <br />
             The Science Moms Trust.</h2>
-
-        
         </div>
 
         {/* Center Product Display */}

@@ -231,6 +231,21 @@ export default function ProductDetails() {
     };
   }, [slug]);
 
+  useEffect(() => {
+    if (slug === 'choco-toothpaste' || data?.slug === 'choco-toothpaste') {
+      document.title = 'Wooff Chocolate Toothpaste for Kids | Wooff Care';
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute(
+          'content',
+          'Discover Wooff chocolate-flavoured toothpaste for kids. Explore its ingredients, formulation, and product details on the official Wooff website.'
+        );
+      }
+    } else if (data?.title) {
+      document.title = `${data.title} | Wooff Care`;
+    }
+  }, [slug, data]);
+
   if (loading && !data) return <div className="status-message">Loading product...</div>;
   if ((error || !data) && !loading) return <div className="status-message error">{error || 'Product not found'}</div>;
 
@@ -327,7 +342,16 @@ export default function ProductDetails() {
               </Link>
             )}
             
-            <h1 className="product-title">{data.title}</h1>
+            <h1 className="product-title">
+              {slug === 'choco-toothpaste' || data.slug === 'choco-toothpaste'
+                ? 'Chocolate-Flavoured Toothpaste for Kids'
+                : data.title}
+            </h1>
+            {(slug === 'choco-toothpaste' || data.slug === 'choco-toothpaste') && (
+              <p className="product-pack-subtitle mb-2" style={{ color: '#8C7B6A', fontSize: '0.92rem', fontWeight: 500 }}>
+                50g Single Tube • 100% Safe to Swallow • Kids Above 2 Years
+              </p>
+            )}
 
             <div 
               className="product-rating-row"
