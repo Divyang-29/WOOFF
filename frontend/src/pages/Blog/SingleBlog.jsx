@@ -88,34 +88,13 @@ export default function SingleBlog() {
           setAllBlogs(blogList);
           setLoading(false);
 
-          // Update Document Title, Meta Description & Schema.org Article LD+JSON
+          // Update Document Title & Meta Description for SEO
           if (enriched) {
             document.title = enriched.meta_title || `${enriched.title} | Wooff`;
             const metaTag = document.querySelector('meta[name="description"]');
             if (metaTag && (enriched.meta_description || enriched.excerpt)) {
               metaTag.setAttribute('content', enriched.meta_description || enriched.excerpt);
             }
-
-            let scriptTag = document.getElementById('blog-schema-ld');
-            if (!scriptTag) {
-              scriptTag = document.createElement('script');
-              scriptTag.id = 'blog-schema-ld';
-              scriptTag.type = 'application/ld+json';
-              document.head.appendChild(scriptTag);
-            }
-            const schemaData = {
-              "@context": "https://schema.org",
-              "@type": "Article",
-              "headline": enriched.title,
-              "description": enriched.meta_description || enriched.excerpt,
-              "author": {
-                "@type": "Organization",
-                "name": enriched.author_profile?.name || enriched.author || "Wooff"
-              },
-              "about": enriched.category || "Kids Oral Care",
-              "datePublished": enriched.created_at || new Date().toISOString()
-            };
-            scriptTag.textContent = JSON.stringify(schemaData);
           }
         }
       } catch (err) {
@@ -134,8 +113,6 @@ export default function SingleBlog() {
 
     return () => {
       isMounted = false;
-      const scriptTag = document.getElementById('blog-schema-ld');
-      if (scriptTag) scriptTag.remove();
     };
   }, [slug]);
 
