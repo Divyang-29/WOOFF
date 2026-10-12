@@ -49,35 +49,106 @@ const resolveIngredientIcon = (item) => {
   return item.icon_url || '/images/ingredients/nhap_clean.png';
 };
 
+const DEFAULT_INGREDIENTS = [
+  {
+    id: 1,
+    name: 'Nano-Hydroxyapatite',
+    slug: 'nano-hydroxyapatite',
+    sub_title: 'Enamel Mineral Support',
+    tag: 'Rebuilds Enamel',
+    description: 'A biomimetic mineral that closely resembles the mineral naturally found in teeth. It helps support enamel remineralization safely without harsh chemicals or warning labels.',
+    benefits: ['Deposits calcium and phosphate ions into micro-porosities', 'Rebuilds and protects tooth enamel', '100% biocompatible and safe if swallowed'],
+    badge_text: 'Enamel Protector',
+    icon_url: '/images/ingredients/nhap_clean.png',
+  },
+  {
+    id: 2,
+    name: 'Theobromine',
+    slug: 'theobromine',
+    sub_title: 'Enamel Strength Support',
+    tag: 'Natural Cacao Extract',
+    description: 'Derived from natural cacao, theobromine has been studied for its potential to support enamel remineralization and crystal growth alongside Nano-hydroxyapatite.',
+    benefits: ['Strengthens crystalline enamel structure', 'Non-toxic natural cacao component', 'Synergizes with Nano-Hydroxyapatite'],
+    badge_text: 'Clinically Studied',
+    icon_url: '/images/ingredients/theobromine_clean.png',
+  },
+  {
+    id: 3,
+    name: 'Inulin',
+    slug: 'prebiotics-inulin',
+    sub_title: 'Prebiotic Oral Care',
+    tag: 'Microbiome Balance',
+    description: 'A naturally derived prebiotic included to nourish beneficial oral bacteria and support a healthy, balanced oral environment.',
+    benefits: ['Nourishes protective oral flora', 'Suppresses harmful acid-producing bacteria', 'Supports whole-mouth wellness'],
+    badge_text: 'Prebiotic Care',
+    icon_url: '/images/ingredients/inulin_clean.png',
+  },
+  {
+    id: 4,
+    name: 'Vitamin C',
+    slug: 'vitamin-c',
+    sub_title: 'Antioxidant & Gum Support',
+    tag: 'Collagen Support',
+    description: 'Vitamin C is a vital antioxidant that contributes to the health of oral tissues and supports a strong, healthy gum environment.',
+    benefits: ['Supports healthy collagen production in gums', 'Potent antioxidant defence against inflammation', 'Nourishes delicate oral tissues'],
+    badge_text: 'Gum Support',
+    icon_url: '/images/ingredients/vitaminc_clean.png',
+  },
+  {
+    id: 5,
+    name: 'Lactoferrin',
+    slug: 'lactoferrin',
+    sub_title: 'Natural Oral Defence',
+    tag: 'Salivary Protein',
+    description: 'A naturally occurring protein found in saliva and mother’s milk, lactoferrin provides natural antimicrobial defence against unwanted mouth bacteria.',
+    benefits: ['Bio-mimetic salivary protection', 'Maintains oral microbiome equilibrium', 'Gentle on developing gums'],
+    badge_text: 'Natural Defence',
+    icon_url: '/images/ingredients/lactoferrin_clean.png',
+  },
+  {
+    id: 6,
+    name: 'Coenzyme Q10',
+    slug: 'coenzyme-q10',
+    sub_title: 'Antioxidant Gum Care',
+    tag: 'Cellular Energy',
+    description: 'A naturally occurring cellular antioxidant widely studied in periodontal and gum tissue care for cellular vitality.',
+    benefits: ['Enhances periodontal cellular vitality', 'Fights oxidative stress in gum pockets', 'Promotes gum healing and resilience'],
+    badge_text: 'Periodontal Care',
+    icon_url: '/images/ingredients/coq10_clean.png',
+  },
+  {
+    id: 7,
+    name: 'Calcium Gluconate',
+    slug: 'calcium-gluconate',
+    sub_title: 'Tooth Enamel Support',
+    tag: 'Mineral Building Block',
+    description: 'Calcium is an essential building block of tooth enamel, working synergistically with nHAp to keep growing teeth mineral-dense and resilient.',
+    benefits: ['Provides essential bio-available calcium ions', 'Enhances remineralization synergy', 'Gentle and non-abrasive'],
+    badge_text: 'Essential Mineral',
+    icon_url: '/images/ingredients/calcium_clean.png',
+  },
+];
+
 export default function Ingredients() {
-  const [ingredients, setIngredients] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [ingredients, setIngredients] = useState(DEFAULT_INGREDIENTS);
+  const [loading, setLoading] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [openItem, setOpenItem] = useState(null);
 
   useEffect(() => {
     async function fetchIngredients() {
       try {
-        setLoading(true);
         const res = await fetch(API_ENDPOINTS.INGREDIENTS);
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data.ingredients)) {
-            // Keep active ingredients sorted by display_order
+          if (Array.isArray(data.ingredients) && data.ingredients.length > 0) {
             setIngredients(data.ingredients.filter((item) => item.is_active !== false));
-          } else if (Array.isArray(data)) {
+          } else if (Array.isArray(data) && data.length > 0) {
             setIngredients(data.filter((item) => item.is_active !== false));
-          } else {
-            setIngredients([]);
           }
-        } else {
-          setIngredients([]);
         }
       } catch (err) {
-        console.error('Failed to load dynamic ingredients:', err);
-        setIngredients([]);
-      } finally {
-        setLoading(false);
+        console.warn('Using default ingredients:', err);
       }
     }
     fetchIngredients();
