@@ -186,7 +186,14 @@ export default function SingleBlog() {
 
   return (
     <div className="single-blog-page-wrapper">
-      <Banner breadcrumb="HOME / BLOG / ARTICLE" title="The Journal" />
+      <Banner
+        breadcrumb={
+          blog
+            ? `HOME / BLOG / ${blog.category ? blog.category.toUpperCase() : 'ARTICLE'}`
+            : 'HOME / BLOG / ARTICLE'
+        }
+        title={blog?.title || 'The Journal'}
+      />
 
       <div className="single-blog-container">
         {/* Loading State */}
@@ -210,22 +217,6 @@ export default function SingleBlog() {
 
         {!loading && !error && blog && (
           <article className="single-blog-article">
-            
-            {/* 1. Breadcrumbs: Home → Blog → Category → Article */}
-            <nav className="blog-breadcrumbs-nav" aria-label="Breadcrumb">
-              <ol className="blog-breadcrumbs-list">
-                <li><Link to="/">Home</Link></li>
-                <li className="breadcrumb-separator">›</li>
-                <li><Link to="/blog">Blog</Link></li>
-                <li className="breadcrumb-separator">›</li>
-                <li><span className="breadcrumb-category">{blog.category}</span></li>
-                <li className="breadcrumb-separator">›</li>
-                <li className="breadcrumb-active" aria-current="page">{blog.title}</li>
-              </ol>
-            </nav>
-
-            {/* 2. H1: Main Blog Title */}
-            <h1 className="single-blog-title">{blog.title}</h1>
 
             {/* 3. Meta Information Bar */}
             <div className="single-blog-meta-card">

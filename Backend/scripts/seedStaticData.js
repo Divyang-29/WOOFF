@@ -307,6 +307,14 @@ async function seedStaticData() {
     console.log("[SEED] Seeding blogs table...");
     const blogsData = [
       {
+        title: "Choco Flavoured Toothpaste: Make Brushing a Treat",
+        slug: "choco-toothpaste",
+        content: "Choco flavoured toothpaste turns a daily chore into something kids look forward to. Wooff is built for that. Developing lifelong dental habits doesn't have to be a battle of wills: let them choose the moment, use a 2-minute timer, brush together, and pick a taste they love. Wooff combines nano-hydroxyapatite and calcium gluconate with theobromine, inulin, vitamin C, lactoferrin, and coenzyme Q10 in one clean kids' formula.",
+        image_url: "/assets/choco-toothpaste-pieces.jpg",
+        author: "Wooff Team",
+        created_at: new Date(),
+      },
+      {
         title: "Why We Swapped Fluoride for Nano-Hydroxyapatite (nHAp)",
         slug: "why-nano-hydroxyapatite",
         content: "As dentists, there was one question parents asked us constantly: what happens when our toddler swallows fluoride toothpaste? Traditional fluoride works by chemical hardening, but excessive ingestion carries fluorosis risks for little tummies. Enter Nano-hydroxyapatite (nHAp)—a biocompatible, biomimetic mineral making up 97% of natural tooth enamel. nHAp deposits real calcium and phosphate ions into micro-porosities, reversing early decay safely without harsh chemicals or warning labels.",

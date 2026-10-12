@@ -9,23 +9,34 @@ export default function Banner({ title, breadcrumb, bgImage }) {
 
     const parts = breadcrumb.split('/');
     if (parts.length > 1) {
-      const firstPart = parts[0].trim();
-      const restPart = parts.slice(1).join('/').trim();
-      const isHome = firstPart.toUpperCase() === 'HOME';
+      return parts.map((rawPart, index) => {
+        const part = rawPart.trim();
+        const upper = part.toUpperCase();
+        let linkTo = null;
 
-      return (
-        <>
-          {isHome ? (
-            <Link className="breadcrumb-home-link" to="/">
-              {firstPart}
-            </Link>
-          ) : (
-            <span>{firstPart}</span>
-          )}
-          <span className="breadcrumb-divider">/</span>
-          <span>{restPart}</span>
-        </>
-      );
+        if (upper === 'HOME') {
+          linkTo = '/';
+        } else if (upper === 'BLOG' || upper === 'BLOGS' || upper === 'OUR JOURNAL' || upper === 'JOURNAL') {
+          linkTo = '/blog';
+        } else if (upper === 'SHOP' || upper === 'PRODUCTS') {
+          linkTo = '/shop';
+        }
+
+        const isLast = index === parts.length - 1;
+
+        return (
+          <React.Fragment key={index}>
+            {linkTo && !isLast ? (
+              <Link className="breadcrumb-home-link" to={linkTo}>
+                {part}
+              </Link>
+            ) : (
+              <span>{part}</span>
+            )}
+            {!isLast && <span className="breadcrumb-divider">/</span>}
+          </React.Fragment>
+        );
+      });
     }
 
     return breadcrumb;
