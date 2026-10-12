@@ -48,7 +48,7 @@ export default function About() {
       badge: '',
       title: 'Brushing just got delicious!',
       text: 'After months of formulation, testing, and refining, Wooff Kids was officially born. A dentist-created kids toothpaste designed around one simple belief: brushing shouldn\'t be a battle — it should be a fun, delicious moment kids look forward to and parents feel 100% confident about!',
-      image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=800&q=80',
+      image: '/assets/IMG_5916.webp',
       caption: 'Official Launch — 100% Prebiotic Oral Care'
     }
   ];
