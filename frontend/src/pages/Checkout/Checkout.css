@@ -1,7 +1,9 @@
 /* Checkout Page Styles */
 .checkout-page-container {
-  min-height: 80vh;
-  background-color: #faf7f4;
+  min-height: 85vh;
+  background-color: #FAF5EF;
+  padding-top: 6rem;
+  padding-bottom: 4rem;
 }
 
 .checkout-breadcrumb .breadcrumb {
@@ -23,7 +25,7 @@
 }
 
 .checkout-page-title {
-  font-size: 2rem;
+  font-size: 2.1rem;
   font-weight: 800;
   color: #4B2E1E;
   margin-bottom: 6px;
@@ -31,13 +33,43 @@
 }
 
 .checkout-page-tagline {
-  font-size: 1rem;
+  font-size: 0.98rem;
   color: #726257;
   margin-bottom: 0;
 }
 
 @media (max-width: 768px) {
+  .checkout-page-container {
+    padding-top: 5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .checkout-page-container .container {
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 0.75rem !important;
+  }
+
+  .checkout-breadcrumb {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .checkout-breadcrumb .breadcrumb {
+    font-size: 0.8rem;
+  }
+
+  .checkout-page-header {
+    margin-bottom: 1.25rem !important;
+    text-align: left !important;
+  }
+
   .checkout-page-title {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+  }
+
+  .checkout-page-tagline {
+    font-size: 0.88rem;
+    line-height: 1.4;
   }
 }

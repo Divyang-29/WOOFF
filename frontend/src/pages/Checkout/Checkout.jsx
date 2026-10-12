@@ -31,7 +31,7 @@ export default function Checkout() {
         <div className="checkout-page-header mb-4 text-center text-md-start">
           <h1 className="checkout-page-title">Fast & Secure Checkout</h1>
           <p className="checkout-page-tagline">
-            Complete your order with official 100% genuine Wooff canine oral health care.
+            Complete your order with official 100% genuine Wooff Kids oral care.
           </p>
         </div>
 

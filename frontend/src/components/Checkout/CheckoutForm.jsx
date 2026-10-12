@@ -41,6 +41,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successOrder, setSuccessOrder] = useState(null);
+  const [isMobileSummaryOpen, setIsMobileSummaryOpen] = useState(false);
 
   // Pincode auto-fetch state
   const [isFetchingPincode, setIsFetchingPincode] = useState(false);
@@ -411,6 +412,67 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
 
   return (
     <div className="checkout-component-wrapper">
+      {/* Mobile Collapsible Order Summary Banner */}
+      {itemsToCheckout.length > 0 && (
+        <div className="mobile-order-summary-accordion d-lg-none mb-3">
+          <button 
+            type="button" 
+            className="mobile-summary-toggle-btn"
+            onClick={() => setIsMobileSummaryOpen(!isMobileSummaryOpen)}
+            aria-expanded={isMobileSummaryOpen}
+          >
+            <div className="mobile-summary-toggle-left">
+              <i className="fa-solid fa-bag-shopping me-2 text-primary-color"></i>
+              <span>{isMobileSummaryOpen ? 'Hide order summary' : 'Show order summary'}</span>
+              <i className={`fa-solid fa-chevron-${isMobileSummaryOpen ? 'up' : 'down'} ms-2 arrow-icon`}></i>
+            </div>
+            <div className="mobile-summary-toggle-amount">
+              ₹{grandTotal.toFixed(2)}
+            </div>
+          </button>
+          
+          {isMobileSummaryOpen && (
+            <div className="mobile-summary-dropdown">
+              <div className="summary-items-list mb-3">
+                {itemsToCheckout.map((item, idx) => {
+                  const unitPrice = parseFloat(item.final_price || item.unit_price || item.price || 0);
+                  const qty = parseInt(item.quantity) || 1;
+                  const itemImg = item.primary_image || item.image || (item.images && item.images[0]) || '/assets/tooth_paste.webp';
+                  return (
+                    <div key={item.id || item.product_id || idx} className="summary-item-row">
+                      <div className="summary-item-img-wrap">
+                        <img src={itemImg} alt={item.title || item.name} />
+                        <span className="summary-item-badge">{qty}</span>
+                      </div>
+                      <div className="summary-item-details">
+                        <div className="summary-item-name">{item.title || item.name || 'Wooff Kids Toothpaste'}</div>
+                        <div className="summary-item-qty">Qty: {qty}</div>
+                      </div>
+                      <div className="summary-item-price">₹{(unitPrice * qty).toFixed(2)}</div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="summary-divider"></div>
+              <div className="summary-cost-breakdown">
+                <div className="cost-row">
+                  <span>Subtotal</span>
+                  <span>₹{subtotal.toFixed(2)}</span>
+                </div>
+                <div className="cost-row">
+                  <span>Shipping</span>
+                  <span>{shippingCost === 0 ? <strong className="text-success">FREE</strong> : `₹${shippingCost.toFixed(2)}`}</span>
+                </div>
+                <div className="cost-row grand-total-row">
+                  <span>Total</span>
+                  <span>₹{grandTotal.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="checkout-grid">
         {/* LEFT COLUMN: Shipping Address Form */}
         <div className="checkout-form-column">
@@ -434,7 +496,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
 
             <form onSubmit={handleSubmit} noValidate>
               {/* Full Name */}
-              <div className="form-group mb-3">
+              <div className="form-group mb-2 mb-md-3">
                 <label htmlFor="fullName" className="form-label">
                   Full Name <span className="required-star">*</span>
                 </label>
@@ -452,8 +514,8 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
               </div>
 
               {/* Email & Phone */}
-              <div className="row g-3 mb-3">
-                <div className="col-md-6">
+              <div className="row g-2 g-md-3 mb-2 mb-md-3">
+                <div className="col-12 col-md-6">
                   <label htmlFor="email" className="form-label">
                     Email Address <span className="required-star">*</span>
                   </label>
@@ -471,7 +533,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
                   {formErrors.email && <div className="invalid-feedback">{formErrors.email}</div>}
                 </div>
 
-                <div className="col-md-6">
+                <div className="col-12 col-md-6">
                   <label htmlFor="phone" className="form-label">
                     10-digit Phone Number <span className="required-star">*</span>
                   </label>
@@ -495,7 +557,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
               </div>
 
               {/* Address Line 1 */}
-              <div className="form-group mb-3">
+              <div className="form-group mb-2 mb-md-3">
                 <label htmlFor="addressLine1" className="form-label">
                   Address Line 1 (Flat, House no., Building, Street) <span className="required-star">*</span>
                 </label>
@@ -513,7 +575,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
               </div>
 
               {/* Address Line 2 */}
-              <div className="form-group mb-3">
+              <div className="form-group mb-2 mb-md-3">
                 <label htmlFor="addressLine2" className="form-label">
                   Address Line 2 (Apartment, Area, Sector, Landmark) <span className="optional-tag">(Optional)</span>
                 </label>
@@ -530,11 +592,11 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
               </div>
 
               {/* Pincode (Auto-fetches City & State), City & State */}
-              <div className="row g-3 mb-3">
-                <div className="col-md-4">
+              <div className="row g-2 g-md-3 mb-2 mb-md-3">
+                <div className="col-6 col-md-4">
                   <label htmlFor="pincode" className="form-label d-flex justify-content-between align-items-center">
                     <span>
-                      6-digit Pincode <span className="required-star">*</span>
+                      Pincode <span className="required-star">*</span>
                     </span>
                     {isFetchingPincode && (
                       <span className="spinner-border spinner-border-sm text-primary-color" role="status" aria-hidden="true"></span>
@@ -561,7 +623,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
                   {formErrors.pincode && <div className="invalid-feedback d-block">{formErrors.pincode}</div>}
                 </div>
 
-                <div className="col-md-4">
+                <div className="col-6 col-md-4">
                   <label htmlFor="city" className="form-label">
                     City <span className="required-star">*</span>
                   </label>
@@ -578,7 +640,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
                   {formErrors.city && <div className="invalid-feedback">{formErrors.city}</div>}
                 </div>
 
-                <div className="col-md-4">
+                <div className="col-12 col-md-4">
                   <label htmlFor="state" className="form-label">
                     State <span className="required-star">*</span>
                   </label>
@@ -668,7 +730,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
                 {itemsToCheckout.map((item, idx) => {
                   const unitPrice = parseFloat(item.final_price || item.unit_price || item.price || 0);
                   const qty = parseInt(item.quantity) || 1;
-                  const itemImg = item.primary_image || item.image || (item.images && item.images[0]) || '/images/hero_tubes.jpg';
+                  const itemImg = item.primary_image || item.image || (item.images && item.images[0]) || '/assets/tooth_paste.webp';
 
                   return (
                     <div key={item.id || item.product_id || idx} className="summary-item-row">
@@ -677,7 +739,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
                         <span className="summary-item-badge">{qty}</span>
                       </div>
                       <div className="summary-item-details">
-                        <div className="summary-item-name">{item.title || item.name || 'Wooff Dog Toothpaste'}</div>
+                        <div className="summary-item-name">{item.title || item.name || 'Wooff Kids Toothpaste'}</div>
                         <div className="summary-item-qty">Qty: {qty}</div>
                       </div>
                       <div className="summary-item-price">₹{(unitPrice * qty).toFixed(2)}</div>
