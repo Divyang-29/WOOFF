@@ -27,6 +27,8 @@ export default function ProductShowcase() {
             src={wooffChocoTube}
             alt="Wooff Choco Flavour Toothpaste"
             className="main-product-tube"
+            loading="lazy"
+            decoding="async"
           />
 
         </div>

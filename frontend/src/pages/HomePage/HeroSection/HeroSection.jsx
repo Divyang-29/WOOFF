@@ -88,8 +88,9 @@ export default function HeroSection() {
     const isMobile = window.innerWidth <= 768;
     const preloadedImages = new Array(TOTAL_FRAMES);
 
-    // 1. Load the first frame immediately so the user sees the hero image instantly
+    // 1. Load the first frame immediately so the user sees the hero image instantly (strictly eager, fetchpriority=high)
     const firstFrame = new Image();
+    firstFrame.fetchPriority = 'high';
     firstFrame.src = getFramePath(0, isMobile);
 
     firstFrame.onload = () => {

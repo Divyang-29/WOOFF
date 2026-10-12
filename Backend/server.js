@@ -78,7 +78,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 // Global API rate limiting

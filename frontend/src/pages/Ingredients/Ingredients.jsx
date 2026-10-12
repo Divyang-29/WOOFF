@@ -207,6 +207,8 @@ export default function Ingredients() {
                           src={iconSrc} 
                           alt={item.name} 
                           className="ingredient-item-icon" 
+                          loading="lazy"
+                          decoding="async"
                           onError={(e) => { e.target.src = '/images/ingredients/nhap_clean.webp'; }}
                         />
                         <button className="accordion-toggle-btn" aria-label="Toggle details">

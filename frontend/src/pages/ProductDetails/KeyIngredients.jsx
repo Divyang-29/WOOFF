@@ -81,7 +81,7 @@ export default function KeyIngredients({
             </div>
             {(ing.image_url || ing.icon) && (
               <div className="ingredient-card-image-wrap">
-                <img src={ing.image_url || ing.icon} alt={ing.title} className="ingredient-card-icon" />
+                <img src={ing.image_url || ing.icon} alt={ing.title} className="ingredient-card-icon" loading="lazy" decoding="async" />
               </div>
             )}
           </div>

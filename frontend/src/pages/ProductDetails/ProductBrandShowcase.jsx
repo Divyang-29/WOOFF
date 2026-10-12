@@ -17,6 +17,8 @@ export default function ProductBrandShowcase({ flavor }) {
           src={bannerImage} 
           alt="Wooff Natural Oral Care Ingredients" 
           className="showcase-banner-img"
+          loading="lazy"
+          decoding="async"
         />
         <div className="showcase-banner-overlay">
           <span className="banner-tagline">100% PREBIOTIC & ENAMEL SAFE</span>

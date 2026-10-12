@@ -81,6 +81,8 @@ export default function CertificatesSection() {
               src={cert.imageUrl}
               alt={cert.title}
               className="certificate-logo"
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
                 if (e.currentTarget.src.endsWith('.png')) {
                   e.currentTarget.src = e.currentTarget.src.replace(/\.png$/i, '.webp');
@@ -95,6 +97,8 @@ export default function CertificatesSection() {
               src={cert.imageUrl}
               alt={cert.title}
               className="certificate-logo duplicate-logo"
+              loading="lazy"
+              decoding="async"
               onError={(e) => {
                 if (e.currentTarget.src.endsWith('.png')) {
                   e.currentTarget.src = e.currentTarget.src.replace(/\.png$/i, '.webp');

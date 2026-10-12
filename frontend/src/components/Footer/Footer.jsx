@@ -25,6 +25,8 @@ export default function Footer() {
                 src={wooffLogo}
                 alt="Wooff Kids"
                 className="footer-logo"
+                loading="lazy"
+                decoding="async"
               />
             </Link>
             <p className="footer-desc mb-3">

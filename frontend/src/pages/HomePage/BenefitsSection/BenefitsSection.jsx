@@ -68,6 +68,8 @@ export default function BenefitsSection() {
                   src={imageSrc}
                   alt={benefit.title}
                   className="benefit-icon-img"
+                  loading="lazy"
+                  decoding="async"
                   onError={(e) => {
                     const fallback = fallbackImageMap[benefit.title] || nhapImg;
                     if (e.target.src !== fallback) {
