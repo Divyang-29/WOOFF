@@ -108,7 +108,121 @@ export const RICH_ARTICLES = {
       "Wooff pairs kid-loved cocoa flavor with dentist-backed nHAp, prebiotic inulin, and botanicals.",
     ],
     disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
-    related_slugs: [],
+    related_slugs: ['chocolate-flavoured-toothpaste'],
+  },
+  'chocolate-flavoured-toothpaste': {
+    title: "Chocolate Flavoured Toothpaste: A Parent's Guide",
+    meta_title: 'Chocolate Flavoured Toothpaste for Kids | Wooff',
+    meta_description: 'Why kids love chocolate flavoured toothpaste, what is inside Wooff, and how to make brushing a daily habit.',
+    canonical_url: 'https://wooff-frontend.onrender.com/blog/chocolate-flavoured-toothpaste',
+    category: 'Kids Routine & Science',
+    tags: ['ChocolateToothpaste', 'KidsRoutine', 'ParentsGuide', 'NanoHydroxyapatite', 'Theobromine', 'OralCare'],
+    updated_at: '2026-10-12T13:00:00Z',
+    reading_time: '3 min read',
+    image_url: '/assets/choco.png',
+    excerpt: 'Why kids love chocolate flavoured toothpaste, what is inside Wooff, and how to make brushing a daily habit.',
+    image_caption: 'Wooff chocolate flavoured kids toothpaste with cocoa-derived theobromine, nano-hydroxyapatite, and prebiotic inulin.',
+    author: {
+      name: 'Wooff Team',
+      role: 'Pediatric Oral Care Team',
+      avatar: '/assets/wooff-logo.png',
+      bio: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
+    },
+    toc: [
+      { id: 'short-answer', title: '1. Short Answer' },
+      { id: 'why-flavour-matters', title: '2. Why Flavour Matters for Kids' },
+      { id: 'what-is-in-wooff', title: '3. What is in Wooff' },
+      { id: 'how-to-use-it', title: '4. How to Use It' },
+      { id: 'faq-section', title: '5. Frequently Asked Questions' },
+      { id: 'explore-range', title: '6. Explore the Range' },
+    ],
+    sections: [
+      {
+        id: 'short-answer',
+        title: 'Short Answer: The Daily Brushing Breakthrough',
+        paragraphs: [
+          "Chocolate flavoured toothpaste is a kids' toothpaste whose taste makes brushing easier to accept. Wooff pairs that taste with a mineral-and-care formula.",
+          "For young brushers, conventional mint flavours are often perceived as sharp, spicy, or unpleasant. By swapping harsh sensations for a comforting, natural cocoa flavour, daily oral hygiene transitions from a stressful chore into a cooperative routine children eagerly anticipate.",
+        ],
+        quote: '“A taste children enjoy means less fuss, longer brushing, and a habit that sticks for life.”',
+      },
+      {
+        id: 'why-flavour-matters',
+        title: 'Why Flavour Matters for Kids',
+        paragraphs: [
+          'Many children dislike strong mint. A taste they enjoy means less fuss, longer brushing and a habit that sticks. Dentists commonly suggest brushing twice a day for two minutes.',
+          'When children look forward to the taste of their toothpaste, they naturally spend more time brushing hard-to-reach molars and gumlines, allowing protective minerals to do their job effectively.',
+        ],
+        callout: {
+          title: 'The Two-Minute Rule',
+          text: 'Pediatric dentists agree: two minutes of gentle, twice-daily brushing is the foundation for healthy teeth and gums.',
+        },
+      },
+      {
+        id: 'what-is-in-wooff',
+        title: 'What is in Wooff',
+        paragraphs: [
+          'Wooff blends dentist-approved mineral science with natural, food-grade ingredients to create an effective and gentle daily toothpaste:',
+        ],
+        list: [
+          'Theobromine: a cocoa compound that also gives the paste its chocolate taste.',
+          'Nano-Hydroxyapatite: a mineral form of the same material found in tooth enamel.',
+          'Calcium Gluconate: a calcium source.',
+          'Inulin: a plant fibre used to support a balanced mouth environment.',
+          'Vitamin C (Ascorbic Acid), Lactoferrin and Coenzyme Q10: gum-care and antioxidant support ingredients.',
+        ],
+      },
+      {
+        id: 'how-to-use-it',
+        title: 'How to Use It',
+        paragraphs: [
+          'Use a pea-sized amount for children, supervise brushing, and teach them to spit rather than swallow. Brush morning and night.',
+          'Guide children to brush gently across all surfaces—outer, inner, and chewing areas—using soft circular strokes for two minutes.',
+        ],
+        subsections: [
+          {
+            title: '1. Pea-Sized Amount',
+            content: 'Apply a pea-sized amount of toothpaste onto a soft-bristled toothbrush.',
+          },
+          {
+            title: '2. Supervised Brushing',
+            content: 'Brush for two full minutes twice a day, morning and evening, under adult supervision.',
+          },
+          {
+            title: '3. Spit, Don’t Swallow',
+            content: 'Teach children to spit out the excess. Although Wooff is made with food-grade ingredients, spitting builds proper hygiene habits.',
+          },
+        ],
+      },
+      {
+        id: 'explore-range',
+        title: 'Explore the Range',
+        paragraphs: [
+          'Explore our complete collection of pediatric oral care formulas designed for healthy, happy smiles:',
+        ],
+        customLinks: [
+          { text: 'Explore the kids toothpaste range', url: '/products' },
+          { text: 'Explore the Wooff choco toothpaste', url: '/blog/choco-toothpaste' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'Is chocolate toothpaste bad for teeth?',
+        a: 'The flavour is not the issue. What counts is the formula and brushing well. Wooff uses cocoa-derived theobromine for taste, not sugar-based chocolate.',
+      },
+      {
+        q: 'What age is it for?',
+        a: 'Follow the age guidance printed on the pack and ask your dentist about children under 3.',
+      },
+    ],
+    conclusion_takeaways: [
+      "Chocolate flavoured toothpaste makes brushing easier and more enjoyable for children who dislike strong mint.",
+      "Wooff pairs real cocoa-derived theobromine with nano-hydroxyapatite, calcium gluconate, and inulin prebiotics.",
+      "Brush twice a day for two minutes with a pea-sized amount and adult supervision.",
+    ],
+    disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
+    related_slugs: ['choco-toothpaste'],
   },
 };
 

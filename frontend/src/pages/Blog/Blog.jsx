@@ -6,6 +6,15 @@ import './Blog.css';
 
 const STATIC_BLOG_FALLBACKS = [
   {
+    id: 'chocolate-flavoured-toothpaste',
+    slug: 'chocolate-flavoured-toothpaste',
+    title: "Chocolate Flavoured Toothpaste: A Parent's Guide",
+    content: "Why kids love chocolate flavoured toothpaste, what is inside Wooff, and how to make brushing a daily habit.",
+    image_url: '/assets/choco.png',
+    author: 'Wooff Team',
+    created_at: '2026-10-12T13:00:00Z',
+  },
+  {
     id: 'choco-toothpaste',
     slug: 'choco-toothpaste',
     title: 'Choco Flavoured Toothpaste: Make Brushing a Treat',

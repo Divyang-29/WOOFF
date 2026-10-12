@@ -9,7 +9,6 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 5000,
   ssl:
-    isProduction &&
     process.env.DATABASE_URL &&
     !process.env.DATABASE_URL.includes("127.0.0.1") &&
     !process.env.DATABASE_URL.includes("localhost")
