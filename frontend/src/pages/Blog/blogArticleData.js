@@ -108,7 +108,7 @@ export const RICH_ARTICLES = {
       "Wooff pairs kid-loved cocoa flavor with dentist-backed nHAp, prebiotic inulin, and botanicals.",
     ],
     disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
-    related_slugs: ['chocolate-flavoured-toothpaste'],
+    related_slugs: ['chocolate-flavoured-toothpaste', 'chocolate-toothpaste'],
   },
   'chocolate-flavoured-toothpaste': {
     title: "Chocolate Flavoured Toothpaste: A Parent's Guide",
@@ -222,7 +222,118 @@ export const RICH_ARTICLES = {
       "Brush twice a day for two minutes with a pea-sized amount and adult supervision.",
     ],
     disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
-    related_slugs: ['choco-toothpaste'],
+    related_slugs: ['choco-toothpaste', 'chocolate-toothpaste'],
+  },
+  'chocolate-toothpaste': {
+    title: 'Chocolate Toothpaste: What Parents Should Know',
+    meta_title: 'Chocolate Toothpaste: What Parents Should Know | Wooff',
+    meta_description: 'Is chocolate toothpaste safe and effective for kids? Ingredients, usage and expert-style answers from Wooff.',
+    canonical_url: 'https://wooff-frontend.onrender.com/blog/chocolate-toothpaste',
+    category: 'Kids Routine & Science',
+    tags: ['ChocolateToothpaste', 'ParentsGuide', 'KidsRoutine', 'NanoHydroxyapatite', 'Theobromine', 'OralCare'],
+    updated_at: '2026-10-12T13:30:00Z',
+    reading_time: '2 min read',
+    image_url: '/assets/FDP02971.webp',
+    excerpt: 'Is chocolate toothpaste safe and effective for kids? Ingredients, usage and expert-style answers from Wooff.',
+    image_caption: 'Wooff chocolate toothpaste designed around gentle, mineral-based care for kids.',
+    author: {
+      name: 'Wooff Team',
+      role: 'Pediatric Oral Care Team',
+      avatar: '/assets/wooff-logo.png',
+      bio: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
+    },
+    toc: [
+      { id: 'quick-answer', title: '1. Quick Answer' },
+      { id: 'is-it-good-for-kids', title: '2. Is It Good for Kids?' },
+      { id: 'does-it-cause-cavities', title: '3. Does It Cause Cavities?' },
+      { id: 'ingredients-explained', title: '4. Wooff Ingredients Explained' },
+      { id: 'tips-for-parents', title: '5. Tips for Parents' },
+      { id: 'explore-more', title: '6. Explore & Shop' },
+      { id: 'faq-section', title: '7. Frequently Asked Questions' },
+    ],
+    sections: [
+      {
+        id: 'quick-answer',
+        title: 'Quick Answer',
+        paragraphs: [
+          'Chocolate toothpaste is safe for kids when it is made for their age and used as directed. Wooff is a chocolate toothpaste designed around gentle, mineral-based care.',
+        ],
+        quote: '“Chocolate toothpaste is safe for kids when it is made for their age and used as directed.”',
+      },
+      {
+        id: 'is-it-good-for-kids',
+        title: 'Is chocolate toothpaste good for kids?',
+        paragraphs: [
+          'Yes, when the formula is made for children and used in a pea-sized amount with supervision. The flavour helps kids brush willingly.',
+        ],
+        callout: {
+          title: 'The Brushing Habit',
+          text: 'When kids enjoy the flavour, brushing stops being a daily struggle and becomes a cooperative, happy routine.',
+        },
+      },
+      {
+        id: 'does-it-cause-cavities',
+        title: 'Does it cause cavities?',
+        paragraphs: [
+          'The flavour does not. Sugary snacks, skipped brushing and infrequent dental visits matter far more.',
+          'Wooff uses real cocoa-derived theobromine for natural flavour without cavity-causing sugars or syrups.',
+        ],
+      },
+      {
+        id: 'ingredients-explained',
+        title: 'Wooff ingredients explained',
+        paragraphs: [
+          'Every ingredient in Wooff is purposefully selected for safety, efficacy, and gentle care:',
+        ],
+        list: [
+          'Theobromine: a cocoa compound that also gives the paste its chocolate taste.',
+          'Nano-Hydroxyapatite: a mineral form of the same material found in tooth enamel.',
+          'Calcium Gluconate: a calcium source.',
+          'Inulin: a plant fibre used to support a balanced mouth environment.',
+          'Vitamin C (Ascorbic Acid), Lactoferrin and Coenzyme Q10: gum-care and antioxidant support ingredients.',
+        ],
+      },
+      {
+        id: 'tips-for-parents',
+        title: 'Tips for parents',
+        paragraphs: [
+          'Simple daily practices to keep your little one’s smile healthy and bright:',
+        ],
+        list: [
+          'Store the tube out of reach, as with any toothpaste.',
+          'Replace the brush every three months.',
+          'Book dental check-ups every six months.',
+        ],
+      },
+      {
+        id: 'explore-more',
+        title: 'Explore & Shop',
+        paragraphs: [
+          'Discover more about our gentle mineral oral care for kids:',
+        ],
+        customLinks: [
+          { text: 'Shop Wooff choco toothpaste', url: '/products' },
+          { text: 'Read about chocolate flavoured toothpaste', url: '/blog/chocolate-flavoured-toothpaste' },
+        ],
+      },
+    ],
+    faqs: [
+      {
+        q: 'Is chocolate toothpaste good for kids?',
+        a: 'Yes, when the formula is made for children and used in a pea-sized amount with supervision.',
+      },
+      {
+        q: 'Does chocolate toothpaste cause cavities?',
+        a: 'The flavour does not. Brushing habits and diet matter most.',
+      },
+    ],
+    conclusion_takeaways: [
+      'Chocolate toothpaste is safe for kids when it is made for their age and used as directed.',
+      'Wooff pairs cocoa-derived theobromine with nano-hydroxyapatite, calcium gluconate, and inulin prebiotics.',
+      'Store the tube out of reach, replace brushes every three months, and schedule dental visits twice a year.',
+    ],
+    disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
+    related_slugs: ['chocolate-flavoured-toothpaste', 'choco-toothpaste'],
   },
 };
 

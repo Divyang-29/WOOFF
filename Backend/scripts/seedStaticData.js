@@ -307,12 +307,20 @@ async function seedStaticData() {
     console.log("[SEED] Seeding blogs table...");
     const blogsData = [
       {
+        title: "Chocolate Toothpaste: What Parents Should Know",
+        slug: "chocolate-toothpaste",
+        content: "Chocolate toothpaste is safe for kids when it is made for their age and used as directed. Wooff is a chocolate toothpaste designed around gentle, mineral-based care. The flavour helps kids brush willingly without causing cavities. Wooff ingredients include theobromine, nano-hydroxyapatite, calcium gluconate, inulin, vitamin C, lactoferrin, and coenzyme Q10.",
+        image_url: "/assets/FDP02971.webp",
+        author: "Wooff Team",
+        created_at: new Date(),
+      },
+      {
         title: "Chocolate Flavoured Toothpaste: A Parent's Guide",
         slug: "chocolate-flavoured-toothpaste",
         content: "Chocolate flavoured toothpaste is a kids' toothpaste whose taste makes brushing easier to accept. Wooff pairs that taste with a mineral-and-care formula. Many children dislike strong mint; a taste they enjoy means less fuss, longer brushing, and a habit that sticks. Packed with theobromine, nano-hydroxyapatite, calcium gluconate, inulin, vitamin C, lactoferrin, and coenzyme Q10.",
         image_url: "/assets/FDP02976.webp",
         author: "Wooff Team",
-        created_at: new Date(),
+        created_at: new Date(Date.now() - 30 * 60 * 1000),
       },
       {
         title: "Choco Flavoured Toothpaste: Make Brushing a Treat",
@@ -320,7 +328,7 @@ async function seedStaticData() {
         content: "Choco flavoured toothpaste turns a daily chore into something kids look forward to. Wooff is built for that. Developing lifelong dental habits doesn't have to be a battle of wills: let them choose the moment, use a 2-minute timer, brush together, and pick a taste they love. Wooff combines nano-hydroxyapatite and calcium gluconate with theobromine, inulin, vitamin C, lactoferrin, and coenzyme Q10 in one clean kids' formula.",
         image_url: "/assets/choco-toothpaste-pieces.jpg",
         author: "Wooff Team",
-        created_at: new Date(Date.now() - 1 * 60 * 60 * 1000),
+        created_at: new Date(Date.now() - 60 * 60 * 1000),
       },
     ];
 

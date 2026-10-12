@@ -103,17 +103,37 @@ export default function SingleBlog() {
               scriptTag.type = 'application/ld+json';
               document.head.appendChild(scriptTag);
             }
+            const schemaGraph = [
+              {
+                "@type": "Article",
+                "headline": enriched.title,
+                "description": enriched.meta_description || enriched.excerpt,
+                "author": {
+                  "@type": "Organization",
+                  "name": enriched.author_profile?.name || enriched.author || "Wooff"
+                },
+                "about": enriched.category || "Kids Oral Care",
+                "datePublished": enriched.created_at || new Date().toISOString()
+              }
+            ];
+
+            if (enriched.faqs && enriched.faqs.length > 0) {
+              schemaGraph.push({
+                "@type": "FAQPage",
+                "mainEntity": enriched.faqs.map((f) => ({
+                  "@type": "Question",
+                  "name": f.q,
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": f.a
+                  }
+                }))
+              });
+            }
+
             const schemaData = {
               "@context": "https://schema.org",
-              "@type": "Article",
-              "headline": enriched.title,
-              "description": enriched.meta_description || enriched.excerpt,
-              "author": {
-                "@type": "Organization",
-                "name": enriched.author_profile?.name || enriched.author || "Wooff"
-              },
-              "about": enriched.category || "Kids Oral Care",
-              "datePublished": enriched.created_at || new Date().toISOString()
+              "@graph": schemaGraph
             };
             scriptTag.textContent = JSON.stringify(schemaData);
           }

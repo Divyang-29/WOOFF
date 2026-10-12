@@ -6,6 +6,15 @@ import './Blog.css';
 
 const STATIC_BLOG_FALLBACKS = [
   {
+    id: 'chocolate-toothpaste',
+    slug: 'chocolate-toothpaste',
+    title: 'Chocolate Toothpaste: What Parents Should Know',
+    content: 'Is chocolate toothpaste safe and effective for kids? Ingredients, usage and expert-style answers from Wooff.',
+    image_url: '/assets/FDP02971.webp',
+    author: 'Wooff Team',
+    created_at: '2026-10-12T13:30:00Z',
+  },
+  {
     id: 'chocolate-flavoured-toothpaste',
     slug: 'chocolate-flavoured-toothpaste',
     title: "Chocolate Flavoured Toothpaste: A Parent's Guide",
