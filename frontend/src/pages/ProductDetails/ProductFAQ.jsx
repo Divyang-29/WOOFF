@@ -142,7 +142,7 @@ export default function ProductFAQ({ faqs }) {
           </div>
           <div className="faq-range-text">
             <span>Part of our kids toothpaste range. </span>
-            <Link to="/blog/science-of-theobromine" className="faq-guide-link">
+            <Link to="/blog/chocolate-flavoured-toothpaste" className="faq-guide-link">
               Read the chocolate toothpaste guide &rarr;
             </Link>
           </div>
