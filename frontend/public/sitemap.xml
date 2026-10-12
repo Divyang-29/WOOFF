@@ -59,12 +59,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://wooff.care/blogs</loc>
-    <lastmod>2026-10-12</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
 
   <!-- 8. Individual Blog Articles -->
   <url>
@@ -94,15 +88,23 @@
     <priority>0.6</priority>
   </url>
 
-  <!-- 10. FAQs -->
+  <!-- 10. Contact Us -->
   <url>
-    <loc>https://wooff.care/faqs</loc>
+    <loc>https://wooff.care/contact</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
-  <!-- 11. Privacy Policy -->
+  <!-- 11. FAQs -->
+  <url>
+    <loc>https://wooff.care/faq</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- 12. Privacy Policy -->
   <url>
     <loc>https://wooff.care/privacy-policy</loc>
     <lastmod>2026-10-12</lastmod>
@@ -110,7 +112,7 @@
     <priority>0.5</priority>
   </url>
 
-  <!-- 12. Terms & Conditions -->
+  <!-- 13. Terms & Conditions -->
   <url>
     <loc>https://wooff.care/terms-and-conditions</loc>
     <lastmod>2026-10-12</lastmod>
@@ -118,7 +120,7 @@
     <priority>0.5</priority>
   </url>
 
-  <!-- 13. Refund & Cancellation Policy -->
+  <!-- 14. Refund & Cancellation Policy -->
   <url>
     <loc>https://wooff.care/refund-policy</loc>
     <lastmod>2026-10-12</lastmod>
