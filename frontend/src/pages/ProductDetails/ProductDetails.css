@@ -48,7 +48,7 @@
 .gallery-main-card {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 11;
+  aspect-ratio: 1 / 1;
   background-color: #FAF5EF;
   border-radius: 24px;
   overflow: hidden;
@@ -70,7 +70,7 @@
 .gallery-main-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   border-radius: 24px;
   display: block;
@@ -109,29 +109,32 @@
 /* Thumbnails Strip - Compact Horizontal Row */
 .gallery-thumbnails-row {
   display: flex;
-  gap: 0.85rem;
+  gap: 0.75rem;
   width: 100%;
   align-items: center;
-  padding: 4px 2px;
+  padding: 6px 2px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
 
 .gallery-thumb-card {
   position: relative;
-  flex: 1;
-  min-width: 60px;
-  max-width: 130px;
-  aspect-ratio: 16 / 11;
+  flex: 0 0 auto;
+  width: 72px;
+  height: 72px;
+  aspect-ratio: 1 / 1;
   background-color: #FAF5EF;
   border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
   border: 2px solid rgba(75, 46, 30, 0.14);
-  padding: 0;
+  padding: 3px;
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.7;
+  opacity: 0.75;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 2px 8px rgba(75, 46, 30, 0.04);
 }
@@ -153,9 +156,9 @@
 .gallery-thumb-img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
-  border-radius: 12px;
+  border-radius: 10px;
   display: block;
 }
 
@@ -1051,14 +1054,14 @@
     overflow-x: hidden;
   }
   .gallery-main-card {
-    aspect-ratio: 16 / 11;
+    aspect-ratio: 1 / 1;
   }
   .gallery-thumbnails-row {
     gap: 0.65rem;
   }
   .gallery-thumb-card {
-    min-width: 55px;
-    max-width: 100px;
+    width: 64px;
+    height: 64px;
   }
   .product-title {
     font-size: 1.95rem;
@@ -1098,11 +1101,11 @@
     overflow-x: hidden;
   }
   .gallery-main-card {
-    aspect-ratio: 16 / 11;
+    aspect-ratio: 1 / 1;
   }
   .gallery-thumb-card {
-    min-width: 50px;
-    max-width: 80px;
+    width: 58px;
+    height: 58px;
     border-radius: 10px;
   }
   .product-title {
