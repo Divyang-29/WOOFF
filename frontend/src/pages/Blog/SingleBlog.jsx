@@ -632,7 +632,7 @@ export default function SingleBlog() {
                   Experience the exact science discussed in this article. 100% bio-identical nano-hydroxyapatite and organic theobromine rebuild enamel safely without any warning labels.
                 </p>
                 <div className="prod-rec-actions">
-                  <Link to="/product/wooff-choco-toothpaste" className="btn-pill-3d">
+                  <Link to="/product/choco-toothpaste" className="btn-pill-3d">
                     Shop Formula • ₹349
                   </Link>
                   <Link to="/products" className="btn-view-all-products">
