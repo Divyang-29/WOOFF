@@ -159,13 +159,13 @@ async function seedStaticData() {
       {
         title: "FDA Registered Facility",
         slug: "fda-registered-facility",
-        image_url: "https://upload.wikimedia.org/wikipedia/commons/6/66/Conformit%C3%A9_Europ%C3%A9enne_%28logo%29.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+        image_url: "/assets/ce_certified.svg",
         description: "Manufactured in an FDA Registered facility.",
       },
       {
         title: "GMP Certified",
         slug: "gmp-certified",
-        image_url: "https://www.vikalptechno.com/wp-content/uploads/2023/01/Certified-GMP-Logo-PNG-Transparent-Image.png",
+        image_url: "/assets/gmp_certified.webp",
         description: "Certified Good Manufacturing Practices.",
       },
       {
@@ -177,7 +177,7 @@ async function seedStaticData() {
       {
         title: "100% Toxin Free",
         slug: "100-toxin-free",
-        image_url: "https://www.irohanature.us/wp-content/uploads/2021/11/PETA_Approved_GATP_COLOR_v1-768x512.png",
+        image_url: "/assets/peta_approved.webp",
         description: "100% toxin free and cruelty free.",
       },
     ];

@@ -57,7 +57,11 @@ export default function BenefitsSection() {
       <div className="container">
         <div className="row text-center g-4">
           {benefits.map((benefit) => {
-            const imageSrc = benefit.image || benefit.image_url || fallbackImageMap[benefit.title];
+            const rawUrl = benefit.image || benefit.image_url;
+            const normalizedUrl = rawUrl && typeof rawUrl === 'string'
+              ? rawUrl.replace(/\.(png|jpg|jpeg)$/i, '.webp')
+              : null;
+            const imageSrc = normalizedUrl || fallbackImageMap[benefit.title] || nhapImg;
             return (
               <div key={benefit.id} className="col-6 col-md-3 benefit-card">
                 <img
@@ -65,8 +69,9 @@ export default function BenefitsSection() {
                   alt={benefit.title}
                   className="benefit-icon-img"
                   onError={(e) => {
-                    if (fallbackImageMap[benefit.title] && e.target.src !== fallbackImageMap[benefit.title]) {
-                      e.target.src = fallbackImageMap[benefit.title];
+                    const fallback = fallbackImageMap[benefit.title] || nhapImg;
+                    if (e.target.src !== fallback) {
+                      e.target.src = fallback;
                     }
                   }}
                 />
