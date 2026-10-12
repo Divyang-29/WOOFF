@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import Banner from '../../components/Banner/Banner';
 import { API_ENDPOINTS } from '../../api';
-import { getEnrichedBlog } from './blogArticleData';
+import { getEnrichedBlog, RICH_ARTICLES } from './blogArticleData';
 import './SingleBlog.css';
 
 export default function SingleBlog() {
@@ -48,16 +48,41 @@ export default function SingleBlog() {
       try {
         const baseUrl = API_ENDPOINTS?.BLOGS || '/api/blogs';
         
-        // 1. Fetch current blog
-        const res = await fetch(`${baseUrl}/${slug}`);
-        if (!res.ok) {
-          if (res.status === 404) {
-            throw new Error('Blog article not found.');
+        // 1. Fetch current blog with fallback to static rich article
+        let basePost = null;
+        try {
+          const res = await fetch(`${baseUrl}/${slug}`);
+          if (res.ok) {
+            const data = await res.json();
+            basePost = data?.blog || data;
           }
-          throw new Error(`Failed to load article (HTTP ${res.status})`);
+        } catch (fetchErr) {
+          console.warn('API fetch failed, checking rich articles:', fetchErr);
         }
-        const data = await res.json();
-        const basePost = data?.blog || data;
+
+        // If not found from backend API, check rich articles repository
+        if (!basePost && RICH_ARTICLES && RICH_ARTICLES[slug]) {
+          const rich = RICH_ARTICLES[slug];
+          basePost = {
+            id: slug,
+            slug: slug,
+            title: rich.title,
+            image_url: rich.image_url || '/assets/choco-toothpaste-pieces.jpg',
+            author: rich.author?.name || 'Wooff Team',
+            author_role: rich.author?.role || 'Pediatric Oral Care Team',
+            author_bio: rich.author?.bio,
+            author_avatar: rich.author?.avatar,
+            created_at: rich.updated_at || new Date().toISOString(),
+            content: rich.excerpt,
+            category: rich.category,
+            tags: rich.tags,
+            disclaimer: rich.disclaimer,
+          };
+        }
+
+        if (!basePost) {
+          throw new Error('Blog article not found.');
+        }
 
         // 2. Fetch all blogs for related posts
         let blogList = [];
@@ -77,6 +102,15 @@ export default function SingleBlog() {
           setTags(enriched.tags || []);
           setAllBlogs(blogList);
           setLoading(false);
+
+          // Update Document Title & Meta Description for SEO
+          if (enriched) {
+            document.title = enriched.meta_title || `${enriched.title} | Wooff`;
+            const metaTag = document.querySelector('meta[name="description"]');
+            if (metaTag && (enriched.meta_description || enriched.excerpt)) {
+              metaTag.setAttribute('content', enriched.meta_description || enriched.excerpt);
+            }
+          }
         }
       } catch (err) {
         console.error('Error fetching blog details:', err);
@@ -369,6 +403,25 @@ export default function SingleBlog() {
                     <p key={pIdx} className="article-paragraph">{p}</p>
                   ))}
 
+                  {/* Subsections (H3) */}
+                  {section.subsections && section.subsections.map((sub, subIdx) => (
+                    <div key={subIdx} className="article-subsection-block mt-3 mb-4">
+                      <h3 className="article-h3 mb-2">{sub.title}</h3>
+                      <p className="article-paragraph">{sub.content}</p>
+                    </div>
+                  ))}
+
+                  {/* Custom Links */}
+                  {section.customLinks && (
+                    <div className="article-custom-links-row mt-3 mb-4">
+                      {section.customLinks.map((lnk, lIdx) => (
+                        <Link key={lIdx} to={lnk.url} className="article-inline-link me-4">
+                          {lnk.text} &rarr;
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
                   {/* Editorial Quote */}
                   {section.quote && (
                     <blockquote className="article-editorial-quote">
@@ -481,7 +534,15 @@ export default function SingleBlog() {
               </div>
             </section>
 
-            {/* 10. Author Box */}
+            {/* 10. Clinical Disclaimer & Accuracy Notice */}
+            {blog.disclaimer && (
+              <div className="blog-clinical-disclaimer-card">
+                <i className="fa-solid fa-circle-info me-2" />
+                <small>{blog.disclaimer}</small>
+              </div>
+            )}
+
+            {/* 11. Author Box */}
             <div className="blog-author-profile-card">
               <div className="author-card-avatar-wrap">
                 <img

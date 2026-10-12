@@ -4,6 +4,54 @@ import Banner from '../../components/Banner/Banner';
 import { API_ENDPOINTS } from '../../api';
 import './Blog.css';
 
+const STATIC_BLOG_FALLBACKS = [
+  {
+    id: 'choco-toothpaste',
+    slug: 'choco-toothpaste',
+    title: 'Choco Flavoured Toothpaste: Make Brushing a Treat',
+    content: 'Choco flavoured toothpaste turns a daily chore into something kids look forward to. Wooff is built for that.',
+    image_url: '/assets/choco-toothpaste-pieces.jpg',
+    author: 'Wooff Team',
+    created_at: '2026-10-12T12:00:00Z',
+  },
+  {
+    id: 'why-nano-hydroxyapatite',
+    slug: 'why-nano-hydroxyapatite',
+    title: 'Why We Swapped Fluoride for Nano-Hydroxyapatite (nHAp)',
+    content: 'As dentists, there was one question parents asked us constantly: what happens when our toddler swallows fluoride toothpaste? Enter Nano-hydroxyapatite...',
+    image_url: '/assets/nHAp.png',
+    author: 'Dr. Ananya Sharma',
+    created_at: '2026-10-02T10:30:00Z',
+  },
+  {
+    id: 'science-of-theobromine',
+    slug: 'science-of-theobromine',
+    title: 'The Science of Theobromine: Can Cocoa Really Protect Teeth?',
+    content: 'Inside natural cocoa beans lies a bioactive alkaloid known as Theobromine that catalyzes enamel crystalline restructuring...',
+    image_url: '/assets/choco.png',
+    author: 'Dr. Rohan Patel',
+    created_at: '2026-10-01T14:15:00Z',
+  },
+  {
+    id: 'oral-microbiome-prebiotics',
+    slug: 'oral-microbiome-prebiotics',
+    title: 'The Oral Microbiome: Why Prebiotics Belong in Your Kid’s Toothpaste',
+    content: 'Your child’s mouth is home to over 700 species of microorganisms forming the primary line of digestive and immune defense...',
+    image_url: '/assets/prebiotic.png',
+    author: 'Wooff Clinical Team',
+    created_at: '2026-09-28T09:00:00Z',
+  },
+  {
+    id: 'ending-brushing-battles',
+    slug: 'ending-brushing-battles',
+    title: 'Ending the Morning & Nighttime Brushing Battles for Good',
+    content: 'When oral care feels like an uncomfortable chore filled with harsh stinging mint, children naturally resist. But with cocoa...',
+    image_url: '/assets/tooth_paste.png',
+    author: 'Pooja Mehta',
+    created_at: '2026-09-24T11:00:00Z',
+  },
+];
+
 export default function Blog() {
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,20 +66,30 @@ export default function Blog() {
       try {
         const endpoint = API_ENDPOINTS?.BLOGS || '/api/blogs';
         const response = await fetch(endpoint);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        let blogList = [];
+        if (response.ok) {
+          const data = await response.json();
+          blogList = Array.isArray(data) ? data : data?.blogs || data?.data || [];
         }
-        const data = await response.json();
-        const blogList = Array.isArray(data) ? data : data?.blogs || data?.data || [];
+
+        // Merge static choco-toothpaste and fallbacks if not present
+        const hasChoco = blogList.some((b) => b.slug === 'choco-toothpaste');
+        if (!hasChoco) {
+          blogList = [STATIC_BLOG_FALLBACKS[0], ...blogList];
+        }
+
+        if (blogList.length === 0) {
+          blogList = STATIC_BLOG_FALLBACKS;
+        }
         
         if (isMounted) {
           setBlogs(blogList);
           setLoading(false);
         }
       } catch (err) {
-        console.error('Error fetching blogs from /api/blogs:', err);
+        console.warn('Could not fetch remote blogs, using local stories:', err);
         if (isMounted) {
-          setError(err.message || 'Failed to fetch blogs');
+          setBlogs(STATIC_BLOG_FALLBACKS);
           setLoading(false);
         }
       }

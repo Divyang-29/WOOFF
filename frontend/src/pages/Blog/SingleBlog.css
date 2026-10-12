@@ -469,6 +469,47 @@
   font-weight: 400;
 }
 
+.article-h3 {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.25rem, 2.5vw, 1.55rem);
+  font-weight: 700;
+  color: var(--primary-brown, #4B2E1E);
+  margin: 1.6rem 0 0.65rem 0;
+  line-height: 1.35;
+}
+
+.article-inline-link {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #8A4B2A;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.2s ease;
+}
+
+.article-inline-link:hover {
+  color: var(--warm-orange, #e58b57);
+  text-decoration: underline;
+}
+
+.blog-clinical-disclaimer-card {
+  background-color: #FAF2E8;
+  border-left: 4px solid var(--primary-brown, #4B2E1E);
+  border-radius: 8px;
+  padding: 1.15rem 1.45rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #6E5341;
+  font-style: italic;
+  margin: 2.25rem 0;
+}
+
+.blog-clinical-disclaimer-card small {
+  font-size: 0.88rem;
+}
+
 /* Editorial Blockquote */
 .article-editorial-quote {
   background-color: #FFFFFF;
