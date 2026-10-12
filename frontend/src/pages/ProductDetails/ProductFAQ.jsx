@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './ProductFAQ.css';
 
 const DEFAULT_WOOFF_FAQS = [
+  {
+    id: 'toddlers-suitable',
+    question: 'Is it suitable for toddlers?',
+    answer: 'Follow the age guidance on the pack and consult a dentist for very young children.',
+  },
+  {
+    id: 'chocolate-taste',
+    question: 'Does it taste like real chocolate?',
+    answer: 'It has a cocoa-style flavour, made to be mild and kid-friendly.',
+  },
   {
     id: 'diff-toothpaste',
     question: 'How is Wooff different from traditional kids toothpastes?',
@@ -40,8 +51,30 @@ const DEFAULT_WOOFF_FAQS = [
 ];
 
 export default function ProductFAQ({ faqs }) {
-  const faqList = (faqs && faqs.length >= 3) ? faqs : DEFAULT_WOOFF_FAQS;
-  const [openId, setOpenId] = useState(faqList[0]?.id || 'diff-toothpaste');
+  const baseList = (Array.isArray(faqs) && faqs.length > 0) ? faqs : DEFAULT_WOOFF_FAQS;
+
+  // Ensure user-specified toddler and chocolate taste FAQs are always present at top
+  const priorityFaqs = [
+    {
+      id: 'toddlers-suitable',
+      question: 'Is it suitable for toddlers?',
+      answer: 'Follow the age guidance on the pack and consult a dentist for very young children.',
+    },
+    {
+      id: 'chocolate-taste',
+      question: 'Does it taste like real chocolate?',
+      answer: 'It has a cocoa-style flavour, made to be mild and kid-friendly.',
+    },
+  ];
+
+  const filteredRest = baseList.filter(
+    (item) =>
+      item.question !== 'Is it suitable for toddlers?' &&
+      item.question !== 'Does it taste like real chocolate?'
+  );
+
+  const faqList = [...priorityFaqs, ...filteredRest];
+  const [openId, setOpenId] = useState('toddlers-suitable');
 
   const toggleFaq = (id) => {
     setOpenId(openId === id ? null : id);
@@ -72,15 +105,16 @@ export default function ProductFAQ({ faqs }) {
         <div className="faq-right-column">
           <div className="faq-accordions-list">
             {faqList.map((item, idx) => {
-              const isOpen = openId === (item.id || idx);
+              const currentId = item.id || `faq-${idx}`;
+              const isOpen = openId === currentId;
               return (
                 <div 
-                  key={item.id || idx} 
+                  key={currentId} 
                   className={`faq-accordion-item ${isOpen ? 'is-expanded' : ''}`}
                 >
                   <button 
                     className="faq-question-btn"
-                    onClick={() => toggleFaq(item.id || idx)}
+                    onClick={() => toggleFaq(currentId)}
                     aria-expanded={isOpen}
                   >
                     <span className="faq-question-text">{item.question}</span>
@@ -98,6 +132,27 @@ export default function ProductFAQ({ faqs }) {
           </div>
         </div>
 
+      </div>
+
+      {/* Editorial Note & Disclaimer below FAQ */}
+      <div className="faq-editorial-footer">
+        <div className="faq-editorial-range-card">
+          <div className="faq-range-icon">
+            <i className="fa-solid fa-tooth"></i>
+          </div>
+          <div className="faq-range-text">
+            <span>Part of our kids toothpaste range. </span>
+            <Link to="/blog/science-of-theobromine" className="faq-guide-link">
+              Read the chocolate toothpaste guide &rarr;
+            </Link>
+          </div>
+        </div>
+
+        <div className="faq-medical-disclaimer">
+          <p>
+            Written by the Wooff team. Reviewed for accuracy; check with your child&apos;s dentist for personal advice. Toothpaste is not a substitute for regular dental visits.
+          </p>
+        </div>
       </div>
     </section>
   );
