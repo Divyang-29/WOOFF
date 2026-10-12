@@ -32,6 +32,16 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
+  const handleLogoClick = (e) => {
+    closeMobileMenu();
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+  };
+
   const isActive = (path) => {
     return location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
   };
@@ -89,7 +99,7 @@ export default function Navbar() {
           </div>
 
           {/* Brand Logo - Left on mobile, centered on desktop */}
-          <Link to="/" className="navbar-brand d-flex align-items-center me-auto me-lg-0 brand-logo-center" onClick={closeMobileMenu}>
+          <Link to="/" className="navbar-brand d-flex align-items-center me-auto me-lg-0 brand-logo-center" onClick={handleLogoClick}>
             <img src={wooffLogo} alt="Wooff Kids Logo" className="navbar-logo logo-img" />
           </Link>
 
@@ -171,7 +181,7 @@ export default function Navbar() {
           >
             {/* Offcanvas Top Header */}
             <div className="offcanvas-header">
-              <Link to="/" onClick={closeMobileMenu}>
+              <Link to="/" onClick={handleLogoClick}>
                 <img src={wooffLogo} alt="Wooff Kids Logo" className="offcanvas-logo" />
               </Link>
               <button
@@ -193,7 +203,13 @@ export default function Navbar() {
                       key={link.path}
                       to={link.path}
                       className={`offcanvas-link ${active ? 'offcanvas-active' : ''}`}
-                      onClick={closeMobileMenu}
+                      onClick={(e) => {
+                        closeMobileMenu();
+                        if (link.path === '/' && location.pathname === '/') {
+                          e.preventDefault();
+                          window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+                        }
+                      }}
                     >
                       <span>{link.name}</span>
                       <span className="arrow-icon">→</span>

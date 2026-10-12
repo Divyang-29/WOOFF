@@ -1,15 +1,26 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import wooffLogo from '../../assets/wooff-logo.webp';
 import './Footer.css';
 
 export default function Footer() {
+  const location = useLocation();
+
+  const handleLogoClick = (e) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+  };
+
   return (
     <footer className="footer py-5">
       <div className="container">
         <div className="row g-4">
           {/* Column 1: Brand Info */}
           <div className="col-12 col-md-4">
-            <Link to="/" className="footer-logo-link d-inline-block mb-3">
+            <Link to="/" className="footer-logo-link d-inline-block mb-3" onClick={handleLogoClick}>
               <img
                 src={wooffLogo}
                 alt="Wooff Kids"
