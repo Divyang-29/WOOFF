@@ -14,42 +14,6 @@ const STATIC_BLOG_FALLBACKS = [
     author: 'Wooff Team',
     created_at: '2026-10-12T12:00:00Z',
   },
-  {
-    id: 'why-nano-hydroxyapatite',
-    slug: 'why-nano-hydroxyapatite',
-    title: 'Why We Swapped Fluoride for Nano-Hydroxyapatite (nHAp)',
-    content: 'As dentists, there was one question parents asked us constantly: what happens when our toddler swallows fluoride toothpaste? Enter Nano-hydroxyapatite...',
-    image_url: '/assets/nHAp.png',
-    author: 'Dr. Ananya Sharma',
-    created_at: '2026-10-02T10:30:00Z',
-  },
-  {
-    id: 'science-of-theobromine',
-    slug: 'science-of-theobromine',
-    title: 'The Science of Theobromine: Can Cocoa Really Protect Teeth?',
-    content: 'Inside natural cocoa beans lies a bioactive alkaloid known as Theobromine that catalyzes enamel crystalline restructuring...',
-    image_url: '/assets/choco.png',
-    author: 'Dr. Rohan Patel',
-    created_at: '2026-10-01T14:15:00Z',
-  },
-  {
-    id: 'oral-microbiome-prebiotics',
-    slug: 'oral-microbiome-prebiotics',
-    title: 'The Oral Microbiome: Why Prebiotics Belong in Your Kid’s Toothpaste',
-    content: 'Your child’s mouth is home to over 700 species of microorganisms forming the primary line of digestive and immune defense...',
-    image_url: '/assets/prebiotic.png',
-    author: 'Wooff Clinical Team',
-    created_at: '2026-09-28T09:00:00Z',
-  },
-  {
-    id: 'ending-brushing-battles',
-    slug: 'ending-brushing-battles',
-    title: 'Ending the Morning & Nighttime Brushing Battles for Good',
-    content: 'When oral care feels like an uncomfortable chore filled with harsh stinging mint, children naturally resist. But with cocoa...',
-    image_url: '/assets/tooth_paste.png',
-    author: 'Pooja Mehta',
-    created_at: '2026-09-24T11:00:00Z',
-  },
 ];
 
 export default function Blog() {

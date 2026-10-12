@@ -314,38 +314,6 @@ async function seedStaticData() {
         author: "Wooff Team",
         created_at: new Date(),
       },
-      {
-        title: "Why We Swapped Fluoride for Nano-Hydroxyapatite (nHAp)",
-        slug: "why-nano-hydroxyapatite",
-        content: "As dentists, there was one question parents asked us constantly: what happens when our toddler swallows fluoride toothpaste? Traditional fluoride works by chemical hardening, but excessive ingestion carries fluorosis risks for little tummies. Enter Nano-hydroxyapatite (nHAp)—a biocompatible, biomimetic mineral making up 97% of natural tooth enamel. nHAp deposits real calcium and phosphate ions into micro-porosities, reversing early decay safely without harsh chemicals or warning labels.",
-        image_url: "/assets/nHAp.png",
-        author: "Dr. Ananya Sharma",
-        created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      },
-      {
-        title: "The Science of Theobromine: Can Cocoa Really Protect Teeth?",
-        slug: "science-of-theobromine",
-        content: "Chocolate has long been viewed as dental enemy number one—or so we were told. Inside natural cocoa beans lies a bioactive alkaloid known as Theobromine. Groundbreaking comparative dental studies revealed that theobromine catalyzes enamel crystalline restructuring at exceptional efficiency compared to traditional alternatives. By harnessing organic cocoa bean extract, Wooff transforms daily brushing into a delicious chocolate ritual that actively remineralizes teeth.",
-        image_url: "/assets/choco.png",
-        author: "Dr. Rohan Patel",
-        created_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-      },
-      {
-        title: "The Oral Microbiome: Why Prebiotics Belong in Your Kid’s Toothpaste",
-        slug: "oral-microbiome-prebiotics",
-        content: "Your child’s mouth is home to over 700 species of microorganisms forming the primary line of digestive and immune defense. Traditional antimicrobial toothpastes strip away beneficial probiotic species along with harmful bacteria, leaving gums vulnerable to imbalance. Wooff incorporates pure chicory-derived inulin prebiotic fiber to nourish the mouth’s natural bacterial guardians while inhibiting cavity-causing pathogens naturally.",
-        image_url: "/assets/prebiotic.png",
-        author: "Wooff Clinical Team",
-        created_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
-      },
-      {
-        title: "Ending the Morning & Nighttime Brushing Battles for Good",
-        slug: "ending-brushing-battles",
-        content: "Negotiations, tantrums, running behind curtains—sound familiar? When oral care feels like an uncomfortable chore filled with harsh, stinging mint or chalky artificial fruit flavors, children naturally resist. But when brushing tastes like a rich cocoa treat formulated with zero sugar and holistic botanical antioxidants, daily dental care becomes something kids eagerly look forward to every single day.",
-        image_url: "/assets/tooth_paste.png",
-        author: "Pooja Mehta",
-        created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
-      },
     ];
 
     await client.query("TRUNCATE TABLE blogs RESTART IDENTITY CASCADE;");
