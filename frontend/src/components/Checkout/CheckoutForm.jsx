@@ -105,7 +105,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
     return acc + price * qty;
   }, 0);
 
-  const shippingCost = subtotal >= 499 || subtotal === 0 ? 0 : 49;
+  const shippingCost = subtotal >= 500 || subtotal === 0 ? 0 : 49;
   const grandTotal = subtotal + shippingCost;
 
   // Handle form input changes
@@ -700,7 +700,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
               </div>
               {shippingCost > 0 && (
                 <div className="free-shipping-hint">
-                  Add ₹{(499 - subtotal).toFixed(2)} more for <strong>FREE Delivery</strong>!
+                  Add ₹{(500 - subtotal).toFixed(2)} more for <strong>FREE Delivery</strong>!
                 </div>
               )}
               <div className="summary-divider"></div>

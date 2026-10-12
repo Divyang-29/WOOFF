@@ -294,21 +294,22 @@
 
 .checkout-btn {
   width: 100%;
-  background-color: #FDE2B5;
-  color: var(--primary-brown, #4B2E1E);
-  font-size: 1rem;
-  font-weight: 700;
+  background: var(--primary-brown, #4B2E1E);
+  color: #FFFFFF;
+  font-size: 1.05rem;
+  font-weight: 800;
   padding: 1rem;
-  border: none;
-  border-radius: 12px;
+  border: 2px solid var(--primary-brown, #4B2E1E);
+  border-radius: 50px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-  box-shadow: 0 4px 12px rgba(75, 46, 30, 0.06);
+  transition: all 0.2s ease;
+  box-shadow: 3px 3px 0px var(--warm-orange, #e58b57);
 }
 
 .checkout-btn:hover:not(:disabled) {
-  background-color: #F8D497;
-  transform: translateY(-1px);
+  background-color: #392114;
+  transform: translateY(-2px);
+  box-shadow: 5px 5px 0px var(--warm-orange, #e58b57);
 }
 
 .checkout-btn:disabled {

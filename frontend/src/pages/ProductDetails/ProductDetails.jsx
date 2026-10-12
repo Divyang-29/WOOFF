@@ -16,6 +16,7 @@ export default function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -201,6 +202,7 @@ export default function ProductDetails() {
       }
     };
 
+    setSelectedImageIndex(0);
     fetchProduct();
   }, [slug]);
 
@@ -235,35 +237,57 @@ export default function ProductDetails() {
         {/* Top Section: Image Gallery & Sticky Info */}
         <div className="product-hero-section">
           
-          {/* Gallery Section - Stacked / Grid Layout */}
+          {/* Gallery Section - 1 Big Image + Bottom Thumbnails Row */}
           <div className="product-gallery-container">
-            <div className="product-gallery-grid">
-              {allImages.map((img, idx) => (
-                <div 
-                  key={idx} 
-                  className={`gallery-card ${idx === 0 ? 'hero-card' : 'grid-card'}`}
-                  onClick={() => setLightboxImage(img)}
-                >
-                  <img 
-                    src={img} 
-                    alt={`${data.title} view ${idx + 1}`} 
-                    className="gallery-img" 
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '/assets/tooth_paste.webp';
-                    }}
-                  />
-                  <div className="zoom-hint" title="Click to enlarge">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                      <line x1="11" y1="8" x2="11" y2="14"></line>
-                      <line x1="8" y1="11" x2="14" y2="11"></line>
-                    </svg>
-                  </div>
-                </div>
-              ))}
+            {/* Big Main Image Preview */}
+            <div 
+              className="gallery-main-card"
+              onClick={() => setLightboxImage(allImages[selectedImageIndex] || allImages[0])}
+            >
+              <img 
+                src={allImages[selectedImageIndex] || allImages[0]} 
+                alt={`${data.title} preview`} 
+                className="gallery-main-img" 
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = '/assets/tooth_paste.webp';
+                }}
+              />
+              <div className="zoom-hint" title="Click to enlarge">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  <line x1="11" y1="8" x2="11" y2="14"></line>
+                  <line x1="8" y1="11" x2="14" y2="11"></line>
+                </svg>
+              </div>
             </div>
+
+            {/* Bottom Thumbnails - Single Row */}
+            {allImages.length > 1 && (
+              <div className="gallery-thumbnails-row">
+                {allImages.map((img, idx) => (
+                  <button 
+                    key={idx}
+                    type="button"
+                    className={`gallery-thumb-card ${idx === selectedImageIndex ? 'active' : ''}`}
+                    onClick={() => setSelectedImageIndex(idx)}
+                    onMouseEnter={() => setSelectedImageIndex(idx)}
+                    aria-label={`View photo ${idx + 1}`}
+                  >
+                    <img 
+                      src={img} 
+                      alt={`${data.title} thumbnail ${idx + 1}`} 
+                      className="gallery-thumb-img" 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/assets/tooth_paste.webp';
+                      }}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Sticky Product Details */}
