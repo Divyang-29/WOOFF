@@ -47,9 +47,11 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit (sufficient for high-res 3D assets/photos)
 });
 
+const cloudinary = require('../config/cloudinary');
+
 // Upload Single Image Endpoint POST /api/upload (Protected by Auth & Admin Role)
 router.post('/', authMiddleware, adminMiddleware, (req, res) => {
-  upload.single('image')(req, res, (err) => {
+  upload.single('image')(req, res, async (err) => {
     if (err) {
       return res.status(400).json({
         success: false,
@@ -66,7 +68,28 @@ router.post('/', authMiddleware, adminMiddleware, (req, res) => {
 
     const host = req.get('host');
     const protocol = req.protocol;
-    const imageUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+    let imageUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+
+    // If Cloudinary credentials exist, upload to Cloudinary CDN for persistent global delivery
+    const hasCloudinary = Boolean(
+      process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
+    );
+
+    if (hasCloudinary) {
+      try {
+        const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+          folder: 'wooff_assets',
+          resource_type: 'image',
+        });
+        if (uploadResult && uploadResult.secure_url) {
+          imageUrl = uploadResult.secure_url;
+        }
+      } catch (cloudErr) {
+        console.warn('[Upload] Cloudinary upload notice, serving locally:', cloudErr.message);
+      }
+    }
 
     return res.status(200).json({
       success: true,

@@ -223,13 +223,9 @@ export default function ProductDetails() {
     }
   });
 
-  // Guarantee 3-card layout using clean, unbranded Wooff detail shots
-  if (allImages.length === 1) {
-    allImages.push('https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80');
-  } else if (allImages.length === 2) {
-    allImages.push('https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80');
-  } else if (allImages.length === 0) {
-    allImages.push('https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=800&q=80');
+  // Ensure at least one fallback image exists if product has no images
+  if (allImages.length === 0) {
+    allImages.push('/assets/tooth_paste.webp');
   }
 
   return (
@@ -252,6 +248,10 @@ export default function ProductDetails() {
                     src={img} 
                     alt={`${data.title} view ${idx + 1}`} 
                     className="gallery-img" 
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = '/assets/tooth_paste.webp';
+                    }}
                   />
                   <div className="zoom-hint" title="Click to enlarge">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

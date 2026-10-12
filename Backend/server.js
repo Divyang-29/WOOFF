@@ -12,7 +12,12 @@ const app = express();
 // Trust first proxy for correct client IP detection and rate limiting behind reverse proxies (Render, Cloudflare)
 app.set("trust proxy", 1);
 
-app.use(helmet());
+// Enable helmet with cross-origin resource sharing for static assets/images
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+  })
+);
 
 // Strict CORS configuration with Render/Vercel support
 const rawOrigins =
@@ -71,7 +76,16 @@ app.use(
 );
 const path = require("path");
 app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(
+  "/uploads",
+  (req, res, next) => {
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+    next();
+  },
+  express.static(path.join(__dirname, "uploads"))
+);
 
 const authRoutes = require("./routes/authRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");

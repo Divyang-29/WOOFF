@@ -65,7 +65,14 @@ export default function Products() {
                 {/* Image Section */}
                 <div className="card-image-wrapper">
                   <Link to={`/product/${product.slug}`}>
-                    <img src={product.primary_image} alt={product.title} />
+                    <img 
+                      src={product.primary_image || '/assets/tooth_paste.webp'} 
+                      alt={product.title} 
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/assets/tooth_paste.webp';
+                      }}
+                    />
                   </Link>
                   {hasDiscount && (
                     <span className="discount-badge">{discountPercent}% OFF</span>
