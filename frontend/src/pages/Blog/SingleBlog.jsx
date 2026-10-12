@@ -641,7 +641,7 @@ export default function SingleBlog() {
                 </div>
               </div>
               <div className="prod-rec-image-wrap">
-                <img src="/assets/choco.webp" alt="Wooff Choco Toothpaste" className="prod-rec-img" />
+                <img src="/assets/FDP02904.webp" alt="Wooff Choco Toothpaste" className="prod-rec-img" />
               </div>
             </div>
 

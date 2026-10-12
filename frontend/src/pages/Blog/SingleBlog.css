@@ -957,19 +957,27 @@
 }
 
 .prod-rec-image-wrap {
-  width: 140px;
-  height: 140px;
+  width: 170px;
+  height: 135px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid rgba(75, 46, 30, 0.15);
+  box-shadow: 0 6px 16px rgba(75, 46, 30, 0.12);
 }
 
 .prod-rec-img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(4px 4px 10px rgba(75, 46, 30, 0.15));
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.blog-product-recommendation-card:hover .prod-rec-img {
+  transform: scale(1.05);
 }
 
 /* 12. Related Articles Grid */
