@@ -2697,9 +2697,9 @@ export default function Admin() {
                           </td>
                           <td>
                             <span className="badge bg-primary-subtle text-primary border text-capitalize fw-bold">
-                              {prod.bundle_type === '3-pack'
+                              {prod.bundle_type === '3-pack' || prod.bundle_type === 'bundle-3' || (prod.title && prod.title.toLowerCase().includes('pack of 3'))
                                 ? '3-Pack Bundle'
-                                : prod.bundle_type === '2-pack'
+                                : prod.bundle_type === '2-pack' || prod.bundle_type === 'bundle-2' || (prod.title && prod.title.toLowerCase().includes('pack of 2'))
                                 ? '2-Pack Duo'
                                 : prod.bundle_type === 'family'
                                 ? 'Family Pack'
@@ -2725,25 +2725,49 @@ export default function Admin() {
                             )}
                           </td>
                           <td>
-                            <div className="form-check form-switch m-0">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                role="switch"
-                                checked={prod.is_active !== false}
-                                onChange={() => handleToggleProductActive(prod.id, prod.is_active !== false)}
-                                title={prod.is_active !== false ? 'Live in store' : 'Archived/Hidden'}
-                              />
+                            <div className="wooff-switch-container">
+                              <label
+                                className="wooff-switch"
+                                title={prod.is_active !== false ? 'Live in store (Click to hide)' : 'Archived/Hidden (Click to make live)'}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={prod.is_active !== false}
+                                  onChange={() => handleToggleProductActive(prod.id, prod.is_active !== false)}
+                                />
+                                <span className="wooff-switch-slider"></span>
+                              </label>
+                              <span className={`wooff-switch-pill ${prod.is_active !== false ? 'is-active' : 'is-inactive'}`}>
+                                {prod.is_active !== false ? 'Live' : 'Hidden'}
+                              </span>
                             </div>
                           </td>
                           <td>
                             <button
-                              className={`btn btn-sm ${prod.is_bestseller ? 'btn-warning text-dark fw-bold' : 'btn-outline-secondary'}`}
-                              style={{ borderRadius: '20px', fontSize: '0.78rem' }}
+                              type="button"
+                              className={`wooff-bestseller-btn ${prod.is_bestseller ? 'is-bestseller' : 'not-bestseller'}`}
                               onClick={() => handleToggleBestseller(prod.id, prod.is_bestseller)}
+                              title={prod.is_bestseller ? 'Featured as Bestseller on storefront (Click to remove)' : 'Mark this product as Bestseller'}
                             >
-                              <i className={`fa-solid ${prod.is_bestseller ? 'fa-fire me-1' : 'fa-circle me-1'}`}></i>
-                              {prod.is_bestseller ? 'Bestseller 🔥' : 'Mark Bestseller'}
+                              {prod.is_bestseller ? (
+                                <>
+                                  <span className="bestseller-icon-wrap">
+                                    <i className="fa-solid fa-fire"></i>
+                                  </span>
+                                  <span className="bestseller-text">Bestseller</span>
+                                  <span className="bestseller-badge-flame" title="Active">
+                                    <i className="fa-solid fa-check"></i>
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="bestseller-icon-wrap neutral">
+                                    <i className="fa-regular fa-star"></i>
+                                  </span>
+                                  <span className="bestseller-text">Regular</span>
+                                  <span className="bestseller-action-hint">+ Feature</span>
+                                </>
+                              )}
                             </button>
                           </td>
                           <td>
