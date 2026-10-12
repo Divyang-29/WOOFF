@@ -223,13 +223,19 @@ const getAdminOrders = async ({
 };
 
 // Get All Customers for Admin with Pagination & Search
-const getAdminCustomers = async ({ page = 1, limit = 20, search } = {}) => {
+const getAdminCustomers = async ({ page = 1, limit = 20, search, includeAdmins = false } = {}) => {
   const pageNum = Math.max(1, parseInt(page, 10) || 1);
   const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 20));
   const offset = (pageNum - 1) * limitNum;
 
-  const conditions = ["u.role = 'user'"];
+  const conditions = [];
   const params = [];
+
+  // When searching or when includeAdmins is requested, search across all user accounts.
+  // Only restrict to role='user' if there's no search query and includeAdmins is false.
+  if (!includeAdmins && (!search || !search.trim())) {
+    conditions.push("u.role = 'user'");
+  }
 
   if (search && search.trim()) {
     params.push(`%${search.trim()}%`);
@@ -239,7 +245,7 @@ const getAdminCustomers = async ({ page = 1, limit = 20, search } = {}) => {
     );
   }
 
-  const whereClause = `WHERE ${conditions.join(" AND ")}`;
+  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
 
   // Count total matching customers
   const countQuery = `

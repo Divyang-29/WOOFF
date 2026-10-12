@@ -97,8 +97,9 @@ const getAdminOrdersHandler = async (req, res) => {
 // Get Customers for Admin (GET /api/admin/customers?page=1&limit=20&search=)
 const getAdminCustomersHandler = async (req, res) => {
   try {
-    const { page, limit, search } = req.query;
-    const result = await getAdminCustomers({ page, limit, search });
+    const { page, limit, search, includeAdmins } = req.query;
+    const shouldIncludeAdmins = includeAdmins === "true" || Boolean(search && search.trim());
+    const result = await getAdminCustomers({ page, limit, search, includeAdmins: shouldIncludeAdmins });
 
     return res.status(200).json({
       success: true,

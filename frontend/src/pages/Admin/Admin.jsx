@@ -548,7 +548,7 @@ export default function Admin() {
   // Search customers for targeted notification delivery
   const handleSearchCustomersForNotification = async (query) => {
     setCustomerSearchInput(query);
-    if (!query || query.trim().length < 2) {
+    if (!query || query.trim().length < 1) {
       setCustomerSearchResults([]);
       return;
     }
@@ -556,7 +556,7 @@ export default function Admin() {
       setSearchingCustomers(true);
       const headers = getAuthHeader();
       const res = await fetch(
-        `${API_ENDPOINTS.ADMIN.CUSTOMERS}?page=1&limit=8&search=${encodeURIComponent(query.trim())}`,
+        `${API_ENDPOINTS.ADMIN.CUSTOMERS}?page=1&limit=10&includeAdmins=true&search=${encodeURIComponent(query.trim())}`,
         { headers }
       );
       if (res.ok) {
@@ -3801,7 +3801,7 @@ export default function Admin() {
                                   </div>
                                 )}
                                 {customerSearchResults.length > 0 && (
-                                  <div className="list-group mt-2 shadow-sm rounded-2 border overflow-hidden" style={{ maxHeight: '180px', overflowY: 'auto' }}>
+                                  <div className="list-group mt-2 shadow-sm rounded-2 border overflow-hidden" style={{ maxHeight: '220px', overflowY: 'auto' }}>
                                     {customerSearchResults.map((cust) => (
                                       <button
                                         type="button"
@@ -3810,8 +3810,13 @@ export default function Admin() {
                                         onClick={() => handleSelectTargetCustomer(cust)}
                                       >
                                         <div>
-                                          <div className="fw-bold small text-dark">
+                                          <div className="fw-bold small text-dark d-flex align-items-center gap-1">
                                             {cust.username || cust.fullName || 'User'} (ID #{cust.id})
+                                            {cust.role === 'admin' && (
+                                              <span className="badge bg-warning text-dark border ms-1" style={{ fontSize: '10px' }}>
+                                                Admin
+                                              </span>
+                                            )}
                                           </div>
                                           <div className="text-muted" style={{ fontSize: '11px' }}>
                                             {cust.email || cust.phone_number || 'No contact'}
@@ -3820,6 +3825,11 @@ export default function Admin() {
                                         <span className="badge bg-primary rounded-pill small">Select</span>
                                       </button>
                                     ))}
+                                  </div>
+                                )}
+                                {!searchingCustomers && customerSearchInput.trim().length >= 2 && customerSearchResults.length === 0 && (
+                                  <div className="p-2 mt-2 bg-light rounded text-muted small border">
+                                    <i className="fa-solid fa-circle-info me-1"></i> No user found matching "{customerSearchInput}".
                                   </div>
                                 )}
                               </div>
