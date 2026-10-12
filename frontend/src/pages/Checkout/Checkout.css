@@ -1,75 +1,19 @@
 /* Checkout Page Styles */
-.checkout-page-container {
-  min-height: 85vh;
+.checkout-page {
+  min-height: 100vh;
   background-color: #FAF5EF;
-  padding-top: 6rem;
-  padding-bottom: 4rem;
 }
 
-.checkout-breadcrumb .breadcrumb {
-  margin: 0;
-  font-size: 0.88rem;
-}
-
-.checkout-breadcrumb .breadcrumb-item a {
-  color: #8c7768;
-}
-
-.checkout-breadcrumb .breadcrumb-item a:hover {
-  color: #4B2E1E;
-}
-
-.checkout-breadcrumb .breadcrumb-item.active {
-  color: #4B2E1E;
-  font-weight: 600;
-}
-
-.checkout-page-title {
-  font-size: 2.1rem;
-  font-weight: 800;
-  color: #4B2E1E;
-  margin-bottom: 6px;
-  letter-spacing: -0.5px;
-}
-
-.checkout-page-tagline {
-  font-size: 0.98rem;
-  color: #726257;
-  margin-bottom: 0;
+.checkout-content-container {
+  max-width: 1240px;
+  margin: 0 auto;
 }
 
 @media (max-width: 768px) {
-  .checkout-page-container {
-    padding-top: 5rem;
-    padding-bottom: 2.5rem;
-  }
-
-  .checkout-page-container .container {
+  .checkout-content-container {
     padding-left: 14px;
     padding-right: 14px;
-    padding-top: 0.75rem !important;
-  }
-
-  .checkout-breadcrumb {
-    margin-bottom: 0.75rem !important;
-  }
-
-  .checkout-breadcrumb .breadcrumb {
-    font-size: 0.8rem;
-  }
-
-  .checkout-page-header {
-    margin-bottom: 1.25rem !important;
-    text-align: left !important;
-  }
-
-  .checkout-page-title {
-    font-size: 1.5rem;
-    margin-bottom: 4px;
-  }
-
-  .checkout-page-tagline {
-    font-size: 0.88rem;
-    line-height: 1.4;
+    padding-top: 1.5rem !important;
+    padding-bottom: 2.5rem !important;
   }
 }

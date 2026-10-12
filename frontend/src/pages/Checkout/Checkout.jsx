@@ -1,5 +1,6 @@
 import React from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import Banner from '../../components/Banner/Banner';
 import CheckoutForm from '../../components/Checkout/CheckoutForm';
 import './Checkout.css';
 
@@ -10,32 +11,13 @@ export default function Checkout() {
   const directItem = location.state?.directItem ? [location.state.directItem] : null;
 
   return (
-    <div className="checkout-page-container">
-      <div className="container py-4 py-md-5">
-        {/* Navigation Breadcrumb */}
-        <nav aria-label="breadcrumb" className="checkout-breadcrumb mb-4">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <Link to="/" className="text-decoration-none">Home</Link>
-            </li>
-            <li className="breadcrumb-item">
-              <Link to="/products" className="text-decoration-none">Shop</Link>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              Secure Checkout
-            </li>
-          </ol>
-        </nav>
+    <div className="checkout-page">
+      <Banner
+        title="Secure Checkout"
+        breadcrumb="HOME / CHECKOUT"
+      />
 
-        {/* Page Header */}
-        <div className="checkout-page-header mb-4 text-center text-md-start">
-          <h1 className="checkout-page-title">Fast & Secure Checkout</h1>
-          <p className="checkout-page-tagline">
-            Complete your order with official 100% genuine Wooff Kids oral care.
-          </p>
-        </div>
-
-        {/* Main Checkout Form Component */}
+      <div className="container checkout-content-container py-4 py-md-5">
         <CheckoutForm initialItems={directItem} />
       </div>
     </div>
