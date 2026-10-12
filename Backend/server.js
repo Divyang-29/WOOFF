@@ -19,31 +19,47 @@ app.use(
   })
 );
 
-// Strict CORS configuration with Render/Vercel support
-const rawOrigins =
-  (process.env.CORS_ORIGIN || "") +
-  "," +
-  (process.env.FRONTEND_URL || "") +
-  ",http://localhost:3000,http://localhost:5173,http://127.0.0.1:5173,https://wooff-frontend.onrender.com";
+// Strict CORS configuration with custom domain (wooff.care), Render, Vercel, and local support
+const rawOrigins = [
+  process.env.CORS_ORIGIN || "",
+  process.env.FRONTEND_URL || "",
+  "https://wooff.care",
+  "http://wooff.care",
+  "https://www.wooff.care",
+  "http://www.wooff.care",
+  "https://wooff-frontend.onrender.com",
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+].filter(Boolean).join(",");
+
 const allowedOrigins = rawOrigins
   .split(",")
   .map((o) => o.trim().replace(/\/+$/, ""))
   .filter(Boolean);
 
+const isOriginAllowed = (cleanOrigin) => {
+  if (!cleanOrigin) return true;
+  if (allowedOrigins.includes("*")) return true;
+  if (allowedOrigins.includes(cleanOrigin)) return true;
+  // Allow custom production domains (wooff.care, www.wooff.care, and all subdomains)
+  if (cleanOrigin === "https://wooff.care" || cleanOrigin === "http://wooff.care") return true;
+  if (cleanOrigin.endsWith(".wooff.care") || cleanOrigin.endsWith("wooff.care")) return true;
+  // Allow Render and Vercel hosting domains
+  if (cleanOrigin.endsWith(".onrender.com") || cleanOrigin.endsWith(".vercel.app")) return true;
+  // Allow local development ports
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin)) return true;
+  return false;
+};
+
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     const cleanOrigin = origin.replace(/\/+$/, "");
-    if (
-      allowedOrigins.includes("*") ||
-      allowedOrigins.includes(cleanOrigin) ||
-      cleanOrigin.endsWith(".onrender.com") ||
-      cleanOrigin.endsWith(".vercel.app") ||
-      (process.env.NODE_ENV !== "production" &&
-        /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(cleanOrigin))
-    ) {
+    if (isOriginAllowed(cleanOrigin)) {
       return callback(null, true);
     }
+    console.warn(`[CORS] Blocked origin: ${origin}`);
     return callback(new Error(`CORS policy does not allow access from origin ${origin}`));
   },
   credentials: true,
@@ -58,9 +74,11 @@ const corsOptions = {
     "X-Api-Key",
     "X-Api-HMAC-SHA256",
   ],
+  optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 // Global API rate limiting
