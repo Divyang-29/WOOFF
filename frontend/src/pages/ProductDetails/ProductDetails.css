@@ -960,16 +960,20 @@
 }
 
 .benefits-bullet-list,
-.features-bullet-list {
+.features-bullet-list,
+.usage-steps-list {
   padding-left: 1.25rem;
   margin: 0;
   width: 100%;
 }
 
 .benefits-bullet-list li,
-.features-bullet-list li {
-  margin-bottom: 0.4rem;
+.features-bullet-list li,
+.usage-steps-list li {
+  margin-bottom: 0.5rem;
   overflow-wrap: break-word;
+  color: #3D2619;
+  line-height: 1.65;
 }
 
 .usage-instruction-p {

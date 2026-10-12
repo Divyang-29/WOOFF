@@ -455,22 +455,22 @@ export default function ProductDetails() {
             {/* 4. Collapsible Product Details Accordions */}
             <div className="product-info-accordions mt-4">
               
-              {/* Benefits */}
+              {/* Key Benefits */}
               <div className="accordion-block">
                 <button 
                   className={`accordion-header-btn ${openAccordions.benefits ? 'active' : ''}`}
                   onClick={() => toggleAccordion('benefits')}
                 >
-                  <span>Benefits</span>
+                  <span>Key Benefits</span>
                   <span className="accordion-toggle-icon">{openAccordions.benefits ? '−' : '+'}</span>
                 </button>
                 {openAccordions.benefits && (
                   <div className="accordion-body-content">
                     <ul className="benefits-bullet-list">
-                      <li>100% Prebiotic & Fluoride-free formulation</li>
-                      <li>Strengthens tooth enamel with Bio-identical nHAp</li>
-                      <li>100% safe if swallowed by toddlers and growing kids</li>
-                      <li>Naturally delicious cacao & citrus flavor kids love</li>
+                      <li>Chocolate taste kids enjoy</li>
+                      <li>Enamel-friendly mineral ingredients</li>
+                      <li>Gum-care and antioxidant support</li>
+                      <li>Made for children&apos;s daily routine</li>
                     </ul>
                   </div>
                 )}
@@ -487,9 +487,11 @@ export default function ProductDetails() {
                 </button>
                 {openAccordions.howToUse && (
                   <div className="accordion-body-content">
-                    <p className="usage-instruction-p">
-                      Apply a pea-sized amount onto a soft toothbrush. Brush gently in circular motions for 2 minutes, twice daily (morning & bedtime). Safe if swallowed!
-                    </p>
+                    <ul className="usage-steps-list">
+                      <li>Wet the brush and add a pea-sized amount.</li>
+                      <li>Brush all surfaces for two minutes.</li>
+                      <li>Spit out and rinse. Do this twice daily with adult supervision.</li>
+                    </ul>
                   </div>
                 )}
               </div>
