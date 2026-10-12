@@ -31,8 +31,12 @@ export default function ProductBrandShowcase({ flavor }) {
           <span className="story-eyebrow">Meet Dr. Shrushti</span>
           <h3 className="story-card-title">Our Founder</h3>
           <p className="story-card-desc">
-            Wooff founder Dr. Shrushti Bhankhariya is a pediatric dental specialist. She created Wooff because she knew there was a better, safer way to give kids healthy smiles without tantrums and tears.
+            &ldquo;As a dentist, I saw how something as essential as brushing became a daily struggle for parents and kids. I created Woof Kids to turn brushing battles into joyful moments with flavours kids love and thoughtfully formulated oral care that parents can trust.&rdquo;
           </p>
+          <div className="founder-card-author">
+            <h4 className="founder-author-name">Dr. Shrushti Bhankhariya</h4>
+            <span className="founder-author-role">Dentist</span>
+          </div>
           <div className="story-icon-footer">
             <div className="icon-circle">
               <i className="fa-solid fa-user-doctor"></i>

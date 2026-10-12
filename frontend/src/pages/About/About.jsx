@@ -437,15 +437,15 @@ export default function About() {
           <div className="founder-card-inner">
             <span className="story-section-badge">FROM THE FOUNDER</span>
             <blockquote className="founder-statement">
-              "Brushing should be something kids love, not a daily hassle. That’s why we created flavours they love, making brushing fun, enjoyable, and easier for parents."
+              &ldquo;As a dentist, I saw how something as essential as brushing became a daily struggle for parents and kids. I created Woof Kids to turn brushing battles into joyful moments with flavours kids love and thoughtfully formulated oral care that parents can trust.&rdquo;
             </blockquote>
             <div className="founder-signature-block">
               <div className="founder-avatar-circle">
-                <i className="fa-solid fa-user"></i>
+                <i className="fa-solid fa-user-doctor"></i>
               </div>
               <div className="founder-details">
-                <h3>Divy Patel</h3>
-                <p>Founder</p>
+                <h3>Dr. Shrushti Bhankhariya</h3>
+                <p>Dentist &amp; Founder</p>
               </div>
             </div>
           </div>

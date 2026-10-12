@@ -87,8 +87,30 @@
   font-size: 0.95rem;
   line-height: 1.75;
   color: #4A3323;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   max-width: 480px;
+}
+
+.founder-card-author {
+  margin-bottom: 1.75rem;
+  text-align: center;
+}
+
+.founder-author-name {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 0.2rem;
+  letter-spacing: -0.2px;
+}
+
+.founder-author-role {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #7A5B42;
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
 }
 
 .story-icon-footer {
