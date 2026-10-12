@@ -430,6 +430,23 @@ export default function SingleBlog() {
                     </div>
                   ))}
 
+                  {/* Inline Section Image */}
+                  {section.image && (
+                    <div className="article-inline-image-wrapper my-4">
+                      <img
+                        src={typeof section.image === 'string' ? section.image : section.image.url}
+                        alt={section.image?.alt || section.title}
+                        className="article-inline-image"
+                        style={{ width: '100%', borderRadius: '16px', objectFit: 'cover' }}
+                      />
+                      {section.image?.caption && (
+                        <p className="single-blog-image-caption mt-2">
+                          <i className="fa-solid fa-camera me-1" /> {section.image.caption}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   {/* Custom Links */}
                   {section.customLinks && (
                     <div className="article-custom-links-row mt-3 mb-4">

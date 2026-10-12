@@ -233,9 +233,9 @@ export const RICH_ARTICLES = {
     tags: ['ChocolateToothpaste', 'ParentsGuide', 'KidsRoutine', 'NanoHydroxyapatite', 'Theobromine', 'OralCare'],
     updated_at: '2026-10-12T13:30:00Z',
     reading_time: '2 min read',
-    image_url: '/assets/FDP02971.webp',
+    image_url: '/assets/chocolate-toothpaste-wood.webp',
     excerpt: 'Is chocolate toothpaste safe and effective for kids? Ingredients, usage and expert-style answers from Wooff.',
-    image_caption: 'Wooff chocolate toothpaste designed around gentle, mineral-based care for kids.',
+    image_caption: 'Wooff 100% natural chocolate flavoured kids toothpaste crafted with gentle cocoa theobromine and mineral-based care.',
     author: {
       name: 'Wooff Team',
       role: 'Pediatric Oral Care Team',
@@ -285,6 +285,11 @@ export const RICH_ARTICLES = {
         paragraphs: [
           'Every ingredient in Wooff is purposefully selected for safety, efficacy, and gentle care:',
         ],
+        image: {
+          url: '/assets/FDP02971.webp',
+          alt: 'Wooff Kids chocolate toothpaste packaging and formula',
+          caption: 'Wooff Kids gentle oral care essentials: clean cocoa-derived theobromine and bio-active nHAp.'
+        },
         list: [
           'Theobromine: a cocoa compound that also gives the paste its chocolate taste.',
           'Nano-Hydroxyapatite: a mineral form of the same material found in tooth enamel.',

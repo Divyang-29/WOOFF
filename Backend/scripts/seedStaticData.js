@@ -310,7 +310,7 @@ async function seedStaticData() {
         title: "Chocolate Toothpaste: What Parents Should Know",
         slug: "chocolate-toothpaste",
         content: "Chocolate toothpaste is safe for kids when it is made for their age and used as directed. Wooff is a chocolate toothpaste designed around gentle, mineral-based care. The flavour helps kids brush willingly without causing cavities. Wooff ingredients include theobromine, nano-hydroxyapatite, calcium gluconate, inulin, vitamin C, lactoferrin, and coenzyme Q10.",
-        image_url: "/assets/FDP02971.webp",
+        image_url: "/assets/chocolate-toothpaste-wood.webp",
         author: "Wooff Team",
         created_at: new Date(),
       },
