@@ -86,15 +86,30 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
     }
   };
 
-  // Pre-fill user details if logged in
+  // Pre-fill user details if logged in (skip if admin account)
   useEffect(() => {
     if (user) {
-      setFormData((prev) => ({
-        ...prev,
-        fullName: prev.fullName || user.username || '',
-        email: prev.email || user.email || '',
-        phone: prev.phone || (user.phone_number ? user.phone_number.replace(/^\+91/, '') : ''),
-      }));
+      const isAdmin =
+        user.role === 'admin' ||
+        user.username?.toLowerCase() === 'admin' ||
+        user.email?.toLowerCase().includes('admin');
+
+      // Never auto-populate admin credentials into customer checkout form
+      if (!isAdmin) {
+        const detectedName =
+          user.fullName ||
+          user.full_name ||
+          user.name ||
+          (user.username && user.username.toLowerCase() !== 'admin' ? user.username : '') ||
+          '';
+
+        setFormData((prev) => ({
+          ...prev,
+          fullName: prev.fullName || detectedName,
+          email: prev.email || user.email || '',
+          phone: prev.phone || (user.phone_number ? user.phone_number.replace(/^\+91/, '') : ''),
+        }));
+      }
     }
   }, [user]);
 
