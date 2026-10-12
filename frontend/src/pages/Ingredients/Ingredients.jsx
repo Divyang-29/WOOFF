@@ -200,15 +200,9 @@ export default function Ingredients() {
                     <div className="ingredient-item-header">
                       <div className="ingredient-title-meta">
                         <h3 className="ingredient-item-name">{item.name}</h3>
-                        <span className="ingredient-item-category">{item.tag || item.sub_title || 'Hero Formulation'}</span>
                       </div>
 
                       <div className="ingredient-item-right">
-                        {item.badge_text && (
-                          <span className="badge bg-light text-dark border me-2 small px-2 py-1">
-                            {item.badge_text}
-                          </span>
-                        )}
                         <img 
                           src={iconSrc} 
                           alt={item.name} 
