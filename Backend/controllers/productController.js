@@ -61,25 +61,46 @@ const createProductHandler = async (req, res) => {
       }
     }
 
-    // Process primary image from file upload, body URL, or fallback
-    let primary_image = bodyPrimaryImage || image || null;
-    if (req.files && req.files.primary_image && req.files.primary_image[0]) {
-      primary_image = req.files.primary_image[0].path || req.files.primary_image[0].secure_url;
+    // Process hero_image / primary image from file upload, body URL, or fallback
+    let hero_image = req.body.hero_image || req.body.heroImage || bodyPrimaryImage || image || null;
+    if (req.files) {
+      if (req.files.hero_image && req.files.hero_image[0]) {
+        hero_image = req.files.hero_image[0].path || req.files.hero_image[0].secure_url;
+      } else if (req.files.primary_image && req.files.primary_image[0]) {
+        hero_image = req.files.primary_image[0].path || req.files.primary_image[0].secure_url;
+      }
     }
-    if (!primary_image) {
-      primary_image = "/assets/tooth_paste.png";
+    if (!hero_image) {
+      hero_image = "/assets/tooth_paste.png";
     }
+    const primary_image = hero_image;
 
     const targetSku = sku && sku.trim() ? sku.trim() : `WOOFF-${Date.now().toString(36).toUpperCase()}`;
     const targetFinalPrice = final_price ? parseFloat(final_price) : parseFloat(price);
 
     // Process gallery images (up to 5 images)
-    let images = [];
-    if (req.files && req.files.images && Array.isArray(req.files.images)) {
-      images = req.files.images.map((f) => f.path || f.secure_url);
-    } else if (req.body.images) {
-      images = typeof req.body.images === "string" ? JSON.parse(req.body.images) : req.body.images;
+    let gallery_images = [];
+    if (req.files) {
+      if (req.files.gallery_images && Array.isArray(req.files.gallery_images)) {
+        gallery_images = req.files.gallery_images.map((f) => f.path || f.secure_url);
+      } else if (req.files.images && Array.isArray(req.files.images)) {
+        gallery_images = req.files.images.map((f) => f.path || f.secure_url);
+      }
     }
+
+    if (gallery_images.length === 0) {
+      const incomingGallery = req.body.gallery_images || req.body.galleryImages || req.body.images;
+      if (incomingGallery) {
+        gallery_images = typeof incomingGallery === "string" ? JSON.parse(incomingGallery) : incomingGallery;
+      }
+    }
+
+    if (!Array.isArray(gallery_images)) {
+      gallery_images = [];
+    }
+    // Filter out falsy/empty values and limit strictly to up to 5 images
+    gallery_images = gallery_images.filter(Boolean).slice(0, 5);
+    const images = gallery_images;
 
     // Process key ingredients array
     let ingredients = [];
@@ -100,7 +121,9 @@ const createProductHandler = async (req, res) => {
       price: parseFloat(price),
       final_price: targetFinalPrice,
       primary_image,
+      hero_image,
       images,
+      gallery_images,
       description: description ? description.trim() : null,
       stock: stock !== undefined && stock !== "" ? parseInt(stock) : 0,
       sku: targetSku,
@@ -233,12 +256,36 @@ const updateProductHandler = async (req, res) => {
       updateData.is_bestseller = req.body.is_bestseller === "true" || req.body.is_bestseller === true;
     }
 
-    if (req.files && req.files.primary_image && req.files.primary_image[0]) {
-      updateData.primary_image = req.files.primary_image[0].path || req.files.primary_image[0].secure_url;
+    if (req.files) {
+      if (req.files.hero_image && req.files.hero_image[0]) {
+        updateData.hero_image = req.files.hero_image[0].path || req.files.hero_image[0].secure_url;
+        updateData.primary_image = updateData.hero_image;
+      } else if (req.files.primary_image && req.files.primary_image[0]) {
+        updateData.primary_image = req.files.primary_image[0].path || req.files.primary_image[0].secure_url;
+        updateData.hero_image = updateData.primary_image;
+      }
+
+      if (req.files.gallery_images && Array.isArray(req.files.gallery_images)) {
+        updateData.gallery_images = req.files.gallery_images.map((f) => f.path || f.secure_url).slice(0, 5);
+        updateData.images = updateData.gallery_images;
+      } else if (req.files.images && Array.isArray(req.files.images)) {
+        updateData.images = req.files.images.map((f) => f.path || f.secure_url).slice(0, 5);
+        updateData.gallery_images = updateData.images;
+      }
     }
 
-    if (req.files && req.files.images && Array.isArray(req.files.images)) {
-      updateData.images = req.files.images.map((f) => f.path || f.secure_url);
+    if (req.body.hero_image !== undefined || req.body.heroImage !== undefined) {
+      updateData.hero_image = req.body.hero_image || req.body.heroImage;
+      updateData.primary_image = updateData.hero_image;
+    }
+
+    const incomingGallery = req.body.gallery_images !== undefined 
+      ? req.body.gallery_images 
+      : (req.body.galleryImages !== undefined ? req.body.galleryImages : req.body.images);
+    if (incomingGallery !== undefined) {
+      const parsed = typeof incomingGallery === "string" ? JSON.parse(incomingGallery) : incomingGallery;
+      updateData.gallery_images = (Array.isArray(parsed) ? parsed : []).filter(Boolean).slice(0, 5);
+      updateData.images = updateData.gallery_images;
     }
 
     if (req.body.variants !== undefined) {

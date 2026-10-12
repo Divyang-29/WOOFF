@@ -147,23 +147,27 @@ export default function Admin() {
     order: null,
   });
 
-  // Product CRUD Modal State
-  const [showProductModal, setShowProductModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
-  const [productForm, setProductForm] = useState({
+  // Product CRUD Modal State & Clean State Initializer
+  const initialProductState = {
     title: '',
-    category_id: 1,
+    category_id: '',
     price: '',
     final_price: '',
     stock: '',
     sku: '',
+    hero_image: '',
     primary_image: '',
+    gallery_images: [],
     description: '',
     is_bestseller: false,
     bundle_type: 'single',
     low_stock_threshold: 10,
     variants: [],
-  });
+  };
+
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [productForm, setProductForm] = useState(initialProductState);
 
   // Hero Ingredients Formulation CMS Modal State
   const [showIngredientModal, setShowIngredientModal] = useState(false);
@@ -980,32 +984,46 @@ export default function Admin() {
   const handleOpenAddProduct = () => {
     setEditingProduct(null);
     setProductForm({
-      title: '',
-      category_id: categories[0]?.id || 1,
-      price: '',
-      final_price: '',
-      stock: 25,
-      sku: `WF-PROD-${Date.now().toString(36).toUpperCase()}`,
-      primary_image: '',
-      description: '',
-      is_bestseller: false,
-      bundle_type: 'single',
-      low_stock_threshold: 10,
-      variants: [],
+      ...initialProductState,
+      category_id: categories[0]?.id || '',
     });
     setShowProductModal(true);
   };
 
+  const handleCloseProductModal = () => {
+    setShowProductModal(false);
+    setEditingProduct(null);
+    setProductForm({
+      ...initialProductState,
+      category_id: categories[0]?.id || '',
+    });
+  };
+
   const handleOpenEditProduct = (prod) => {
     setEditingProduct(prod);
+    const hero = prod.hero_image || prod.primary_image || '';
+    const rawGallery = prod.gallery_images || prod.images || [];
+    let galleryArr = [];
+    if (Array.isArray(rawGallery)) {
+      galleryArr = rawGallery;
+    } else if (typeof rawGallery === 'string') {
+      try {
+        galleryArr = JSON.parse(rawGallery);
+      } catch {
+        galleryArr = [];
+      }
+    }
+
     setProductForm({
-      title: prod.title,
-      category_id: prod.category_id || categories[0]?.id || 1,
-      price: prod.price,
-      final_price: prod.final_price,
-      stock: prod.stock,
-      sku: prod.sku,
-      primary_image: prod.primary_image || '',
+      title: prod.title || '',
+      category_id: prod.category_id || categories[0]?.id || '',
+      price: prod.price !== undefined && prod.price !== null ? prod.price : '',
+      final_price: prod.final_price !== undefined && prod.final_price !== null ? prod.final_price : '',
+      stock: prod.stock !== undefined && prod.stock !== null ? prod.stock : '',
+      sku: prod.sku || '',
+      hero_image: hero,
+      primary_image: hero,
+      gallery_images: Array.isArray(galleryArr) ? galleryArr.slice(0, 5) : [],
       description: prod.description || '',
       is_bestseller: !!prod.is_bestseller,
       bundle_type: prod.bundle_type || 'single',
@@ -1013,6 +1031,56 @@ export default function Admin() {
       variants: Array.isArray(prod.variants) ? prod.variants : [],
     });
     setShowProductModal(true);
+  };
+
+  // Dynamic Gallery Images Handlers (Up to 5 images)
+  const handleAddGalleryImage = () => {
+    if ((productForm.gallery_images || []).length >= 5) {
+      showToast('warning', 'You can add a maximum of 5 gallery images.');
+      return;
+    }
+    setProductForm((prev) => ({
+      ...prev,
+      gallery_images: [...(prev.gallery_images || []), ''],
+    }));
+  };
+
+  const handleUpdateGalleryImageUrl = (index, url) => {
+    setProductForm((prev) => {
+      const updated = [...(prev.gallery_images || [])];
+      updated[index] = url;
+      return { ...prev, gallery_images: updated };
+    });
+  };
+
+  const handleRemoveGalleryImage = (index) => {
+    setProductForm((prev) => {
+      const updated = [...(prev.gallery_images || [])];
+      updated.splice(index, 1);
+      return { ...prev, gallery_images: updated };
+    });
+  };
+
+  const handleGalleryImageUpload = (e, index) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    handleSecureAssetUpload(file, (uploadedUrl) => {
+      handleUpdateGalleryImageUrl(index, uploadedUrl);
+    });
+    e.target.value = '';
+  };
+
+  const handleHeroImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    handleSecureAssetUpload(file, (uploadedUrl) => {
+      setProductForm((prev) => ({
+        ...prev,
+        hero_image: uploadedUrl,
+        primary_image: uploadedUrl,
+      }));
+    });
+    e.target.value = '';
   };
 
   const handleToggleBestseller = async (id, currentVal) => {
@@ -1077,12 +1145,24 @@ export default function Admin() {
       const parsedFinalPrice = Math.max(0, parseFloat(productForm.final_price || productForm.price) || 0);
       const parsedStock = Math.max(0, parseInt(productForm.stock || '0', 10) || 0);
 
+      const resolvedHero = (productForm.hero_image || productForm.primary_image || '').trim();
+      const resolvedGallery = (productForm.gallery_images || [])
+        .map((img) => (typeof img === 'string' ? img.trim() : img))
+        .filter(Boolean)
+        .slice(0, 5);
+
       const payload = {
         ...productForm,
         price: parsedPrice,
         final_price: parsedFinalPrice,
         stock: parsedStock,
         category_id: productForm.category_id || categories[0]?.id || 1,
+        hero_image: resolvedHero,
+        heroImage: resolvedHero,
+        primary_image: resolvedHero,
+        gallery_images: resolvedGallery,
+        galleryImages: resolvedGallery,
+        images: resolvedGallery,
         bundle_type: productForm.bundle_type || 'single',
         low_stock_threshold: parseInt(productForm.low_stock_threshold) || 10,
         variants: productForm.variants || [],
@@ -1112,7 +1192,7 @@ export default function Admin() {
           setProducts((prev) => [formatted, ...prev]);
         }
         showToast('success', `Product "${productForm.title}" saved successfully!`);
-        setShowProductModal(false);
+        handleCloseProductModal();
       } else {
         showToast('danger', data.message || 'Failed to save product on server.');
       }
@@ -4800,11 +4880,29 @@ export default function Admin() {
           PRODUCT ADD/EDIT MODAL
          ------------------------------------------------------------- */}
       {showProductModal && (
-        <div className="admin-modal-backdrop" onClick={() => setShowProductModal(false)}>
-          <div className="admin-modal-card" onClick={(e) => e.stopPropagation()}>
-            <h3 className="fw-bold mb-3" style={{ color: '#4B2E1E' }}>
-              {editingProduct ? 'Edit Product' : 'Add New Prebiotic Product'}
-            </h3>
+        <div className="admin-modal-backdrop" onClick={handleCloseProductModal}>
+          <div className="admin-modal-card" style={{ maxWidth: '680px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <h3 className="fw-bold mb-1" style={{ color: '#4B2E1E' }}>
+                  {editingProduct ? 'Edit Product' : 'Add New Prebiotic Product'}
+                </h3>
+                <p className="text-muted small mb-0">
+                  {editingProduct
+                    ? `Editing "${editingProduct.title}" (ID: ${editingProduct.id})`
+                    : 'Fill out the product information, hero image, and up to 5 gallery photos.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline-secondary rounded-circle"
+                style={{ width: '32px', height: '32px', padding: 0 }}
+                onClick={handleCloseProductModal}
+                title="Close"
+              >
+                ✕
+              </button>
+            </div>
 
             <form onSubmit={handleSaveProduct}>
               <div className="mb-3">
@@ -4823,10 +4921,11 @@ export default function Admin() {
                 <label className="form-label small fw-bold">Product Category</label>
                 <select
                   className="form-select"
-                  value={productForm.category_id || (categories[0]?.id || 1)}
-                  onChange={(e) => setProductForm({ ...productForm, category_id: parseInt(e.target.value) })}
+                  value={productForm.category_id || (categories[0]?.id || '')}
+                  onChange={(e) => setProductForm({ ...productForm, category_id: parseInt(e.target.value) || '' })}
                   required
                 >
+                  <option value="" disabled>Select Category</option>
                   {categories.map((cat) => (
                     <option key={cat.id} value={cat.id}>
                       {cat.name}
@@ -4851,7 +4950,7 @@ export default function Admin() {
                   />
                 </div>
                 <div className="col-6">
-                  <label className="form-label small fw-bold">Discount Price (₹)</label>
+                  <label className="form-label small fw-bold">Discount / Final Price (₹)</label>
                   <input
                     type="number"
                     className="form-control"
@@ -4869,6 +4968,7 @@ export default function Admin() {
                   <input
                     type="text"
                     className="form-control"
+                    placeholder="e.g. WF-PASTE-01"
                     value={productForm.sku}
                     onChange={(e) => setProductForm({ ...productForm, sku: e.target.value })}
                     required
@@ -4879,6 +4979,7 @@ export default function Admin() {
                   <input
                     type="number"
                     className="form-control"
+                    placeholder="0"
                     value={productForm.stock}
                     onChange={(e) => setProductForm({ ...productForm, stock: e.target.value })}
                     required
@@ -4937,24 +5038,149 @@ export default function Admin() {
                 ></textarea>
               </div>
 
-              <div className="mb-3">
-                <label className="form-label small fw-bold">Upload Product Image (.jpg, .jpeg, .png only)</label>
-                <input
-                  type="file"
-                  className="form-control"
-                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-                  onChange={(e) => handleImageFileUpload(e, setProductForm)}
-                />
-                {uploadingImage && <div className="small text-primary mt-1 fw-bold"><i className="fa-solid fa-spinner fa-spin me-1"></i> Uploading file...</div>}
-                {productForm.primary_image && (
-                  <div className="mt-2 text-center p-2 border rounded-3 bg-light">
-                    <img src={productForm.primary_image} alt="Preview" style={{ height: '90px', borderRadius: '8px', objectFit: 'contain' }} />
+              {/* -------------------------------------------------------------
+                  HERO IMAGE SECTION (Main Product Image)
+                 ------------------------------------------------------------- */}
+              <div className="mb-4 p-3 bg-light rounded-3 border">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <label className="form-label small fw-bold mb-0 text-dark">
+                    <i className="fa-solid fa-star text-warning me-1"></i> Hero Image (Main Product Image)
+                  </label>
+                  {productForm.hero_image && (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-link text-danger p-0 text-decoration-none"
+                      onClick={() => setProductForm((prev) => ({ ...prev, hero_image: '', primary_image: '' }))}
+                    >
+                      <i className="fa-solid fa-trash-can me-1"></i> Remove Hero Image
+                    </button>
+                  )}
+                </div>
+                
+                <div className="input-group mb-2">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter or paste Hero Image URL (e.g. https://... or /assets/...)"
+                    value={productForm.hero_image || ''}
+                    onChange={(e) => setProductForm((prev) => ({ ...prev, hero_image: e.target.value, primary_image: e.target.value }))}
+                  />
+                  <label className="btn btn-outline-secondary mb-0" style={{ cursor: 'pointer' }}>
+                    <i className="fa-solid fa-cloud-arrow-up me-1"></i> Upload File
+                    <input
+                      type="file"
+                      hidden
+                      accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                      onChange={handleHeroImageUpload}
+                    />
+                  </label>
+                </div>
+
+                {uploadingImage && (
+                  <div className="small text-primary mb-2 fw-bold">
+                    <i className="fa-solid fa-spinner fa-spin me-1"></i> Uploading hero asset...
+                  </div>
+                )}
+
+                {productForm.hero_image ? (
+                  <div className="text-center p-2 border rounded-3 bg-white mt-2">
+                    <img
+                      src={productForm.hero_image}
+                      alt="Hero Preview"
+                      style={{ maxHeight: '120px', maxWidth: '100%', borderRadius: '8px', objectFit: 'contain' }}
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                    <div className="small text-muted mt-1 text-truncate">{productForm.hero_image}</div>
+                  </div>
+                ) : (
+                  <div className="small text-muted fst-italic">
+                    This will be the primary photo displayed across product listings and the home showcase.
+                  </div>
+                )}
+              </div>
+
+              {/* -------------------------------------------------------------
+                  GALLERY IMAGES SECTION (Up to 5 Additional Images)
+                 ------------------------------------------------------------- */}
+              <div className="mb-4 p-3 bg-light rounded-3 border">
+                <div className="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                    <label className="form-label small fw-bold mb-0 text-dark">
+                      <i className="fa-solid fa-images text-primary me-1"></i> Gallery Images
+                    </label>
+                    <span className="badge bg-secondary ms-2">
+                      {(productForm.gallery_images || []).length} / 5 max
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-primary"
+                    onClick={handleAddGalleryImage}
+                    disabled={(productForm.gallery_images || []).length >= 5}
+                  >
+                    <i className="fa-solid fa-plus me-1"></i> Add Gallery Image
+                  </button>
+                </div>
+
+                <div className="small text-muted mb-3">
+                  Add up to 5 additional detail and lifestyle photos for the product page lightbox gallery.
+                </div>
+
+                {(productForm.gallery_images || []).length === 0 ? (
+                  <div className="text-center py-3 border border-dashed rounded-3 bg-white text-muted small">
+                    <i className="fa-regular fa-image fs-4 d-block mb-1 text-secondary"></i>
+                    No gallery images added yet. Click &ldquo;Add Gallery Image&rdquo; to add up to 5 images.
+                  </div>
+                ) : (
+                  <div className="d-flex flex-column gap-2">
+                    {(productForm.gallery_images || []).map((imgUrl, idx) => (
+                      <div key={idx} className="p-2 bg-white rounded-3 border">
+                        <div className="d-flex align-items-center gap-2">
+                          <span className="badge bg-light text-dark border small">#{idx + 1}</span>
+                          <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            placeholder={`Gallery image #${idx + 1} URL (or upload)`}
+                            value={imgUrl || ''}
+                            onChange={(e) => handleUpdateGalleryImageUrl(idx, e.target.value)}
+                          />
+                          <label className="btn btn-sm btn-outline-secondary mb-0 text-nowrap" style={{ cursor: 'pointer' }}>
+                            <i className="fa-solid fa-cloud-arrow-up"></i>
+                            <input
+                              type="file"
+                              hidden
+                              accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                              onChange={(e) => handleGalleryImageUpload(e, idx)}
+                            />
+                          </label>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-danger"
+                            title="Remove image"
+                            onClick={() => handleRemoveGalleryImage(idx)}
+                          >
+                            <i className="fa-solid fa-trash-can"></i>
+                          </button>
+                        </div>
+
+                        {imgUrl && (
+                          <div className="mt-2 text-center p-1 bg-light rounded border">
+                            <img
+                              src={imgUrl}
+                              alt={`Gallery item ${idx + 1}`}
+                              style={{ maxHeight: '70px', maxWidth: '100%', borderRadius: '4px', objectFit: 'contain' }}
+                              onError={(e) => { e.target.style.display = 'none'; }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
 
               <div className="d-flex justify-content-end gap-2 mt-4">
-                <button type="button" className="admin-btn admin-btn-outline" onClick={() => setShowProductModal(false)}>Cancel</button>
+                <button type="button" className="admin-btn admin-btn-outline" onClick={handleCloseProductModal}>Cancel</button>
                 <button type="submit" className="admin-btn admin-btn-primary">{editingProduct ? 'Save Changes' : 'Create Product'}</button>
               </div>
             </form>

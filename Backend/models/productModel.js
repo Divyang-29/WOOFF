@@ -1,7 +1,9 @@
 const pool = require("../config/db");
 
-// Auto migration to ensure is_bestseller column and product_reviews table exist
+// Auto migration to ensure is_bestseller, hero_image, gallery_images and product_reviews exist
 pool.query("ALTER TABLE products ADD COLUMN IF NOT EXISTS is_bestseller BOOLEAN DEFAULT false;").catch(() => {});
+pool.query("ALTER TABLE products ADD COLUMN IF NOT EXISTS hero_image VARCHAR(1000);").catch(() => {});
+pool.query("ALTER TABLE products ADD COLUMN IF NOT EXISTS gallery_images JSONB DEFAULT '[]'::jsonb;").catch(() => {});
 pool.query(`
   CREATE TABLE IF NOT EXISTS product_reviews (
     id SERIAL PRIMARY KEY,
@@ -32,7 +34,9 @@ const createProduct = async ({
   price,
   final_price,
   primary_image,
+  hero_image,
   images = [],
+  gallery_images = [],
   description,
   stock = 0,
   sku,
@@ -60,12 +64,19 @@ const createProduct = async ({
 
     const productSlug = slug ? generateSlug(slug) : generateSlug(title);
 
+    // Resolve hero image and gallery images (ensuring max 5 gallery images)
+    const resolvedHeroImage = hero_image || primary_image || null;
+    const rawGallery = Array.isArray(gallery_images) && gallery_images.length > 0
+      ? gallery_images
+      : (Array.isArray(images) ? images : []);
+    const resolvedGalleryImages = rawGallery.filter(Boolean).slice(0, 5);
+
     // Insert Product
     const productQuery = `
       INSERT INTO products (
-        category_id, title, slug, price, final_price, primary_image, images, description, stock, sku, estimated_delivery, is_active, is_bestseller, variants, low_stock_threshold, bundle_type
+        category_id, title, slug, price, final_price, primary_image, images, hero_image, gallery_images, description, stock, sku, estimated_delivery, is_active, is_bestseller, variants, low_stock_threshold, bundle_type
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9, $10, $11, true, $12, $13::jsonb, $14, $15)
+      VALUES ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9::jsonb, $10, $11, $12, $13, true, $14, $15::jsonb, $16, $17)
       RETURNING *
     `;
 
@@ -75,8 +86,10 @@ const createProduct = async ({
       productSlug,
       price,
       final_price,
-      primary_image,
-      JSON.stringify(images),
+      resolvedHeroImage,
+      JSON.stringify(resolvedGalleryImages),
+      resolvedHeroImage,
+      JSON.stringify(resolvedGalleryImages),
       description ? description.trim() : null,
       stock,
       sku.trim(),
@@ -284,7 +297,7 @@ const updateProduct = async (id, data) => {
 
   const allowedFields = [
     "category_id", "title", "slug", "price", "final_price",
-    "primary_image", "description", "stock", "sku", "estimated_delivery", "is_active", "is_bestseller",
+    "primary_image", "hero_image", "description", "stock", "sku", "estimated_delivery", "is_active", "is_bestseller",
     "low_stock_threshold", "bundle_type"
   ];
 
@@ -295,9 +308,25 @@ const updateProduct = async (id, data) => {
     }
   }
 
-  if (data.images !== undefined) {
+  // Keep hero_image and primary_image synced
+  if (data.hero_image !== undefined && data.primary_image === undefined) {
+    fields.push(`primary_image = $${paramIdx++}`);
+    values.push(data.hero_image);
+  } else if (data.primary_image !== undefined && data.hero_image === undefined) {
+    fields.push(`hero_image = $${paramIdx++}`);
+    values.push(data.primary_image);
+  }
+
+  // Sync gallery_images and images (up to 5 items)
+  const galleryInput = data.gallery_images !== undefined ? data.gallery_images : data.images;
+  if (galleryInput !== undefined) {
+    const rawList = Array.isArray(galleryInput) ? galleryInput : [];
+    const sliced = rawList.filter(Boolean).slice(0, 5);
+    const jsonStr = JSON.stringify(sliced);
+    fields.push(`gallery_images = $${paramIdx++}::jsonb`);
+    values.push(jsonStr);
     fields.push(`images = $${paramIdx++}::jsonb`);
-    values.push(JSON.stringify(data.images));
+    values.push(jsonStr);
   }
 
   if (data.variants !== undefined) {

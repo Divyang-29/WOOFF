@@ -28,7 +28,9 @@ router.post(
   authMiddleware,
   adminMiddleware,
   upload.fields([
+    { name: "hero_image", maxCount: 1 },
     { name: "primary_image", maxCount: 1 },
+    { name: "gallery_images", maxCount: 5 },
     { name: "images", maxCount: 5 },
   ]),
   createProductHandler
@@ -39,7 +41,9 @@ router.put(
   authMiddleware,
   adminMiddleware,
   upload.fields([
+    { name: "hero_image", maxCount: 1 },
     { name: "primary_image", maxCount: 1 },
+    { name: "gallery_images", maxCount: 5 },
     { name: "images", maxCount: 5 },
   ]),
   updateProductHandler

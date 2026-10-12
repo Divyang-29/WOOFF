@@ -207,13 +207,15 @@ export default function ProductDetails() {
   if (loading) return <div className="status-message">Loading product...</div>;
   if (error || !data) return <div className="status-message error">{error || 'Product not found'}</div>;
 
-  const galleryImagesRaw = typeof data.images === 'string' ? JSON.parse(data.images) : (data.images || []);
+  const heroImg = data.hero_image || data.primary_image;
+  const rawGallery = data.gallery_images || data.images || [];
+  const galleryImagesRaw = typeof rawGallery === 'string' ? JSON.parse(rawGallery) : (rawGallery || []);
   const galleryList = Array.isArray(galleryImagesRaw) ? galleryImagesRaw : [];
 
-  // Deduplicate all images starting with primary_image
+  // Deduplicate all images starting with hero_image
   const allImages = [];
-  if (data.primary_image) {
-    allImages.push(data.primary_image);
+  if (heroImg) {
+    allImages.push(heroImg);
   }
   galleryList.forEach((img) => {
     if (img && !allImages.includes(img) && !img.includes('citrus_detail') && !img.includes('brush_detail')) {
