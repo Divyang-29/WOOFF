@@ -9,7 +9,7 @@ export const RICH_ARTICLES = {
     tags: ['ChocoToothpaste', 'KidsRoutine', 'NanoHydroxyapatite', 'ParentingTips', 'BrushHappily'],
     updated_at: '2026-10-12T12:00:00Z',
     reading_time: '3 min read',
-    image_url: '/assets/choco-toothpaste-pieces.jpg',
+    image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.jpg',
     excerpt: 'Choco flavoured toothpaste turns a daily chore into something kids look forward to. Wooff is built for that.',
     image_caption: 'Wooff 100% natural choco flavoured kids toothpaste with bio-identical nano-hydroxyapatite and organic cocoa theobromine.',
     author: {
@@ -119,7 +119,7 @@ export const RICH_ARTICLES = {
     tags: ['ChocolateToothpaste', 'KidsRoutine', 'ParentsGuide', 'NanoHydroxyapatite', 'Theobromine', 'OralCare'],
     updated_at: '2026-10-12T13:00:00Z',
     reading_time: '3 min read',
-    image_url: '/assets/FDP02976.webp',
+    image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794134/wooff_blogs/FDP02976.webp',
     excerpt: 'Why kids love chocolate flavoured toothpaste, what is inside Wooff, and how to make brushing a daily habit.',
     image_caption: 'Wooff chocolate flavoured kids toothpaste with cocoa-derived theobromine, nano-hydroxyapatite, and prebiotic inulin.',
     author: {
@@ -233,7 +233,7 @@ export const RICH_ARTICLES = {
     tags: ['ChocolateToothpaste', 'ParentsGuide', 'KidsRoutine', 'NanoHydroxyapatite', 'Theobromine', 'OralCare'],
     updated_at: '2026-10-12T13:30:00Z',
     reading_time: '2 min read',
-    image_url: '/assets/chocolate-toothpaste-wood.webp',
+    image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794125/wooff_blogs/chocolate-toothpaste-wood.webp',
     excerpt: 'Is chocolate toothpaste safe and effective for kids? Ingredients, usage and expert-style answers from Wooff.',
     image_caption: 'Wooff 100% natural chocolate flavoured kids toothpaste crafted with gentle cocoa theobromine and mineral-based care.',
     author: {
@@ -286,7 +286,7 @@ export const RICH_ARTICLES = {
           'Every ingredient in Wooff is purposefully selected for safety, efficacy, and gentle care:',
         ],
         image: {
-          url: '/assets/FDP02971.webp',
+          url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794135/wooff_blogs/FDP02971.webp',
           alt: 'Wooff Kids chocolate toothpaste packaging and formula',
           caption: 'Wooff Kids gentle oral care essentials: clean cocoa-derived theobromine and bio-active nHAp.'
         },
