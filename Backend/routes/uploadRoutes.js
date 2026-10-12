@@ -27,7 +27,7 @@ const storage = multer.diskStorage({
 });
 
 // File Filter: Strictly JPG, JPEG, PNG, WEBP (SVG explicitly forbidden due to XSS vectors)
-const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp']);
 const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp']);
 
 const fileFilter = (req, file, cb) => {

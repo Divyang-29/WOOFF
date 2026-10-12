@@ -205,12 +205,14 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 const { ensureAdminSeed } = require("./models/adminModel");
+const { ensureProductColumns } = require("./models/productModel");
 
 const PORT = process.env.PORT || 8080;
 
 const server = app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
   await ensureAdminSeed();
+  await ensureProductColumns();
 });
 
 // Graceful Shutdown

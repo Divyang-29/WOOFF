@@ -1,19 +1,36 @@
 const pool = require("../config/db");
 
-// Auto migration to ensure is_bestseller, hero_image, gallery_images and product_reviews exist
-pool.query("ALTER TABLE products ADD COLUMN IF NOT EXISTS is_bestseller BOOLEAN DEFAULT false;").catch(() => {});
-pool.query("ALTER TABLE products ADD COLUMN IF NOT EXISTS hero_image VARCHAR(1000);").catch(() => {});
-pool.query("ALTER TABLE products ADD COLUMN IF NOT EXISTS gallery_images JSONB DEFAULT '[]'::jsonb;").catch(() => {});
-pool.query(`
-  CREATE TABLE IF NOT EXISTS product_reviews (
-    id SERIAL PRIMARY KEY,
-    product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
-    customer_name VARCHAR(150) NOT NULL,
-    rating NUMERIC(3,2) NOT NULL,
-    review_text TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-  );
-`).catch(() => {});
+// Auto migration to ensure all required columns and tables exist in PostgreSQL
+const ensureProductColumns = async () => {
+  try {
+    await pool.query(`
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS is_bestseller BOOLEAN DEFAULT false;
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS hero_image VARCHAR(1000);
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS gallery_images JSONB DEFAULT '[]'::jsonb;
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS variants JSONB DEFAULT '[]'::jsonb;
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS low_stock_threshold INTEGER DEFAULT 10;
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS bundle_type VARCHAR(50) DEFAULT 'single';
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS weight_kg NUMERIC DEFAULT 0.1;
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS length_cm NUMERIC DEFAULT 10;
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS breadth_cm NUMERIC DEFAULT 5;
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS height_cm NUMERIC DEFAULT 5;
+      ALTER TABLE products ADD COLUMN IF NOT EXISTS hsn_code VARCHAR(50);
+
+      CREATE TABLE IF NOT EXISTS product_reviews (
+        id SERIAL PRIMARY KEY,
+        product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+        customer_name VARCHAR(150) NOT NULL,
+        rating NUMERIC(3,2) NOT NULL,
+        review_text TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log("[Database] Products schema columns and tables verified & synchronized.");
+  } catch (err) {
+    console.warn("[Database] ensureProductColumns notice:", err.message);
+  }
+};
+ensureProductColumns();
 
 // Helper to generate URL-friendly slug
 const generateSlug = (text) => {
@@ -143,6 +160,28 @@ const createProduct = async ({
     };
   } catch (error) {
     await client.query("ROLLBACK");
+    if (error.code === "42703") {
+      console.warn("[Database] Undefined column error (42703) in products table. Synchronizing columns and retrying...");
+      await ensureProductColumns();
+      const retryClient = await pool.connect();
+      try {
+        await retryClient.query("BEGIN");
+        const retryRes = await retryClient.query(productQuery, productValues);
+        const retryProduct = retryRes.rows[0];
+        await retryClient.query("COMMIT");
+        return {
+          ...retryProduct,
+          ingredients: [],
+          faqs: [],
+          reviews: [],
+        };
+      } catch (retryErr) {
+        await retryClient.query("ROLLBACK");
+        throw retryErr;
+      } finally {
+        retryClient.release();
+      }
+    }
     throw error;
   } finally {
     client.release();
@@ -467,4 +506,5 @@ module.exports = {
   addProductReview,
   deleteProductReview,
   getAllProductReviews,
+  ensureProductColumns,
 };
