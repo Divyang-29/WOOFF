@@ -285,11 +285,6 @@ export const RICH_ARTICLES = {
         paragraphs: [
           'Every ingredient in Wooff is purposefully selected for safety, efficacy, and gentle care:',
         ],
-        image: {
-          url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794135/wooff_blogs/FDP02971.webp',
-          alt: 'Wooff Kids chocolate toothpaste packaging and formula',
-          caption: 'Wooff Kids gentle oral care essentials: clean cocoa-derived theobromine and bio-active nHAp.'
-        },
         list: [
           'Theobromine: a cocoa compound that also gives the paste its chocolate taste.',
           'Nano-Hydroxyapatite: a mineral form of the same material found in tooth enamel.',
