@@ -18,23 +18,8 @@ export default function SingleBlog() {
   const [copiedLink, setCopiedLink] = useState(false);
   const [activeTocId, setActiveTocId] = useState('');
 
-  // Interactive Comments State
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      name: 'Sarah Jenkins',
-      role: 'Verified Mom of 2',
-      date: 'October 3, 2026',
-      content: 'Switching to nHAp was the best decision we made for our 3-year-old. Her dentist noticed her early white spots remineralized completely within 3 months, and no more tears at night!',
-    },
-    {
-      id: 2,
-      name: 'Dr. Marcus Vance',
-      role: 'Family Dentistry Practitioner',
-      date: 'October 1, 2026',
-      content: 'Excellent clinical explanation. The distinction between biomimetic mineral deposit versus chemical fluorapatite veneers is crucial for parents to understand. Sharing with my patients!',
-    },
-  ]);
+  // Interactive Comments State (Real user comments only, no fake data)
+  const [comments, setComments] = useState([]);
   const [commentForm, setCommentForm] = useState({ name: '', email: '', comment: '' });
   const [commentSubmitted, setCommentSubmitted] = useState(false);
 
@@ -629,7 +614,9 @@ export default function SingleBlog() {
               <div className="comments-header">
                 <div className="comments-header-left">
                   <i className="fa-solid fa-comments me-2" />
-                  <h3 className="comments-title">Discussion & Questions ({comments.length})</h3>
+                  <h3 className="comments-title">
+                    Discussion & Questions {comments.length > 0 ? `(${comments.length})` : ''}
+                  </h3>
                 </div>
                 <span className="comments-subtitle">Join the dental wellness conversation</span>
               </div>
@@ -684,21 +671,28 @@ export default function SingleBlog() {
 
               {/* Comments List */}
               <div className="blog-comments-list">
-                {comments.map((c) => (
-                  <div key={c.id} className="comment-bubble">
-                    <div className="comment-avatar">
-                      {c.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="comment-body">
-                      <div className="comment-top">
-                        <span className="comment-author-name">{c.name}</span>
-                        <span className="comment-role-pill">{c.role}</span>
-                        <span className="comment-date">{c.date}</span>
-                      </div>
-                      <p className="comment-text">{c.content}</p>
-                    </div>
+                {comments.length === 0 ? (
+                  <div className="blog-no-comments-yet">
+                    <i className="fa-regular fa-comment-dots me-2" />
+                    <span>No comments yet. Be the first to share your thoughts or ask a question!</span>
                   </div>
-                ))}
+                ) : (
+                  comments.map((c) => (
+                    <div key={c.id} className="comment-bubble">
+                      <div className="comment-avatar">
+                        {c.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="comment-body">
+                        <div className="comment-top">
+                          <span className="comment-author-name">{c.name}</span>
+                          {c.role && <span className="comment-role-pill">{c.role}</span>}
+                          <span className="comment-date">{c.date}</span>
+                        </div>
+                        <p className="comment-text">{c.content}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </section>
 
