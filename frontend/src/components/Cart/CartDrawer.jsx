@@ -47,7 +47,7 @@ export default function CartDrawer() {
           <div className="shipping-progress-track">
             <div 
               className="shipping-progress-fill"
-              style={{ width: `${Math.min(100, (cartSubtotal / freeShippingThreshold) * 100)}%` }}
+              style={{ width: `${hasFreeShipping ? 100 : Math.min(100, (cartSubtotal / freeShippingThreshold) * 100)}%` }}
             />
           </div>
         </div>

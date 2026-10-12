@@ -209,8 +209,8 @@ export const CartProvider = ({ children }) => {
   );
 
   const freeShippingThreshold = 500;
+  const hasFreeShipping = cartSubtotal >= 400;
   const amountForFreeShipping = Math.max(0, freeShippingThreshold - cartSubtotal);
-  const hasFreeShipping = cartSubtotal >= freeShippingThreshold;
 
   return (
     <CartContext.Provider

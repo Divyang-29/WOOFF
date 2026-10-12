@@ -105,7 +105,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
     return acc + price * qty;
   }, 0);
 
-  const shippingCost = subtotal >= 500 || subtotal === 0 ? 0 : 49;
+  const shippingCost = subtotal >= 400 || subtotal === 0 ? 0 : 49;
   const grandTotal = subtotal + shippingCost;
 
   // Handle form input changes
