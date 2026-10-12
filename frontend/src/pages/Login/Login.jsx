@@ -301,7 +301,7 @@ export default function Login({ initialMode = 'login', isModal = false, onClose 
           {mode === 'signup' && (
             <div className="auth-row-2col">
               <div className="auth-input-group">
-                <label className="auth-input-label">Parent's Full Name</label>
+                <label className="auth-input-label">Full Name</label>
                 <div className="auth-input-wrapper">
                   <span className="auth-input-icon">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
