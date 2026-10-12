@@ -212,23 +212,21 @@ const getProductBySlugOrId = async (identifier, includeInactive = false) => {
 
   if (!product) return null;
 
-  // Fetch Key Ingredients
-  const ingredientsRes = await pool.query(
-    `SELECT id, title, sub_title, description, image_url FROM product_ingredients WHERE product_id = $1`,
-    [product.id]
-  );
-
-  // Fetch FAQs
-  const faqsRes = await pool.query(
-    `SELECT id, question, answer FROM product_faqs WHERE product_id = $1`,
-    [product.id]
-  );
-
-  // Fetch Customer Reviews
-  const reviewsRes = await pool.query(
-    `SELECT id, customer_name, rating, review_text, created_at FROM product_reviews WHERE product_id = $1 ORDER BY created_at DESC`,
-    [product.id]
-  );
+  // Fetch Key Ingredients, FAQs, and Customer Reviews in parallel
+  const [ingredientsRes, faqsRes, reviewsRes] = await Promise.all([
+    pool.query(
+      `SELECT id, title, sub_title, description, image_url FROM product_ingredients WHERE product_id = $1`,
+      [product.id]
+    ),
+    pool.query(
+      `SELECT id, question, answer FROM product_faqs WHERE product_id = $1`,
+      [product.id]
+    ),
+    pool.query(
+      `SELECT id, customer_name, rating, review_text, created_at FROM product_reviews WHERE product_id = $1 ORDER BY created_at DESC`,
+      [product.id]
+    ),
+  ]);
 
   return {
     ...product,

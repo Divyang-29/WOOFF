@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { loadShiprocketScript } from '../../utils/shiprocket';
+import {
+  getCachedProductBySlug,
+  setCachedProduct,
+  getOptimizedImageUrl,
+} from '../../utils/productData';
 import KeyIngredients from './KeyIngredients';
 import ProductBrandShowcase from './ProductBrandShowcase';
 import ProductFAQ from './ProductFAQ';
@@ -12,8 +17,9 @@ export default function ProductDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const initialData = getCachedProductBySlug(slug);
+  const [data, setData] = useState(initialData);
+  const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -185,32 +191,51 @@ export default function ProductDetails() {
   };
 
   useEffect(() => {
+    let isMounted = true;
+    const initial = getCachedProductBySlug(slug);
+    if (initial) {
+      setData(initial);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+
     const fetchProduct = async () => {
       try {
         const response = await fetch(`/api/products/${slug}`);
         const result = await response.json();
         
-        if (result.success) {
+        if (result.success && isMounted) {
           setData(result.product);
-        } else {
+          setCachedProduct(slug, result.product);
+          setError(null);
+        } else if (isMounted && !data && !initial) {
           setError(result.message || 'Product not found');
         }
       } catch (err) {
-        setError('Failed to fetch product details.');
+        if (isMounted && !data && !initial) {
+          setError('Failed to fetch product details.');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     setSelectedImageIndex(0);
     fetchProduct();
+
+    return () => {
+      isMounted = false;
+    };
   }, [slug]);
 
-  if (loading) return <div className="status-message">Loading product...</div>;
-  if (error || !data) return <div className="status-message error">{error || 'Product not found'}</div>;
+  if (loading && !data) return <div className="status-message">Loading product...</div>;
+  if ((error || !data) && !loading) return <div className="status-message error">{error || 'Product not found'}</div>;
 
-  const heroImg = data.hero_image || data.primary_image;
-  const rawGallery = data.gallery_images || data.images || [];
+  const heroImg = data?.hero_image || data?.primary_image;
+  const rawGallery = data?.gallery_images || data?.images || [];
   const galleryImagesRaw = typeof rawGallery === 'string' ? JSON.parse(rawGallery) : (rawGallery || []);
   const galleryList = Array.isArray(galleryImagesRaw) ? galleryImagesRaw : [];
 
@@ -245,9 +270,11 @@ export default function ProductDetails() {
               onClick={() => setLightboxImage(allImages[selectedImageIndex] || allImages[0])}
             >
               <img 
-                src={allImages[selectedImageIndex] || allImages[0]} 
+                src={getOptimizedImageUrl(allImages[selectedImageIndex] || allImages[0], { width: 850 })} 
                 alt={`${data.title} preview`} 
                 className="gallery-main-img" 
+                fetchPriority="high"
+                decoding="async"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = '/assets/tooth_paste.webp';
@@ -276,9 +303,11 @@ export default function ProductDetails() {
                     aria-label={`View photo ${idx + 1}`}
                   >
                     <img 
-                      src={img} 
+                      src={getOptimizedImageUrl(img, { width: 160 })} 
                       alt={`${data.title} thumbnail ${idx + 1}`} 
                       className="gallery-thumb-img" 
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = '/assets/tooth_paste.webp';

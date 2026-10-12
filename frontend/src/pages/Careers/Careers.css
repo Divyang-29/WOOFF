@@ -1,0 +1,650 @@
+/* ==========================================================================
+   Wooff Kids - Careers Page Styles
+   Brand Theme: Warm Cream, Espresso Brown, Caramel/Terracotta, Playful Pill Badges
+   ========================================================================== */
+
+.careers-page-wrapper {
+  background-color: #FAF5EE;
+  color: #4B2E1E;
+  font-family: inherit;
+  padding-bottom: 5rem;
+}
+
+.careers-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* 1. Hero Section */
+.careers-hero-section {
+  padding: 4.5rem 1rem 3.5rem;
+  background: radial-gradient(circle at 50% 20%, rgba(229, 139, 87, 0.12) 0%, rgba(250, 245, 238, 0) 70%);
+}
+
+.careers-pill-badge {
+  display: inline-block;
+  background-color: #EFE4D6;
+  color: #7A4E2D;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.45rem 1.15rem;
+  border-radius: 50px;
+  border: 1.5px solid rgba(75, 46, 30, 0.15);
+  margin-bottom: 1.25rem;
+}
+
+.careers-hero-title {
+  font-size: 2.85rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.5px;
+}
+
+.careers-hero-lead {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #6C5547;
+  max-width: 780px;
+  margin: 0 auto 2.25rem;
+}
+
+.careers-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-wooff-primary {
+  background-color: #E58B57;
+  color: #FFFFFF !important;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.85rem 1.85rem;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 6px 18px rgba(229, 139, 87, 0.35);
+  transition: all 0.25s ease;
+  border: none;
+}
+
+.btn-wooff-primary:hover {
+  background-color: #D3743E;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(229, 139, 87, 0.45);
+}
+
+.btn-wooff-secondary {
+  background-color: transparent;
+  color: #4B2E1E !important;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.85rem 1.85rem;
+  border-radius: 50px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid #4B2E1E;
+  transition: all 0.25s ease;
+}
+
+.btn-wooff-secondary:hover {
+  background-color: #4B2E1E;
+  color: #FAF5EE !important;
+  transform: translateY(-2px);
+}
+
+/* Section Headings */
+.section-head {
+  margin-bottom: 3rem;
+}
+
+.section-sub-badge {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #E58B57;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+}
+
+.section-main-heading {
+  font-size: 2.35rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.5px;
+}
+
+.section-lead-text {
+  font-size: 1.05rem;
+  color: #6C5547;
+  max-width: 660px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* 2. Values & Culture Section */
+.careers-culture-section {
+  padding: 4rem 1rem;
+}
+
+.culture-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.culture-card {
+  background-color: #FFFFFF;
+  border-radius: 18px;
+  padding: 2rem 1.65rem;
+  border: 2px solid #EFE4D6;
+  box-shadow: 0 4px 16px rgba(75, 46, 30, 0.04);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.culture-card:hover {
+  transform: translateY(-4px);
+  border-color: #E58B57;
+  box-shadow: 0 10px 24px rgba(75, 46, 30, 0.08);
+}
+
+.culture-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background-color: #FAF2E8;
+  color: #E58B57;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.culture-card-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  margin-bottom: 0.65rem;
+}
+
+.culture-card-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #6C5547;
+  margin-bottom: 0;
+}
+
+/* 3. Perks & Benefits Section */
+.careers-perks-section {
+  padding: 4rem 1rem;
+  background-color: #F4ECE1;
+  border-top: 1px solid #EAE0D3;
+  border-bottom: 1px solid #EAE0D3;
+}
+
+.perks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.perk-box {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  padding: 1.75rem;
+  border: 1.5px solid #E8DDD0;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  transition: transform 0.25s ease;
+}
+
+.perk-box:hover {
+  transform: translateY(-3px);
+}
+
+.perk-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #4B2E1E;
+  color: #FAF5EE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.perk-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  margin-bottom: 0.35rem;
+}
+
+.perk-desc {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: #6C5547;
+  margin-bottom: 0;
+}
+
+/* 4. Open Positions Section */
+.careers-jobs-section {
+  padding: 4.5rem 1rem 3.5rem;
+}
+
+.job-filters-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.filter-pill-btn {
+  background-color: #FFFFFF;
+  border: 1.5px solid #E8DDD0;
+  color: #7A4E2D;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.55rem 1.25rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-pill-btn:hover {
+  border-color: #E58B57;
+  color: #E58B57;
+}
+
+.filter-pill-btn.active {
+  background-color: #4B2E1E;
+  border-color: #4B2E1E;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(75, 46, 30, 0.2);
+}
+
+.job-openings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.job-listing-card {
+  background-color: #FFFFFF;
+  border: 2px solid #EAE0D3;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(75, 46, 30, 0.04);
+  transition: all 0.25s ease;
+}
+
+.job-listing-card:hover {
+  border-color: #E58B57;
+  box-shadow: 0 8px 24px rgba(75, 46, 30, 0.08);
+}
+
+.job-listing-card.is-open {
+  border-color: #4B2E1E;
+}
+
+.job-card-header {
+  padding: 1.85rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  gap: 1.5rem;
+}
+
+.job-header-info {
+  flex-grow: 1;
+}
+
+.job-meta-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.65rem;
+}
+
+.job-dept-tag {
+  background-color: #FAF2E8;
+  color: #D3743E;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  letter-spacing: 0.5px;
+}
+
+.job-type-tag {
+  background-color: #EBF4EE;
+  color: #2E7D32;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+}
+
+.job-loc-tag {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #7A4E2D;
+}
+
+.job-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  margin-bottom: 0.45rem;
+}
+
+.job-summary {
+  font-size: 0.96rem;
+  color: #6C5547;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.job-header-action {
+  flex-shrink: 0;
+}
+
+.btn-toggle-job {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #FAF5EE;
+  border: 1.5px solid #E8DDD0;
+  color: #4B2E1E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.job-listing-card:hover .btn-toggle-job {
+  background-color: #E58B57;
+  color: #FFFFFF;
+  border-color: #E58B57;
+}
+
+.job-details-drawer {
+  padding: 0 2rem 2rem 2rem;
+  animation: fadeInDrawer 0.3s ease;
+}
+
+@keyframes fadeInDrawer {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.job-drawer-divider {
+  border-top: 1.5px solid #EAE0D3;
+  margin: 0 0 1.75rem 0;
+}
+
+.job-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.job-spec-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  margin-bottom: 1rem;
+}
+
+.job-spec-list {
+  padding-left: 1.25rem;
+  margin-bottom: 0;
+}
+
+.job-spec-list li {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #6C5547;
+  margin-bottom: 0.55rem;
+}
+
+.job-apply-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-apply-role {
+  background-color: #4B2E1E;
+  color: #FAF5EE;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-apply-role:hover {
+  background-color: #E58B57;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(229, 139, 87, 0.3);
+}
+
+.no-jobs-card {
+  background-color: #FFFFFF;
+  border-radius: 18px;
+  padding: 3.5rem 1.5rem;
+  border: 2px dashed #DCCFBF;
+}
+
+.no-jobs-icon {
+  font-size: 2.5rem;
+  color: #E58B57;
+  margin-bottom: 1rem;
+}
+
+/* 5. Interactive Application Form */
+.careers-apply-section {
+  padding: 3.5rem 1rem 4rem;
+}
+
+.apply-card-wrapper {
+  background-color: #FFFFFF;
+  border-radius: 24px;
+  padding: 3.25rem 2.75rem;
+  border: 2px solid #EAE0D3;
+  box-shadow: 0 8px 30px rgba(75, 46, 30, 0.06);
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.apply-pill {
+  display: inline-block;
+  background-color: #FAF2E8;
+  color: #D3743E;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0.35rem 0.95rem;
+  border-radius: 50px;
+  margin-bottom: 0.75rem;
+}
+
+.apply-title {
+  font-size: 2.15rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  margin-bottom: 0.5rem;
+}
+
+.apply-subtitle {
+  font-size: 1rem;
+  color: #6C5547;
+  margin-bottom: 2.25rem;
+}
+
+.apply-email-link {
+  color: #E58B57;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.wooff-input {
+  background-color: #FAF5EE !important;
+  border: 1.5px solid #E2D7C8 !important;
+  border-radius: 12px !important;
+  padding: 0.8rem 1rem !important;
+  font-size: 0.96rem !important;
+  color: #4B2E1E !important;
+  transition: all 0.2s ease;
+}
+
+.wooff-input:focus {
+  border-color: #E58B57 !important;
+  box-shadow: 0 0 0 4px rgba(229, 139, 87, 0.15) !important;
+  background-color: #FFFFFF !important;
+}
+
+.btn-wooff-submit-app {
+  background-color: #E58B57;
+  color: #FFFFFF;
+  font-size: 1.05rem;
+  font-weight: 800;
+  padding: 0.95rem 2.5rem;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(229, 139, 87, 0.35);
+  transition: all 0.25s ease;
+}
+
+.btn-wooff-submit-app:hover:not(:disabled) {
+  background-color: #D3743E;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(229, 139, 87, 0.45);
+}
+
+.btn-wooff-submit-app:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.apply-error-banner {
+  background-color: #FDF0ED;
+  color: #C0392B;
+  border: 1px solid #F5C6CB;
+  border-radius: 10px;
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.apply-success-box {
+  padding: 2.5rem 1rem;
+}
+
+.success-icon-bounce {
+  font-size: 3.5rem;
+  color: #2E7D32;
+  margin-bottom: 1rem;
+  animation: bounceSuccess 0.6s ease;
+}
+
+@keyframes bounceSuccess {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* 6. Outreach Callout */
+.careers-outreach-banner {
+  padding: 3rem 1rem 1rem;
+}
+
+.outreach-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #4B2E1E;
+  margin-bottom: 0.5rem;
+}
+
+.outreach-text {
+  font-size: 1rem;
+  color: #6C5547;
+}
+
+.outreach-link {
+  color: #E58B57;
+  font-weight: 700;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 992px) {
+  .culture-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .perks-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .careers-hero-title {
+    font-size: 2.35rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .culture-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .perks-grid {
+    grid-template-columns: 1fr;
+  }
+  .job-spec-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .apply-card-wrapper {
+    padding: 2.25rem 1.5rem;
+  }
+  .careers-hero-title {
+    font-size: 1.95rem;
+  }
+  .job-card-header {
+    padding: 1.5rem 1.25rem;
+  }
+  .job-details-drawer {
+    padding: 0 1.25rem 1.5rem 1.25rem;
+  }
+}

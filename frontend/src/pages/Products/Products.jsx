@@ -2,33 +2,50 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import Banner from '../../components/Banner/Banner';
+import {
+  getCachedProducts,
+  setCachedProducts,
+  setCachedProduct,
+  getOptimizedImageUrl,
+} from '../../utils/productData';
 import './Products.css';
 
 export default function Products() {
   const { addToCart } = useCart();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const cachedInitial = getCachedProducts();
+  const [products, setProducts] = useState(cachedInitial);
+  const [loading, setLoading] = useState(cachedInitial.length === 0);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchProducts = async () => {
       try {
         const response = await fetch('/api/products');
         const data = await response.json();
 
-        if (data.success) {
+        if (data.success && isMounted) {
           setProducts(data.products);
-        } else {
+          setCachedProducts(data.products);
+          setError(null);
+        } else if (isMounted && products.length === 0) {
           setError(data.message || 'Failed to load products');
         }
       } catch (err) {
-        setError('Error connecting to server.');
+        if (isMounted && products.length === 0) {
+          setError('Error connecting to server.');
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchProducts();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Helper to render simple star rating
@@ -64,10 +81,15 @@ export default function Products() {
 
                 {/* Image Section */}
                 <div className="card-image-wrapper">
-                  <Link to={`/product/${product.slug}`}>
+                  <Link
+                    to={`/product/${product.slug}`}
+                    onMouseEnter={() => setCachedProduct(product.slug, product)}
+                  >
                     <img 
-                      src={product.primary_image || '/assets/tooth_paste.webp'} 
+                      src={getOptimizedImageUrl(product.primary_image || product.hero_image, { width: 500 })} 
                       alt={product.title} 
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = '/assets/tooth_paste.webp';

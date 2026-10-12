@@ -58,9 +58,14 @@ export default function Footer() {
                   Our Story & Mission
                 </Link>
               </li>
-              <li>
+              <li className="mb-2">
                 <Link to="/blog" className="footer-link">
                   Our Blog
+                </Link>
+              </li>
+              <li>
+                <Link to="/careers" className="footer-link">
+                  Careers <span className="badge rounded-pill bg-warning text-dark ms-1" style={{ fontSize: '0.65rem' }}>We're Hiring</span>
                 </Link>
               </li>
             </ul>

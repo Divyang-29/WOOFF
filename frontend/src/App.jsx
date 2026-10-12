@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import Navbar from './components/Navbar/Navbar';
@@ -9,6 +9,7 @@ import { AuthProvider } from './context/AuthContext';
 import CartDrawer from './components/Cart/CartDrawer';
 import AuthModal from './components/AuthModal/AuthModal';
 import CookieConsent from './components/CookieConsent/CookieConsent';
+import { prefetchProducts } from './utils/productData';
 
 // Core Storefront Pages (Eagerly bundled for instant 0ms routing)
 import About from './pages/About/About';
@@ -19,6 +20,7 @@ import ProductDetails from './pages/ProductDetails/ProductDetails';
 import Ingredients from './pages/Ingredients/Ingredients';
 import FAQ from './pages/FAQ/FAQ';
 import ContactUs from './pages/ContactUs/ContactUs';
+import Careers from './pages/Careers/Careers';
 import PrivacyPolicy from './pages/PrivacyPolicy/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions';
 import ReturnPolicy from './pages/ReturnPolicy/ReturnPolicy';
@@ -43,6 +45,11 @@ const PageLoader = () => (
 function AppContent() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+
+  useEffect(() => {
+    // Silently prefetch products in background after initial render
+    prefetchProducts();
+  }, []);
 
   return (
     <div className="d-flex flex-column min-vh-100">
@@ -83,6 +90,10 @@ function AppContent() {
             <Route path="/product" element={<Products />} />
             <Route path="/shop" element={<Products />} />
             <Route path="/product/:slug" element={<ProductDetails />} />
+            <Route path="/products/:slug" element={<ProductDetails />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/career" element={<Careers />} />
+            <Route path="/jobs" element={<Careers />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/track" element={<TrackOrder />} />
             <Route path="/track/:order_number" element={<TrackOrder />} />

@@ -11,6 +11,28 @@ const {
 } = require("../models/productModel");
 const { logAdminAction } = require("../services/auditService");
 
+// In-memory cache for sub-millisecond product response times (TTL: 60s)
+const productMemoryCache = new Map();
+const CACHE_TTL_MS = 60 * 1000;
+
+const getFromMemoryCache = (key) => {
+  const item = productMemoryCache.get(key);
+  if (!item) return null;
+  if (Date.now() > item.expiresAt) {
+    productMemoryCache.delete(key);
+    return null;
+  }
+  return item.data;
+};
+
+const setToMemoryCache = (key, data, ttl = CACHE_TTL_MS) => {
+  productMemoryCache.set(key, { data, expiresAt: Date.now() + ttl });
+};
+
+const clearProductCache = () => {
+  productMemoryCache.clear();
+};
+
 // Create Product Handler (Admin Only)
 const createProductHandler = async (req, res) => {
   try {
@@ -152,6 +174,8 @@ const createProductHandler = async (req, res) => {
       ipAddress: req.ip || req.headers["x-forwarded-for"] || "127.0.0.1",
     });
 
+    clearProductCache();
+
     return res.status(201).json({
       success: true,
       message: "Product created successfully.",
@@ -187,6 +211,19 @@ const getAllProductsHandler = async (req, res) => {
     const isAdmin = req.user && req.user.role === "admin";
     const includeInactive = isAdmin && include_inactive === "true";
 
+    // Fast memory cache check for public catalogue requests
+    const cacheKey = `all_products_${targetCategory || 'all'}_${search || ''}_${sort || 'popular'}_${page || 1}_${limit || 20}`;
+    if (!isAdmin && !search) {
+      const cached = getFromMemoryCache(cacheKey);
+      if (cached) {
+        res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+        return res.status(200).json({
+          success: true,
+          ...cached,
+        });
+      }
+    }
+
     const result = await getAllProducts({
       category: targetCategory,
       search,
@@ -196,6 +233,11 @@ const getAllProductsHandler = async (req, res) => {
       includeInactive,
     });
 
+    if (!isAdmin && !search) {
+      setToMemoryCache(cacheKey, result);
+    }
+
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     return res.status(200).json({
       success: true,
       ...result,
@@ -215,6 +257,17 @@ const getProductDetailsHandler = async (req, res) => {
     const { slugOrId, slug } = req.params;
     const targetIdentifier = slug || slugOrId;
 
+    // Fast memory cache check
+    const cacheKey = `product_${targetIdentifier}`;
+    const cached = getFromMemoryCache(cacheKey);
+    if (cached) {
+      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      return res.status(200).json({
+        success: true,
+        product: cached,
+      });
+    }
+
     const product = await getProductBySlugOrId(targetIdentifier);
 
     if (!product) {
@@ -224,6 +277,11 @@ const getProductDetailsHandler = async (req, res) => {
       });
     }
 
+    setToMemoryCache(cacheKey, product);
+    if (product.slug) setToMemoryCache(`product_${product.slug}`, product);
+    if (product.id) setToMemoryCache(`product_${product.id}`, product);
+
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     return res.status(200).json({
       success: true,
       product,
@@ -312,6 +370,8 @@ const updateProductHandler = async (req, res) => {
       ipAddress: req.ip || req.headers["x-forwarded-for"] || "127.0.0.1",
     });
 
+    clearProductCache();
+
     return res.status(200).json({
       success: true,
       message: "Product updated successfully.",
@@ -349,6 +409,8 @@ const deleteProductHandler = async (req, res) => {
       details: { title: deleted.title, sku: deleted.sku },
       ipAddress: req.ip || req.headers["x-forwarded-for"] || "127.0.0.1",
     });
+
+    clearProductCache();
 
     return res.status(200).json({
       success: true,
