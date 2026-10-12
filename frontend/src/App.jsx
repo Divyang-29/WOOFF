@@ -10,25 +10,27 @@ import CartDrawer from './components/Cart/CartDrawer';
 import AuthModal from './components/AuthModal/AuthModal';
 import CookieConsent from './components/CookieConsent/CookieConsent';
 
-// Code-split routes with React.lazy to reduce initial bundle size
+// Core Storefront Pages (Eagerly bundled for instant 0ms routing)
+import About from './pages/About/About';
+import Blog from './pages/Blog/Blog';
+import SingleBlog from './pages/Blog/SingleBlog';
+import Products from './pages/Products/Products';
+import ProductDetails from './pages/ProductDetails/ProductDetails';
+import Ingredients from './pages/Ingredients/Ingredients';
+import FAQ from './pages/FAQ/FAQ';
+import ContactUs from './pages/ContactUs/ContactUs';
+import PrivacyPolicy from './pages/PrivacyPolicy/PrivacyPolicy';
+import TermsAndConditions from './pages/TermsAndConditions/TermsAndConditions';
+import ReturnPolicy from './pages/ReturnPolicy/ReturnPolicy';
+import Checkout from './pages/Checkout/Checkout';
+import TrackOrder from './pages/TrackOrder/TrackOrder';
+import NotFound from './pages/NotFound/NotFound';
+
+// Lazy load secondary/auth/admin routes
 const Login = lazy(() => import('./pages/Login/Login'));
 const SignUp = lazy(() => import('./pages/SignUp/SignUp'));
 const Account = lazy(() => import('./pages/Account/Account'));
 const Admin = lazy(() => import('./pages/Admin/Admin'));
-const ContactUs = lazy(() => import('./pages/ContactUs/ContactUs'));
-const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy/PrivacyPolicy'));
-const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions/TermsAndConditions'));
-const FAQ = lazy(() => import('./pages/FAQ/FAQ'));
-const ReturnPolicy = lazy(() => import('./pages/ReturnPolicy/ReturnPolicy'));
-const About = lazy(() => import('./pages/About/About'));
-import Blog from './pages/Blog/Blog';
-import SingleBlog from './pages/Blog/SingleBlog';
-const Ingredients = lazy(() => import('./pages/Ingredients/Ingredients'));
-const Products = lazy(() => import('./pages/Products/Products'));
-const ProductDetails = lazy(() => import('./pages/ProductDetails/ProductDetails'));
-const Checkout = lazy(() => import('./pages/Checkout/Checkout'));
-const TrackOrder = lazy(() => import('./pages/TrackOrder/TrackOrder'));
-const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
 
 const PageLoader = () => (
   <div className="d-flex align-items-center justify-content-center py-5" style={{ minHeight: '60vh' }}>
