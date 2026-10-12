@@ -119,7 +119,7 @@ export const RICH_ARTICLES = {
     tags: ['ChocolateToothpaste', 'KidsRoutine', 'ParentsGuide', 'NanoHydroxyapatite', 'Theobromine', 'OralCare'],
     updated_at: '2026-10-12T13:00:00Z',
     reading_time: '3 min read',
-    image_url: '/assets/choco.png',
+    image_url: '/assets/FDP02976.webp',
     excerpt: 'Why kids love chocolate flavoured toothpaste, what is inside Wooff, and how to make brushing a daily habit.',
     image_caption: 'Wooff chocolate flavoured kids toothpaste with cocoa-derived theobromine, nano-hydroxyapatite, and prebiotic inulin.',
     author: {
