@@ -7,6 +7,18 @@ import InvoiceModal from '../../components/Admin/InvoiceModal';
 import { SkeletonCard, SkeletonTable } from '../../components/Admin/SkeletonLoader';
 import './Admin.css';
 
+// Helper to format concise product title for table view (omitting lengthy SEO suffix)
+const formatShortProductTitle = (rawTitle) => {
+  if (!rawTitle) return 'Untitled Product';
+  // Strip SEO subtitles after dash or en-dash if present
+  const mainName = rawTitle.split(/\s+[-–—]\s+/)[0].trim();
+  const words = mainName.split(/\s+/);
+  if (words.length > 9) {
+    return words.slice(0, 9).join(' ') + '...';
+  }
+  return mainName;
+};
+
 export default function Admin() {
   const { user, login } = useAuth();
 
@@ -2658,7 +2670,8 @@ export default function Admin() {
                 <thead>
                   <tr>
                     <th>Image</th>
-                    <th>Product Title & SKU</th>
+                    <th>Product Title</th>
+                    <th>SKU</th>
                     <th>Bundle Type</th>
                     <th>Category</th>
                     <th>Price</th>
@@ -2671,7 +2684,7 @@ export default function Admin() {
                 <tbody>
                   {products.length === 0 ? (
                     <tr>
-                      <td colSpan="9" className="text-center py-5 text-muted">
+                      <td colSpan="10" className="text-center py-5 text-muted">
                         <div style={{ fontSize: '32px', marginBottom: '8px' }}>📦</div>
                         <div className="fw-bold">No products found in PostgreSQL catalog</div>
                         <p className="small text-muted mb-3">Click "Add New Product" to create your first toothpaste variant.</p>
@@ -2692,8 +2705,22 @@ export default function Admin() {
                             />
                           </td>
                           <td>
-                            <div className="fw-bold">{prod.title}</div>
-                            <div className="small text-muted">SKU: {prod.sku}</div>
+                            <div
+                              className="fw-bold text-dark"
+                              title={prod.title}
+                              style={{ maxWidth: '240px', lineHeight: '1.3' }}
+                            >
+                              {formatShortProductTitle(prod.title)}
+                            </div>
+                          </td>
+                          <td>
+                            <span
+                              className="badge bg-light text-secondary border font-monospace"
+                              title={prod.sku}
+                              style={{ fontSize: '11px', letterSpacing: '0.4px', padding: '5px 8px' }}
+                            >
+                              {prod.sku || 'N/A'}
+                            </span>
                           </td>
                           <td>
                             <span className="badge bg-primary-subtle text-primary border text-capitalize fw-bold">
