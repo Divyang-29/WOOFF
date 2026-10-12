@@ -463,6 +463,64 @@ const getCustomersForCsvExport = async ({ search } = {}) => {
   return result.rows;
 };
 
+// Ensure default admin exists on server boot (across local, staging & Render production)
+const crypto = require("crypto");
+
+const ensureAdminSeed = async () => {
+  try {
+    // 1. Ensure required auth columns exist
+    await pool.query(`
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(255) UNIQUE;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS child_name VARCHAR(100);
+      ALTER TABLE users ALTER COLUMN phone_number DROP NOT NULL;
+    `);
+
+    const adminEmail = (process.env.ADMIN_DEFAULT_EMAIL || "admin@wooff.care").trim().toLowerCase();
+    const adminPass = process.env.ADMIN_DEFAULT_PASSWORD || "Admin@123";
+
+    const salt = crypto.randomBytes(16).toString("hex");
+    const hash = crypto.pbkdf2Sync(adminPass, salt, 1000, 64, "sha512").toString("hex");
+    const passwordHash = `${salt}:${hash}`;
+
+    // 2. Upsert admin@wooff.care
+    const existingAdmin = await pool.query("SELECT id, role FROM users WHERE email = $1", [adminEmail]);
+    if (existingAdmin.rows.length === 0) {
+      await pool.query(
+        "INSERT INTO users (username, email, role, password_hash) VALUES ($1, $2, $3, $4)",
+        ["Admin", adminEmail, "admin", passwordHash]
+      );
+      console.log(`[ADMIN SEED] Successfully created default admin: ${adminEmail}`);
+    } else {
+      await pool.query(
+        "UPDATE users SET role = 'admin', password_hash = $1 WHERE email = $2",
+        [passwordHash, adminEmail]
+      );
+      console.log(`[ADMIN SEED] Successfully verified/updated admin: ${adminEmail}`);
+    }
+
+    // 3. Also ensure chunaradivyang@gmail.com has admin role and valid password
+    const devUser = await pool.query("SELECT id FROM users WHERE email = $1", ["chunaradivyang@gmail.com"]);
+    if (devUser.rows.length > 0) {
+      await pool.query(
+        "UPDATE users SET role = 'admin', password_hash = $1 WHERE email = $2",
+        [passwordHash, "chunaradivyang@gmail.com"]
+      );
+      console.log("[ADMIN SEED] Successfully updated chunaradivyang@gmail.com to admin");
+    } else {
+      await pool.query(
+        "INSERT INTO users (username, email, role, password_hash) VALUES ($1, $2, $3, $4)",
+        ["Divyang Chunara", "chunaradivyang@gmail.com", "admin", passwordHash]
+      );
+      console.log("[ADMIN SEED] Successfully created admin: chunaradivyang@gmail.com");
+    }
+    return true;
+  } catch (err) {
+    console.error("[ADMIN SEED ERROR]:", err.message);
+    return false;
+  }
+};
+
 module.exports = {
   getLowStockProducts,
   getAdminAnalytics,
@@ -472,4 +530,5 @@ module.exports = {
   cancelOrderAdmin,
   getOrdersForCsvExport,
   getCustomersForCsvExport,
+  ensureAdminSeed,
 };

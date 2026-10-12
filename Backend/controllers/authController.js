@@ -331,6 +331,32 @@ const login = async (req, res) => {
   }
 };
 
+const { ensureAdminSeed } = require("../models/adminModel");
+
+// One-time or recovery trigger for Admin setup
+const setupAdminHandler = async (req, res) => {
+  try {
+    const success = await ensureAdminSeed();
+    if (success) {
+      return res.status(200).json({
+        success: true,
+        message: "Admin accounts initialized and verified successfully.",
+        accounts: ["admin@wooff.care", "chunaradivyang@gmail.com"],
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: "Could not initialize admin accounts.",
+      });
+    }
+  } catch (error) {
+    console.error("Setup Admin Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to setup admin.",
+    });
+  }
+};
 
 module.exports = {
   sendWhatsAppOTP,
@@ -338,4 +364,5 @@ module.exports = {
   resendWhatsAppOTP,
   register,
   login,
+  setupAdminHandler,
 };

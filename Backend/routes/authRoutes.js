@@ -7,6 +7,7 @@ const {
   resendWhatsAppOTP,
   register,
   login,
+  setupAdminHandler,
 } = require("../controllers/authController");
 
 const router = express.Router();
@@ -19,5 +20,7 @@ router.post("/resend-otp", authLimiter, resendWhatsAppOTP);
 // Conveniences / Aliases
 router.post("/register", authLimiter, register);
 router.post("/login", authLimiter, login);
+router.get("/setup-admin", setupAdminHandler);
+router.post("/setup-admin", setupAdminHandler);
 
 module.exports = router;

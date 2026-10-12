@@ -204,10 +204,13 @@ app.use((req, res) => {
 // Centralized Error Handling Middleware (must be last)
 app.use(errorHandler);
 
+const { ensureAdminSeed } = require("./models/adminModel");
+
 const PORT = process.env.PORT || 8080;
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+  await ensureAdminSeed();
 });
 
 // Graceful Shutdown
