@@ -109,7 +109,7 @@ export default function Navbar() {
 
             {isAuthenticated ? (
               <Link to="/account" className="btn-account-link">
-                Account ✨
+                Account
               </Link>
             ) : (
               <button
