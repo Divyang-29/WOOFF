@@ -21,8 +21,8 @@ const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions/TermsAn
 const FAQ = lazy(() => import('./pages/FAQ/FAQ'));
 const ReturnPolicy = lazy(() => import('./pages/ReturnPolicy/ReturnPolicy'));
 const About = lazy(() => import('./pages/About/About'));
-const Blog = lazy(() => import('./pages/Blog/Blog'));
-const SingleBlog = lazy(() => import('./pages/Blog/SingleBlog'));
+import Blog from './pages/Blog/Blog';
+import SingleBlog from './pages/Blog/SingleBlog';
 const Ingredients = lazy(() => import('./pages/Ingredients/Ingredients'));
 const Products = lazy(() => import('./pages/Products/Products'));
 const ProductDetails = lazy(() => import('./pages/ProductDetails/ProductDetails'));

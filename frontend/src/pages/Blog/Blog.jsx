@@ -35,53 +35,31 @@ const STATIC_BLOG_FALLBACKS = [
 ];
 
 export default function Blog() {
-  const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [blogs, setBlogs] = useState(STATIC_BLOG_FALLBACKS);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     let isMounted = true;
 
     const fetchBlogs = async () => {
-      setLoading(true);
-      setError(null);
       try {
         const endpoint = API_ENDPOINTS?.BLOGS || '/api/blogs';
         const response = await fetch(endpoint);
-        let blogList = [];
         if (response.ok) {
           const data = await response.json();
-          blogList = Array.isArray(data) ? data : data?.blogs || data?.data || [];
-        }
-
-        // Merge static choco-toothpaste and fallbacks if not present
-        const hasChoco = blogList.some((b) => b.slug === 'choco-toothpaste');
-        if (!hasChoco) {
-          blogList = [STATIC_BLOG_FALLBACKS[0], ...blogList];
-        }
-
-        if (blogList.length === 0) {
-          blogList = STATIC_BLOG_FALLBACKS;
-        }
-        
-        if (isMounted) {
-          setBlogs(blogList);
-          setLoading(false);
+          const blogList = Array.isArray(data) ? data : data?.blogs || data?.data || [];
+          if (isMounted && blogList.length > 0) {
+            setBlogs(blogList);
+          }
         }
       } catch (err) {
-        console.warn('Could not fetch remote blogs, using local stories:', err);
-        if (isMounted) {
-          setBlogs(STATIC_BLOG_FALLBACKS);
-          setLoading(false);
-        }
+        console.warn('Could not fetch remote blogs, keeping cached stories:', err);
       }
     };
 
     fetchBlogs();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, []);
 
   // Format created_at date into "Sept 14, 2026"

@@ -5,16 +5,39 @@ import { API_ENDPOINTS } from '../../api';
 import { getEnrichedBlog, RICH_ARTICLES } from './blogArticleData';
 import './SingleBlog.css';
 
+function getInitialBlogData(slug) {
+  if (!slug) return null;
+  const rich = RICH_ARTICLES[slug];
+  if (!rich) return null;
+  const basePost = {
+    id: slug,
+    slug: slug,
+    title: rich.title,
+    image_url: rich.image_url || '/assets/choco-toothpaste-pieces.jpg',
+    author: rich.author?.name || 'Wooff Team',
+    author_role: rich.author?.role || 'Pediatric Oral Care Team',
+    author_bio: rich.author?.bio,
+    author_avatar: rich.author?.avatar,
+    created_at: rich.updated_at || new Date().toISOString(),
+    content: rich.excerpt,
+    category: rich.category,
+    tags: rich.tags,
+    disclaimer: rich.disclaimer,
+  };
+  return getEnrichedBlog(basePost, []);
+}
+
 export default function SingleBlog() {
   const { slug } = useParams();
-  const [blog, setBlog] = useState(null);
+  const initialData = getInitialBlogData(slug);
+  const [blog, setBlog] = useState(initialData);
   const [allBlogs, setAllBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState(null);
 
   // Interactive Features State
   const [openFaq, setOpenFaq] = useState(null);
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState(initialData?.tags || []);
   const [copiedLink, setCopiedLink] = useState(false);
   const [activeTocId, setActiveTocId] = useState('');
 
@@ -23,141 +46,130 @@ export default function SingleBlog() {
   const [commentForm, setCommentForm] = useState({ name: '', email: '', comment: '' });
   const [commentSubmitted, setCommentSubmitted] = useState(false);
 
-  // Fetch current blog and all blogs for related articles
+  // Instant render & background sync
   useEffect(() => {
     let isMounted = true;
+    const immediate = getInitialBlogData(slug);
 
-    const fetchBlogData = async () => {
+    if (immediate) {
+      setBlog(immediate);
+      setTags(immediate.tags || []);
+      setLoading(false);
+      setError(null);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    } else {
       setLoading(true);
       setError(null);
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    const revalidate = async () => {
       try {
         const baseUrl = API_ENDPOINTS?.BLOGS || '/api/blogs';
-        
-        // 1. Fetch current blog with fallback to static rich article
-        let basePost = null;
-        try {
-          const res = await fetch(`${baseUrl}/${slug}`);
-          if (res.ok) {
-            const data = await res.json();
-            basePost = data?.blog || data;
-          }
-        } catch (fetchErr) {
-          console.warn('API fetch failed, checking rich articles:', fetchErr);
+        const [singleRes, allRes] = await Promise.allSettled([
+          fetch(`${baseUrl}/${slug}`, { signal: controller.signal }),
+          fetch(baseUrl, { signal: controller.signal }),
+        ]);
+
+        let serverPost = null;
+        if (singleRes.status === 'fulfilled' && singleRes.value.ok) {
+          const data = await singleRes.value.json();
+          serverPost = data?.blog || data;
         }
 
-        // If not found from backend API, check rich articles repository
-        if (!basePost && RICH_ARTICLES && RICH_ARTICLES[slug]) {
-          const rich = RICH_ARTICLES[slug];
-          basePost = {
-            id: slug,
-            slug: slug,
-            title: rich.title,
-            image_url: rich.image_url || '/assets/choco-toothpaste-pieces.jpg',
-            author: rich.author?.name || 'Wooff Team',
-            author_role: rich.author?.role || 'Pediatric Oral Care Team',
-            author_bio: rich.author?.bio,
-            author_avatar: rich.author?.avatar,
-            created_at: rich.updated_at || new Date().toISOString(),
-            content: rich.excerpt,
-            category: rich.category,
-            tags: rich.tags,
-            disclaimer: rich.disclaimer,
-          };
-        }
-
-        if (!basePost) {
-          throw new Error('Blog article not found.');
-        }
-
-        // 2. Fetch all blogs for related posts
         let blogList = [];
-        try {
-          const allRes = await fetch(baseUrl);
-          if (allRes.ok) {
-            const allData = await allRes.json();
-            blogList = Array.isArray(allData) ? allData : allData?.blogs || [];
-          }
-        } catch (e) {
-          console.warn('Could not fetch related blogs list:', e);
+        if (allRes.status === 'fulfilled' && allRes.value.ok) {
+          const allData = await allRes.value.json();
+          blogList = Array.isArray(allData) ? allData : allData?.blogs || [];
         }
 
         if (isMounted) {
-          const enriched = getEnrichedBlog(basePost, blogList);
-          setBlog(enriched);
-          setTags(enriched.tags || []);
-          setAllBlogs(blogList);
-          setLoading(false);
-
-          // Update Document Title, Meta Description & Schema.org Article LD+JSON
-          if (enriched) {
-            document.title = enriched.meta_title || `${enriched.title} | Wooff`;
-            const metaTag = document.querySelector('meta[name="description"]');
-            if (metaTag && (enriched.meta_description || enriched.excerpt)) {
-              metaTag.setAttribute('content', enriched.meta_description || enriched.excerpt);
-            }
-
-            let scriptTag = document.getElementById('blog-schema-ld');
-            if (!scriptTag) {
-              scriptTag = document.createElement('script');
-              scriptTag.id = 'blog-schema-ld';
-              scriptTag.type = 'application/ld+json';
-              document.head.appendChild(scriptTag);
-            }
-            const schemaGraph = [
-              {
-                "@type": "Article",
-                "headline": enriched.title,
-                "description": enriched.meta_description || enriched.excerpt,
-                "author": {
-                  "@type": "Organization",
-                  "name": enriched.author_profile?.name || enriched.author || "Wooff"
-                },
-                "about": enriched.category || "Kids Oral Care",
-                "datePublished": enriched.created_at || new Date().toISOString()
-              }
-            ];
-
-            if (enriched.faqs && enriched.faqs.length > 0) {
-              schemaGraph.push({
-                "@type": "FAQPage",
-                "mainEntity": enriched.faqs.map((f) => ({
-                  "@type": "Question",
-                  "name": f.q,
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": f.a
-                  }
-                }))
-              });
-            }
-
-            const schemaData = {
-              "@context": "https://schema.org",
-              "@graph": schemaGraph
-            };
-            scriptTag.textContent = JSON.stringify(schemaData);
+          if (blogList.length > 0) {
+            setAllBlogs(blogList);
           }
+          if (serverPost) {
+            const enriched = getEnrichedBlog(serverPost, blogList);
+            setBlog(enriched);
+            setTags(enriched.tags || []);
+          } else if (!immediate) {
+            setError('Blog article not found.');
+          }
+          setLoading(false);
         }
       } catch (err) {
-        console.error('Error fetching blog details:', err);
-        if (isMounted) {
-          setError(err.message || 'Failed to load article');
+        if (isMounted && !immediate) {
+          setError('Failed to load article');
           setLoading(false);
         }
+      } finally {
+        clearTimeout(timeoutId);
       }
     };
 
-    if (slug) {
-      fetchBlogData();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    revalidate();
 
     return () => {
       isMounted = false;
+      controller.abort();
+      clearTimeout(timeoutId);
       const scriptTag = document.getElementById('blog-schema-ld');
       if (scriptTag) scriptTag.remove();
     };
   }, [slug]);
+
+  // Document Title, Meta Description & Schema.org Article LD+JSON
+  useEffect(() => {
+    if (!blog) return;
+
+    document.title = blog.meta_title || `${blog.title} | Wooff`;
+    const metaTag = document.querySelector('meta[name="description"]');
+    if (metaTag && (blog.meta_description || blog.excerpt)) {
+      metaTag.setAttribute('content', blog.meta_description || blog.excerpt);
+    }
+
+    let scriptTag = document.getElementById('blog-schema-ld');
+    if (!scriptTag) {
+      scriptTag = document.createElement('script');
+      scriptTag.id = 'blog-schema-ld';
+      scriptTag.type = 'application/ld+json';
+      document.head.appendChild(scriptTag);
+    }
+    const schemaGraph = [
+      {
+        "@type": "Article",
+        "headline": blog.title,
+        "description": blog.meta_description || blog.excerpt,
+        "author": {
+          "@type": "Organization",
+          "name": blog.author_profile?.name || blog.author || "Wooff"
+        },
+        "about": blog.category || "Kids Oral Care",
+        "datePublished": blog.created_at || new Date().toISOString()
+      }
+    ];
+
+    if (blog.faqs && blog.faqs.length > 0) {
+      schemaGraph.push({
+        "@type": "FAQPage",
+        "mainEntity": blog.faqs.map((f) => ({
+          "@type": "Question",
+          "name": f.q,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": f.a
+          }
+        }))
+      });
+    }
+
+    const schemaData = {
+      "@context": "https://schema.org",
+      "@graph": schemaGraph
+    };
+    scriptTag.textContent = JSON.stringify(schemaData);
+  }, [blog]);
 
   // Active TOC Section Highlighter
   useEffect(() => {
