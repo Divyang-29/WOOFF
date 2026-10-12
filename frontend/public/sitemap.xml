@@ -52,28 +52,46 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- 7. Privacy Policy -->
+  <!-- 7. Blogs Listing -->
   <url>
-    <loc>https://wooff.care/privacy-policy</loc>
+    <loc>https://wooff.care/blog</loc>
     <lastmod>2026-10-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
-
-  <!-- 8. Terms and Conditions -->
-  <url>
-    <loc>https://wooff.care/terms-and-conditions</loc>
-    <lastmod>2026-10-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-  <!-- 9. Blogs -->
   <url>
     <loc>https://wooff.care/blogs</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 8. Individual Blog Articles -->
+  <url>
+    <loc>https://wooff.care/blog/choco-toothpaste</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://wooff.care/blog/chocolate-flavoured-toothpaste</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://wooff.care/blog/chocolate-toothpaste</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 9. Careers -->
+  <url>
+    <loc>https://wooff.care/careers</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
   <!-- 10. FAQs -->
@@ -82,6 +100,30 @@
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+  </url>
+
+  <!-- 11. Privacy Policy -->
+  <url>
+    <loc>https://wooff.care/privacy-policy</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- 12. Terms & Conditions -->
+  <url>
+    <loc>https://wooff.care/terms-and-conditions</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- 13. Refund & Cancellation Policy -->
+  <url>
+    <loc>https://wooff.care/refund-policy</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 
 </urlset>
