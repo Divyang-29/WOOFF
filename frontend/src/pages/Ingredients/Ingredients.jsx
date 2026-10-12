@@ -5,48 +5,48 @@ import './Ingredients.css';
 
 // Map ingredient slugs/names to the botanical clean illustrations used in homescreen CleanIngredientsSection
 const INGREDIENT_CLEAN_MAP = {
-  'nano-hydroxyapatite': '/images/ingredients/nhap_clean.png',
-  'theobromine': '/images/ingredients/theobromine_clean.png',
-  'prebiotics-inulin': '/images/ingredients/inulin_clean.png',
-  'inulin': '/images/ingredients/inulin_clean.png',
-  'vitamin-c': '/images/ingredients/vitaminc_clean.png',
-  'coenzyme-q10': '/images/ingredients/coq10_clean.png',
-  'coq10': '/images/ingredients/coq10_clean.png',
-  'lactoferrin': '/images/ingredients/lactoferrin_clean.png',
-  'calcium-gluconate': '/images/ingredients/calcium_clean.png',
-  'calcium': '/images/ingredients/calcium_clean.png',
+  'nano-hydroxyapatite': '/images/ingredients/nhap_clean.webp',
+  'theobromine': '/images/ingredients/theobromine_clean.webp',
+  'prebiotics-inulin': '/images/ingredients/inulin_clean.webp',
+  'inulin': '/images/ingredients/inulin_clean.webp',
+  'vitamin-c': '/images/ingredients/vitaminc_clean.webp',
+  'coenzyme-q10': '/images/ingredients/coq10_clean.webp',
+  'coq10': '/images/ingredients/coq10_clean.webp',
+  'lactoferrin': '/images/ingredients/lactoferrin_clean.webp',
+  'calcium-gluconate': '/images/ingredients/calcium_clean.webp',
+  'calcium': '/images/ingredients/calcium_clean.webp',
 };
 
 const resolveIngredientIcon = (item) => {
-  if (!item) return '/images/ingredients/nhap_clean.png';
-  if (item.icon_url && item.icon_url.includes('/images/ingredients/') && item.icon_url.endsWith('_clean.png')) {
-    return item.icon_url;
+  if (!item) return '/images/ingredients/nhap_clean.webp';
+  if (item.icon_url && item.icon_url.includes('/images/ingredients/')) {
+    return item.icon_url.replace(/\.png$/, '.webp');
   }
   const slug = (item.slug || '').toLowerCase();
   const name = (item.name || '').toLowerCase();
 
   if (slug.includes('hydroxyapatite') || name.includes('hydroxyapatite') || name.includes('nhap')) {
-    return '/images/ingredients/nhap_clean.png';
+    return '/images/ingredients/nhap_clean.webp';
   }
   if (slug.includes('theobromine') || name.includes('theobromine') || name.includes('cacao') || name.includes('cocoa')) {
-    return '/images/ingredients/theobromine_clean.png';
+    return '/images/ingredients/theobromine_clean.webp';
   }
   if (slug.includes('inulin') || name.includes('inulin') || name.includes('prebiotic')) {
-    return '/images/ingredients/inulin_clean.png';
+    return '/images/ingredients/inulin_clean.webp';
   }
   if (slug.includes('vitamin-c') || name.includes('vitamin c') || name.includes('ascorbic')) {
-    return '/images/ingredients/vitaminc_clean.png';
+    return '/images/ingredients/vitaminc_clean.webp';
   }
   if (slug.includes('lactoferrin') || name.includes('lactoferrin')) {
-    return '/images/ingredients/lactoferrin_clean.png';
+    return '/images/ingredients/lactoferrin_clean.webp';
   }
   if (slug.includes('coq10') || slug.includes('coenzyme') || name.includes('coq10') || name.includes('coenzyme')) {
-    return '/images/ingredients/coq10_clean.png';
+    return '/images/ingredients/coq10_clean.webp';
   }
   if (slug.includes('calcium') || name.includes('calcium')) {
-    return '/images/ingredients/calcium_clean.png';
+    return '/images/ingredients/calcium_clean.webp';
   }
-  return item.icon_url || '/images/ingredients/nhap_clean.png';
+  return (item.icon_url ? item.icon_url.replace(/\.png$/, '.webp') : '/images/ingredients/nhap_clean.webp');
 };
 
 const DEFAULT_INGREDIENTS = [
@@ -59,7 +59,7 @@ const DEFAULT_INGREDIENTS = [
     description: 'A biomimetic mineral that closely resembles the mineral naturally found in teeth. It helps support enamel remineralization safely without harsh chemicals or warning labels.',
     benefits: ['Deposits calcium and phosphate ions into micro-porosities', 'Rebuilds and protects tooth enamel', '100% biocompatible and safe if swallowed'],
     badge_text: 'Enamel Protector',
-    icon_url: '/images/ingredients/nhap_clean.png',
+    icon_url: '/images/ingredients/nhap_clean.webp',
   },
   {
     id: 2,
@@ -70,7 +70,7 @@ const DEFAULT_INGREDIENTS = [
     description: 'Derived from natural cacao, theobromine has been studied for its potential to support enamel remineralization and crystal growth alongside Nano-hydroxyapatite.',
     benefits: ['Strengthens crystalline enamel structure', 'Non-toxic natural cacao component', 'Synergizes with Nano-Hydroxyapatite'],
     badge_text: 'Clinically Studied',
-    icon_url: '/images/ingredients/theobromine_clean.png',
+    icon_url: '/images/ingredients/theobromine_clean.webp',
   },
   {
     id: 3,
@@ -81,7 +81,7 @@ const DEFAULT_INGREDIENTS = [
     description: 'A naturally derived prebiotic included to nourish beneficial oral bacteria and support a healthy, balanced oral environment.',
     benefits: ['Nourishes protective oral flora', 'Suppresses harmful acid-producing bacteria', 'Supports whole-mouth wellness'],
     badge_text: 'Prebiotic Care',
-    icon_url: '/images/ingredients/inulin_clean.png',
+    icon_url: '/images/ingredients/inulin_clean.webp',
   },
   {
     id: 4,
@@ -92,7 +92,7 @@ const DEFAULT_INGREDIENTS = [
     description: 'Vitamin C is a vital antioxidant that contributes to the health of oral tissues and supports a strong, healthy gum environment.',
     benefits: ['Supports healthy collagen production in gums', 'Potent antioxidant defence against inflammation', 'Nourishes delicate oral tissues'],
     badge_text: 'Gum Support',
-    icon_url: '/images/ingredients/vitaminc_clean.png',
+    icon_url: '/images/ingredients/vitaminc_clean.webp',
   },
   {
     id: 5,
@@ -103,7 +103,7 @@ const DEFAULT_INGREDIENTS = [
     description: 'A naturally occurring protein found in saliva and mother’s milk, lactoferrin provides natural antimicrobial defence against unwanted mouth bacteria.',
     benefits: ['Bio-mimetic salivary protection', 'Maintains oral microbiome equilibrium', 'Gentle on developing gums'],
     badge_text: 'Natural Defence',
-    icon_url: '/images/ingredients/lactoferrin_clean.png',
+    icon_url: '/images/ingredients/lactoferrin_clean.webp',
   },
   {
     id: 6,
@@ -114,7 +114,7 @@ const DEFAULT_INGREDIENTS = [
     description: 'A naturally occurring cellular antioxidant widely studied in periodontal and gum tissue care for cellular vitality.',
     benefits: ['Enhances periodontal cellular vitality', 'Fights oxidative stress in gum pockets', 'Promotes gum healing and resilience'],
     badge_text: 'Periodontal Care',
-    icon_url: '/images/ingredients/coq10_clean.png',
+    icon_url: '/images/ingredients/coq10_clean.webp',
   },
   {
     id: 7,
@@ -125,7 +125,7 @@ const DEFAULT_INGREDIENTS = [
     description: 'Calcium is an essential building block of tooth enamel, working synergistically with nHAp to keep growing teeth mineral-dense and resilient.',
     benefits: ['Provides essential bio-available calcium ions', 'Enhances remineralization synergy', 'Gentle and non-abrasive'],
     badge_text: 'Essential Mineral',
-    icon_url: '/images/ingredients/calcium_clean.png',
+    icon_url: '/images/ingredients/calcium_clean.webp',
   },
 ];
 
@@ -207,7 +207,7 @@ export default function Ingredients() {
                           src={iconSrc} 
                           alt={item.name} 
                           className="ingredient-item-icon" 
-                          onError={(e) => { e.target.src = '/images/ingredients/nhap_clean.png'; }}
+                          onError={(e) => { e.target.src = '/images/ingredients/nhap_clean.webp'; }}
                         />
                         <button className="accordion-toggle-btn" aria-label="Toggle details">
                           {isOpen ? '−' : '+'}

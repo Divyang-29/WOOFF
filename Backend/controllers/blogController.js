@@ -132,7 +132,7 @@ const createBlogHandler = async (req, res) => {
       excerpt: excerpt ? excerpt.trim() : '',
       reading_time: reading_time ? reading_time.trim() : '5 min read',
       author_role: author_role ? author_role.trim() : 'Pediatric Dental Specialist',
-      author_avatar: author_avatar ? author_avatar.trim() : '/assets/wooff-logo.png',
+      author_avatar: author_avatar ? author_avatar.trim() : '/assets/wooff-logo.webp',
       author_bio: author_bio ? author_bio.trim() : '',
       image_caption: image_caption ? image_caption.trim() : '',
       faqs: faqs || [],

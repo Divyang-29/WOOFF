@@ -1,5 +1,5 @@
 import React from 'react';
-import wooffChocoTube from '../../../assets/wooff-choco-tube.png';
+import wooffChocoTube from '../../../assets/wooff-choco-tube.webp';
 import jungleBg from '../../../assets/jungle-bg.webp';
 import './ProductShowcase.css';
 

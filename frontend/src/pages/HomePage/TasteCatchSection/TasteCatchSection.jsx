@@ -1,7 +1,7 @@
 import React from 'react';
 import './TasteCatchSection.css';
-import chocolateImg from '../../../assets/chocolate_clean.png';
-import mintImg from '../../../assets/mint_clean.png';
+import chocolateImg from '../../../assets/chocolate_clean.webp';
+import mintImg from '../../../assets/mint_clean.webp';
 
 export default function TasteCatchSection() {
   return (

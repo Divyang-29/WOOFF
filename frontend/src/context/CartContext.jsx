@@ -71,7 +71,7 @@ export const CartProvider = ({ children }) => {
     const title = product.title || product.name || 'Toothpaste Product';
     const price = parseFloat(product.final_price || product.price || 649);
     const originalPrice = parseFloat(product.price || price);
-    const image = product.primary_image || product.image || '/images/hero_tubes.jpg';
+    const image = product.primary_image || product.image || '/images/hero_tubes.webp';
 
     // Update local state first for instant smooth UI
     setCartItems((prevItems) => {

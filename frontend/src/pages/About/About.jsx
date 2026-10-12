@@ -24,7 +24,7 @@ export default function About() {
       badge: '',
       title: 'Where the morning battle began',
       text: 'As a dentist, one question I was constantly asked by parents was, "Which toothpaste is best for my child?" But behind that question was a bigger problem. Kids didn\'t want to brush their teeth. Mornings were full of tantrums, negotiations, and the daily struggle of getting children to brush. I wanted to find a way to make brushing something kids would actually look forward to. Funny enough, paediatric dentistry was the department I used to struggle with the most in college. Seeing children in pain was something I never liked. And perhaps that was one of the reasons I wanted to create something that could make their oral-care journey a little happier.',
-      image: '/images/founders-car.jpg',
+      image: '/images/founders-car.webp',
       caption: 'The pediatric oral care struggle'
     },
     {
@@ -32,7 +32,7 @@ export default function About() {
       badge: '',
       title: 'New era of oral care',
       text: 'But the more I researched, the more I realised I didn\'t just want to make toothpaste that tasted good. I wanted to create better oral care for Indian kids. As a dentist, I knew oral health wasn\'t just about teeth. The gums, soft tissues, and the oral microbiome matter too. So I began exploring ingredients beyond conventional toothpaste formulations, including nano-hydroxyapatite, prebiotics, vitamins, lactoferrin, and antioxidants. I wanted to bring together a delicious brushing experience and a thoughtfully developed formula that considered children\'s overall oral health. And that\'s how we began building our hero formulation for Woof Kids.',
-      image: '/images/research-notes.jpg',
+      image: '/images/research-notes.webp',
       caption: 'Discovering Theobromine & Natural Cocoa Extract'
     },
     {
@@ -40,7 +40,7 @@ export default function About() {
       badge: '',
       title: 'Making a brand out of our idea',
       text: 'Then came the real work: speaking to manufacturers, researching ingredients, testing formulations, reviewing sample after sample, and refining everything until we found the right combination. At the same time, we were creating a design that children would connect with. That\'s where our little monkey came in. Monkeys are known for imitation, and we loved the idea that children might see our monkey brushing its teeth and want to imitate it.',
-      image: '/images/packaging-samples.jpg',
+      image: '/images/packaging-samples.webp',
       caption: 'Formulating with nHAp & Prebiotic Nutrients'
     },
     {

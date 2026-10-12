@@ -9,13 +9,13 @@ export const RICH_ARTICLES = {
     tags: ['ChocoToothpaste', 'KidsRoutine', 'NanoHydroxyapatite', 'ParentingTips', 'BrushHappily'],
     updated_at: '2026-10-12T12:00:00Z',
     reading_time: '3 min read',
-    image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.jpg',
+    image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.webp',
     excerpt: 'Choco flavoured toothpaste turns a daily chore into something kids look forward to. Wooff is built for that.',
     image_caption: 'Wooff 100% natural choco flavoured kids toothpaste with bio-identical nano-hydroxyapatite and organic cocoa theobromine.',
     author: {
       name: 'Wooff Team',
       role: 'Pediatric Oral Care Team',
-      avatar: '/assets/wooff-logo.png',
+      avatar: '/assets/wooff-logo.webp',
       bio: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
     },
     toc: [
@@ -125,7 +125,7 @@ export const RICH_ARTICLES = {
     author: {
       name: 'Wooff Team',
       role: 'Pediatric Oral Care Team',
-      avatar: '/assets/wooff-logo.png',
+      avatar: '/assets/wooff-logo.webp',
       bio: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
     },
     toc: [
@@ -239,7 +239,7 @@ export const RICH_ARTICLES = {
     author: {
       name: 'Wooff Team',
       role: 'Pediatric Oral Care Team',
-      avatar: '/assets/wooff-logo.png',
+      avatar: '/assets/wooff-logo.webp',
       bio: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
     },
     toc: [
@@ -449,7 +449,7 @@ export function getEnrichedBlog(baseBlog, allBlogs = []) {
     author_profile: {
       name: baseBlog.author || richData.author?.name || 'Wooff Dental Expert',
       role: baseBlog.author_role || richData.author?.role || 'Pediatric Dental Specialist',
-      avatar: baseBlog.author_avatar || richData.author?.avatar || '/assets/wooff-logo.png',
+      avatar: baseBlog.author_avatar || richData.author?.avatar || '/assets/wooff-logo.webp',
       bio: baseBlog.author_bio || richData.author?.bio || `${baseBlog.author || 'Wooff Dental Expert'} is committed to evidence-based, biocompatible dental wellness for growing smiles.`,
     },
     toc: fallbackTOC,

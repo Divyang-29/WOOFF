@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import wooffLogo from '../../assets/wooff-logo.png';
+import wooffLogo from '../../assets/wooff-logo.webp';
 import './Footer.css';
 
 export default function Footer() {

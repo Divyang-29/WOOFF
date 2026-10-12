@@ -28,7 +28,7 @@ const STATIC_BLOG_FALLBACKS = [
     slug: 'choco-toothpaste',
     title: 'Choco Flavoured Toothpaste: Make Brushing a Treat',
     content: 'Choco flavoured toothpaste turns a daily chore into something kids look forward to. Wooff is built for that.',
-    image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.jpg',
+    image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.webp',
     author: 'Wooff Team',
     created_at: '2026-10-12T12:00:00Z',
   },

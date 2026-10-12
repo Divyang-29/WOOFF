@@ -8,49 +8,49 @@ export const defaultKeyIngredients = [
     title: 'Nano-Hydroxyapatite',
     subtitle: 'Enamel Mineral Support',
     description: 'A biomimetic mineral that closely resembles the mineral naturally found in teeth. It helps support enamel remineralization and maintain strong, healthy-looking teeth.',
-    image_url: '/images/ingredients/nhap_clean.png'
+    image_url: '/images/ingredients/nhap_clean.webp'
   },
   {
     id: 'theobromine',
     title: 'Theobromine',
     subtitle: 'Enamel Strength Support',
     description: 'Derived from cocoa, theobromine has been studied for its potential to support enamel remineralization and increase enamel microhardness.',
-    image_url: '/images/ingredients/theobromine_clean.png'
+    image_url: '/images/ingredients/theobromine_clean.webp'
   },
   {
     id: 'inulin',
     title: 'Inulin',
     subtitle: 'Prebiotic Oral Care',
     description: 'A naturally derived prebiotic included to support a balanced oral environment and complement the oral microbiome.',
-    image_url: '/images/ingredients/inulin_clean.png'
+    image_url: '/images/ingredients/inulin_clean.webp'
   },
   {
     id: 'vitaminc',
     title: 'Vitamin C',
     subtitle: 'Antioxidant & Gum Support',
     description: 'Vitamin C is an antioxidant that contributes to the health of oral tissues and supports a healthy gum environment.',
-    image_url: '/images/ingredients/vitaminc_clean.png'
+    image_url: '/images/ingredients/vitaminc_clean.webp'
   },
   {
     id: 'lactoferrin',
     title: 'Lactoferrin',
     subtitle: 'Natural Oral Defence',
     description: 'A naturally occurring protein found in saliva, lactoferrin has antimicrobial properties and has been studied for its role in maintaining a healthy oral microbial environment.',
-    image_url: '/images/ingredients/lactoferrin_clean.png'
+    image_url: '/images/ingredients/lactoferrin_clean.webp'
   },
   {
     id: 'coq10',
     title: 'Coenzyme Q10',
     subtitle: 'Antioxidant Gum Care',
     description: 'A naturally occurring antioxidant that has been studied in periodontal care and is included to complement the formulation’s focus on healthy gums.',
-    image_url: '/images/ingredients/coq10_clean.png'
+    image_url: '/images/ingredients/coq10_clean.webp'
   },
   {
     id: 'calcium-gluconate',
     title: 'Calcium Gluconate',
     subtitle: 'Tooth Enamel Support',
     description: 'Calcium is an essential building block of tooth enamel.',
-    image_url: '/images/ingredients/calcium_clean.png'
+    image_url: '/images/ingredients/calcium_clean.webp'
   }
 ];
 

@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import NotificationCenter from '../Notifications/NotificationCenter';
-import wooffLogo from '../../assets/wooff-logo.png';
+import wooffLogo from '../../assets/wooff-logo.webp';
 import './Navbar.css';
 
 export default function Navbar() {

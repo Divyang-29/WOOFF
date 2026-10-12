@@ -71,7 +71,7 @@ const createProductHandler = async (req, res) => {
       }
     }
     if (!hero_image) {
-      hero_image = "/assets/tooth_paste.png";
+      hero_image = "/assets/tooth_paste.webp";
     }
     const primary_image = hero_image;
 

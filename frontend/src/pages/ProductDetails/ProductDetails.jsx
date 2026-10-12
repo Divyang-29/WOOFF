@@ -117,7 +117,7 @@ export default function ProductDetails() {
           final_price: parseFloat(data.final_price || data.price),
           price: parseFloat(data.price),
           quantity: quantity,
-          primary_image: (data.images && data.images.length > 0) ? data.images[0] : '/images/hero_tubes.jpg',
+          primary_image: (data.images && data.images.length > 0) ? data.images[0] : '/images/hero_tubes.webp',
         },
       },
     });

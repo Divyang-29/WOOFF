@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import chocoToothpasteImg from '../../../assets/choco-toothpaste-pieces.jpg';
+import chocoToothpasteImg from '../../../assets/choco-toothpaste-pieces.webp';
 import './DiscoverySection.css';
 
 gsap.registerPlugin(ScrollTrigger);

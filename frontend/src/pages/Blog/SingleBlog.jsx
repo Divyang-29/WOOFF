@@ -36,7 +36,7 @@ function getInitialBlogData(slug) {
     id: cleanSlug,
     slug: cleanSlug,
     title: rich.title,
-    image_url: rich.image_url || '/assets/choco-toothpaste-pieces.jpg',
+    image_url: rich.image_url || '/assets/choco-toothpaste-pieces.webp',
     author: rich.author?.name || 'Wooff Team',
     author_role: rich.author?.role || 'Pediatric Oral Care Team',
     author_bio: rich.author?.bio,
@@ -287,10 +287,10 @@ export default function SingleBlog() {
             <div className="single-blog-meta-card">
               <div className="meta-author-wrap">
                 <img
-                  src={blog.author_profile?.avatar || '/assets/wooff-logo.png'}
+                  src={blog.author_profile?.avatar ? blog.author_profile.avatar.replace(/\.(png|jpg|jpeg)$/i, '.webp') : '/assets/wooff-logo.webp'}
                   alt={blog.author_profile?.name || blog.author}
                   className="meta-author-avatar"
-                  onError={(e) => { e.currentTarget.src = '/assets/wooff-logo.png'; }}
+                  onError={(e) => { e.currentTarget.src = '/assets/wooff-logo.webp'; }}
                 />
                 <div className="meta-author-text">
                   <span className="meta-author-name">
@@ -604,10 +604,10 @@ export default function SingleBlog() {
             <div className="blog-author-profile-card">
               <div className="author-card-avatar-wrap">
                 <img
-                  src={blog.author_profile?.avatar || '/assets/wooff-logo.png'}
+                  src={blog.author_profile?.avatar ? blog.author_profile.avatar.replace(/\.(png|jpg|jpeg)$/i, '.webp') : '/assets/wooff-logo.webp'}
                   alt={blog.author_profile?.name || blog.author}
                   className="author-card-avatar"
-                  onError={(e) => { e.currentTarget.src = '/assets/wooff-logo.png'; }}
+                  onError={(e) => { e.currentTarget.src = '/assets/wooff-logo.webp'; }}
                 />
               </div>
               <div className="author-card-info">
@@ -641,7 +641,7 @@ export default function SingleBlog() {
                 </div>
               </div>
               <div className="prod-rec-image-wrap">
-                <img src="/assets/choco.png" alt="Wooff Choco Toothpaste" className="prod-rec-img" />
+                <img src="/assets/choco.webp" alt="Wooff Choco Toothpaste" className="prod-rec-img" />
               </div>
             </div>
 

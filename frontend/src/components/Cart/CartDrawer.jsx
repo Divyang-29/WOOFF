@@ -69,7 +69,7 @@ export default function CartDrawer() {
                 return (
                   <div key={item.id || item.product_id} className="cart-item-row">
                     <img 
-                      src={item.primary_image || item.image || '/images/hero_tubes.jpg'} 
+                      src={item.primary_image || item.image || '/images/hero_tubes.webp'} 
                       alt={item.title} 
                       className="cart-item-thumb" 
                     />

@@ -10,7 +10,7 @@ const TOTAL_FRAMES = 240;
 const getFramePath = (index, isMobile) => {
   const paddedIndex = String(index + 1).padStart(4, '0');
   const folder = isMobile ? 'frames-mobile' : 'frames';
-  return `/${folder}/frame_${paddedIndex}.png`;
+  return `/${folder}/frame_${paddedIndex}.webp`;
 };
 
 export default function HeroSection() {
