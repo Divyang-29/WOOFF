@@ -95,8 +95,9 @@
 }
 
 .hero-card .gallery-img {
-  object-fit: contain;
-  padding: 1rem;
+  object-fit: cover;
+  object-position: center;
+  padding: 0;
 }
 
 .gallery-card:hover .gallery-img {

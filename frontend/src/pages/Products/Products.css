@@ -40,21 +40,17 @@
 .wooff-clean-card .card-image-wrapper {
   position: relative;
   width: 100%;
-  height: 320px;
+  aspect-ratio: 16 / 11;
   flex-shrink: 0;
   border-bottom: 4px solid var(--primary-brown, #4B2E1E);
   border-radius: 0;
   background-color: #FAF4EB;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
 }
 
 .card-image-wrapper a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   width: 100%;
   height: 100%;
 }
@@ -62,15 +58,15 @@
 .card-image-wrapper img {
   width: 100%;
   height: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  padding: 0.75rem;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  padding: 0;
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
 }
 
 .card-image-wrapper:hover img {
-  transform: scale(1.05);
+  transform: scale(1.04);
   opacity: 0.95;
 }
 
@@ -260,17 +256,16 @@
   }
 
   .wooff-clean-card .card-image-wrapper {
-    height: 160px;
+    height: auto;
+    aspect-ratio: 16 / 11;
     border-bottom: 2px solid var(--primary-brown, #4B2E1E);
     background-color: #FAF4EB;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
   }
 
   .card-image-wrapper img {
-    object-fit: contain;
-    padding: 0.5rem;
+    object-fit: cover;
+    padding: 0;
   }
 
   .discount-badge {
@@ -374,7 +369,7 @@
   }
 
   .wooff-clean-card .card-image-wrapper {
-    height: 140px;
+    height: auto;
   }
 
   .card-content {
