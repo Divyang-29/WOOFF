@@ -437,7 +437,7 @@ export default function About() {
           <div className="founder-card-inner">
             <span className="story-section-badge">FROM THE FOUNDER</span>
             <blockquote className="founder-statement">
-              &ldquo;As a dentist, I saw how something as essential as brushing became a daily struggle for parents and kids. I created Woof Kids to turn brushing battles into joyful moments with flavours kids love and thoughtfully formulated oral care that parents can trust.&rdquo;
+              &ldquo;As a dentist, I saw how something as essential as brushing became a daily struggle for parents and kids. I created Wooff Kids to turn brushing battles into joyful moments with flavours kids love and thoughtfully formulated oral care that parents can trust.&rdquo;
             </blockquote>
             <div className="founder-signature-block">
               <div className="founder-avatar-circle">

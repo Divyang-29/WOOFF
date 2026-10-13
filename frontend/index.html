@@ -43,6 +43,41 @@
     <meta name="twitter:image" content="https://wooff.care/assets/choco-toothpaste-pieces.webp" />
     <link rel="preload" as="image" href="/frames/frame_0001.webp" type="image/webp" fetchpriority="high" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- Structured Data (JSON-LD) for Google Search Brand & Logo Recognition -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://wooff.care/#organization",
+          "name": "Wooff Care",
+          "url": "https://wooff.care/",
+          "logo": {
+            "@type": "ImageObject",
+            "@id": "https://wooff.care/#logo",
+            "url": "https://wooff.care/favicon-192x192.png",
+            "contentUrl": "https://wooff.care/favicon-192x192.png",
+            "width": 192,
+            "height": 192,
+            "caption": "Wooff Care Logo"
+          },
+          "image": {
+            "@id": "https://wooff.care/#logo"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://wooff.care/#website",
+          "url": "https://wooff.care/",
+          "name": "Wooff Care",
+          "publisher": {
+            "@id": "https://wooff.care/#organization"
+          }
+        }
+      ]
+    }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
   <body>
