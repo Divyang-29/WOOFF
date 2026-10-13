@@ -149,9 +149,14 @@ export default function ProductReviews({ productId, productSlug, initialRatingAv
   const handleDeleteReview = async (reviewId) => {
     if (!window.confirm('Are you sure you want to delete this customer review?')) return;
     try {
+      const token = localStorage.getItem('token') || localStorage.getItem('auth_token');
       const response = await fetch(`/api/products/reviews/${reviewId}`, {
         method: 'DELETE',
-        headers: { 'x-admin-passcode': 'admin123' }
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          'x-admin-passcode': 'admin123' 
+        }
       });
       const resData = await response.json();
       if (resData.success) {
@@ -337,7 +342,7 @@ export default function ProductReviews({ productId, productSlug, initialRatingAv
                 Reviews Summary <i className="fa-solid fa-wand-magic-sparkles revitin-sparkle"></i>
               </h3>
               <p className="revitin-summary-text">
-                Most customers find Wooff toothpaste to be a refreshing, gentle alternative to conventional formulas, praising its clean, natural taste and the way their dogs look forward to brushing. Many report cleaner teeth, healthy gums, improved breath, and peace of mind from the non-toxic, bio-identical enamel protection.
+                Most parents find Wooff toothpaste to be a delightful, gentle alternative to conventional formulas, praising its delicious chocolate taste and the way their kids actually look forward to brushing. Many report cleaner teeth, healthy gums, cavity prevention, and peace of mind from the 100% safe to swallow, bio-identical nano-hydroxyapatite (nHAp) formula.
               </p>
               <button 
                 type="button" 
@@ -417,9 +422,18 @@ export default function ProductReviews({ productId, productSlug, initialRatingAv
                     </span>
                   </div>
 
-                  {rev.title && <h4 className="review-item-title">{rev.title}</h4>}
-                  
-                  <p className="review-item-body">{rev.review_text || rev.text}</p>
+                  {(() => {
+                    const rawText = rev.review_text || rev.text || '';
+                    const hasHyphen = !rev.title && rawText.includes(' - ');
+                    const title = rev.title || (hasHyphen ? rawText.split(' - ')[0] : null);
+                    const body = rev.title ? rawText : (hasHyphen ? rawText.slice(rawText.indexOf(' - ') + 3) : rawText);
+                    return (
+                      <>
+                        {title && <h4 className="review-item-title">{title}</h4>}
+                        <p className="review-item-body">{body}</p>
+                      </>
+                    );
+                  })()}
                 </div>
               ))
             )}
