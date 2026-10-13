@@ -9,13 +9,22 @@ export default function TermsAndConditions() {
   const [dynamicTerms, setDynamicTerms] = useState(null);
 
   useEffect(() => {
+    document.title = "Terms & Conditions | Wooff Care";
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
     const fetchTerms = async () => {
       try {
         const endpoint = API_ENDPOINTS?.TERMS || '/terms-and-conditions';
         const res = await fetch(endpoint);
         if (res.ok) {
           const data = await res.json();
-          if (data && data.terms) {
+          const content = data?.terms?.content;
+          if (
+            content &&
+            typeof content === 'string' &&
+            content.trim().length > 0 &&
+            !content.includes('No terms & conditions content has been published yet')
+          ) {
             setDynamicTerms(data.terms);
           }
         }
@@ -34,7 +43,7 @@ export default function TermsAndConditions() {
       />
 
       <div className="container legal-stack-container">
-        {dynamicTerms?.content ? (
+        {dynamicTerms?.content && !dynamicTerms.content.includes('No terms & conditions content has been published yet') ? (
           <section className="legal-section-card">
             <ToothHeader number="1" title={dynamicTerms.title || "Store Policy Details"} />
             <div className="legal-content">
@@ -105,7 +114,7 @@ export default function TermsAndConditions() {
               out within 48 hours of delivery.
             </p>
             <p className="terms-paragraph">
-              <strong>Mandatory Parcel Opening Video:</strong> To qualify for a return, replacement, or refund for items that arrive damaged, leaking, defective, or incorrect, customers must provide an uncut, continuous video recorded while opening the sealed package from scratch, showing the intact shipping label. <strong>Without a valid parcel unboxing video, no return or refund will be provided.</strong> For full terms, please review our <Link to="/returns" className="terms-link">Refund & Returns Policy</Link>.
+              <strong>Mandatory Parcel Opening Video:</strong> To qualify for a return, replacement, or refund for items that arrive damaged, leaking, defective, or incorrect, customers must provide an uncut, continuous video recorded while opening the sealed package from scratch, showing the intact shipping label. <strong>Without a valid parcel unboxing video, no return or refund will be provided.</strong> For full terms, please review our <Link to="/refund-policy" className="terms-link">Refund & Returns Policy</Link>.
             </p>
           </div>
         </section>
@@ -116,7 +125,7 @@ export default function TermsAndConditions() {
           <div className="legal-content">
             <p className="terms-paragraph">
               All content, trademarks, logos, graphics, brand mascots, designs, typography, illustrations, and software
-              on this website are the proprietary property of NexaWeb or its licensors and are protected by
+              on this website are the proprietary property of Wooff Kids Oralcare (Wooff Care) or its licensors and are protected by
               applicable copyright, trademark, and intellectual property laws. You may not reproduce, modify,
               distribute, or republish any material without our explicit prior written consent.
             </p>
@@ -150,8 +159,8 @@ export default function TermsAndConditions() {
             <div className="terms-contact-card mt-3">
               <p className="mb-2">
                 <strong>Email:</strong>{' '}
-                <a href="mailto:support@wooffkids.com" className="terms-link">
-                  support@wooffkids.com
+                <a href="mailto:hello@wooff.care" className="terms-link">
+                  hello@wooff.care
                 </a>
               </p>
               <p className="mb-0">

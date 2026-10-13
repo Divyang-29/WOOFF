@@ -8,14 +8,10 @@ const getTermsHandler = async (req, res) => {
   try {
     const terms = await getTermsAndConditions();
 
-    if (!terms) {
+    if (!terms || !terms.content || terms.content.includes("No terms & conditions content has been published yet")) {
       return res.status(200).json({
         success: true,
-        terms: {
-          title: "Terms & Conditions",
-          content: "No terms & conditions content has been published yet.",
-          updated_at: new Date(),
-        },
+        terms: null,
       });
     }
 
