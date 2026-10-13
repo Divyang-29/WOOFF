@@ -233,12 +233,21 @@ export default function ProductDetails() {
 
   useEffect(() => {
     if (slug === 'choco-toothpaste' || data?.slug === 'choco-toothpaste') {
-      document.title = 'Wooff Chocolate Toothpaste for Kids | Wooff Care';
+      document.title = 'Wooff Kids Chocolate Toothpaste | Kids Toothpaste 2+ Years';
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) {
         metaDesc.setAttribute(
           'content',
           'Discover Wooff chocolate-flavoured toothpaste for kids. Explore its ingredients, formulation, and product details on the official Wooff website.'
+        );
+      }
+    } else if (slug === 'choco-toothpaste-pack-of-2' || data?.slug === 'choco-toothpaste-pack-of-2') {
+      document.title = 'Wooff Kids Chocolate Toothpaste Pack of 2 | Wooff Care';
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute(
+          'content',
+          'Save with Wooff Kids Chocolate Flavour Toothpaste Pack of 2 (50 g each). Natural, fluoride-free, dentist-formulated nHAp toothpaste for kids above 2 years.'
         );
       }
     } else if (data?.title) {
@@ -344,14 +353,11 @@ export default function ProductDetails() {
             
             <h1 className="product-title">
               {slug === 'choco-toothpaste' || data.slug === 'choco-toothpaste'
-                ? 'Chocolate-Flavoured Toothpaste for Kids'
-                : data.title}
+                ? 'Wooff Kids Chocolate Flavour Toothpaste, 50 g (Above 2 Years)'
+                : (slug === 'choco-toothpaste-pack-of-2' || data.slug === 'choco-toothpaste-pack-of-2'
+                  ? 'Wooff Kids Chocolate Flavour Toothpaste, Pack of 2 (50 g each)'
+                  : data.title)}
             </h1>
-            {(slug === 'choco-toothpaste' || data.slug === 'choco-toothpaste') && (
-              <p className="product-pack-subtitle mb-2" style={{ color: '#8C7B6A', fontSize: '0.92rem', fontWeight: 500 }}>
-                50g Single Tube • 100% Safe to Swallow • Kids Above 2 Years
-              </p>
-            )}
 
             <div 
               className="product-rating-row"

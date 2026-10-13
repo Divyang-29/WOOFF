@@ -27,7 +27,7 @@ export const STATIC_PRODUCTS = [
   {
     id: 9,
     category_id: 1,
-    title: "Wooff Kids Chocolate Flavour Toothpaste 50g – Tasty Chocolate Toothpaste for Kids Above 2 Years",
+    title: "Wooff Kids Chocolate Flavour Toothpaste, 50 g (Above 2 Years)",
     slug: "choco-toothpaste",
     price: "299.00",
     final_price: "249.00",
@@ -61,7 +61,7 @@ export const STATIC_PRODUCTS = [
   {
     id: 10,
     category_id: 1,
-    title: "Wooff Kids Chocolate Flavour Toothpaste 50g (Pack of 2) – Chocolate Toothpaste for Kids Above 2 Years",
+    title: "Wooff Kids Chocolate Flavour Toothpaste, Pack of 2 (50 g each)",
     slug: "choco-toothpaste-pack-of-2",
     price: "599.00",
     final_price: "499.00",
