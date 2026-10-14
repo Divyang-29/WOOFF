@@ -280,10 +280,6 @@ export default function Ingredients() {
         </div>
       </div>
 
-      {/* Footer Banner CTA */}
-      <div className="ingredients-footer-cta">
-        <h2>The world's first prebiotic, fluoride-free kids toothpaste. Try it today!</h2>
-      </div>
     </div>
   );
 }
