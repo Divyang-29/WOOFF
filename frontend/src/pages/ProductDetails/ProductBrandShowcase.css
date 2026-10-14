@@ -92,7 +92,8 @@
 }
 
 .founder-card-author {
-  margin-bottom: 1.75rem;
+  margin-top: auto;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;

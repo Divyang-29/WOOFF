@@ -31,11 +31,6 @@ export default function ProductBrandShowcase() {
               <span className="founder-author-role">Dentist &amp; Founder</span>
             </div>
           </div>
-          <div className="story-icon-footer">
-            <div className="icon-circle">
-              <i className="fa-solid fa-tooth"></i>
-            </div>
-          </div>
         </div>
 
         {/* Right Card: Our Mission */}
