@@ -42,7 +42,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successOrder, setSuccessOrder] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState('online'); // 'online' | 'cod'
+  const [paymentMethod, setPaymentMethod] = useState('cod'); // 'cod' is active, online is disabled
 
   // Pincode auto-fetch state
   const [isFetchingPincode, setIsFetchingPincode] = useState(false);
@@ -740,29 +740,27 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
             <div className="checkout-payment-section">
               <span className="checkout-payment-heading">Select Payment Method</span>
 
-              {/* 1. Online Payment (Razorpay) */}
+              {/* 1. Online Payment (Disabled / Temporarily Unavailable) */}
               <div
-                className={`payment-option-card ${paymentMethod === 'online' ? 'selected' : ''}`}
-                onClick={() => setPaymentMethod('online')}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => (e.key === ' ' || e.key === 'Enter') && setPaymentMethod('online')}
+                className="payment-option-card disabled-option"
+                title="Online payment is temporarily unavailable. Please use Cash on Delivery."
               >
                 <input
                   type="radio"
                   id="pay-online"
                   name="paymentMethodOption"
                   value="online"
-                  checked={paymentMethod === 'online'}
-                  onChange={() => setPaymentMethod('online')}
+                  checked={false}
+                  disabled={true}
+                  readOnly
                 />
                 <div className="payment-option-content">
-                  <label htmlFor="pay-online" className="payment-option-title mb-0">
+                  <label htmlFor="pay-online" className="payment-option-title mb-0" style={{ cursor: 'not-allowed' }}>
                     💳 Online Payment
-                    <span className="payment-option-badge">Instant</span>
+                    <span className="payment-option-badge-disabled">Unavailable</span>
                   </label>
                   <span className="payment-option-desc">
-                    Instant UPI (GPay, PhonePe, Paytm), Cards & NetBanking via Razorpay
+                    Instant UPI, Cards & NetBanking (Temporarily unavailable. Please select Cash on Delivery)
                   </span>
                 </div>
               </div>

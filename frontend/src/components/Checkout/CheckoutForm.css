@@ -338,6 +338,32 @@
   box-shadow: 0 4px 14px rgba(75, 46, 30, 0.08);
 }
 
+.payment-option-card.disabled-option {
+  opacity: 0.55;
+  cursor: not-allowed !important;
+  background-color: #f5efe8 !important;
+  border-color: #e2d7cc !important;
+  pointer-events: none;
+}
+
+.payment-option-card.disabled-option:hover {
+  border-color: #e2d7cc !important;
+  background-color: #f5efe8 !important;
+  box-shadow: none !important;
+}
+
+.payment-option-badge-disabled {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: #8C7B6A;
+  color: #ffffff;
+  padding: 1px 7px;
+  border-radius: 4px;
+  margin-left: 8px;
+  letter-spacing: 0.5px;
+}
+
 .payment-option-card input[type="radio"] {
   accent-color: #4B2E1E;
   width: 18px;
