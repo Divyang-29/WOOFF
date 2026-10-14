@@ -3,112 +3,8 @@ import Banner from '../../components/Banner/Banner';
 import { API_ENDPOINTS } from '../../api';
 import './Careers.css';
 
-const JOB_OPENINGS = [
-  {
-    id: 'rd-formulation',
-    title: 'Pediatric Formulation & R&D Scientist',
-    department: 'Product & R&D',
-    location: 'Mumbai, India (Hybrid)',
-    type: 'Full-time',
-    experience: '3-6 years',
-    summary: 'Lead ongoing formulation innovation for nano-hydroxyapatite and prebiotic pediatric oral care products with zero toxic compromises.',
-    responsibilities: [
-      'Design, test, and optimize natural pediatric oral care formulations compliant with FDA & CDSCO standards.',
-      'Research and validate emerging biocompatible enamel remineralization and microbiome-supporting ingredients (nHAp, theobromine, inulin, lactoferrin).',
-      'Oversee clinical stability testing, preservative-efficacy tests, and pilot batch scale-up with manufacturing partners.',
-      'Collaborate with pediatric biological dentists and advisors to substantiate clinical and safety claims.'
-    ],
-    requirements: [
-      'Master’s degree or PhD in Pharmaceutical Sciences, Cosmetic Chemistry, or related field.',
-      '3+ years hands-on experience in personal care, oral care, or food-grade topical formulations.',
-      'Deep understanding of clean formulation philosophies (SLS-free, fluoride-free, natural flavor systems).',
-      'Strong analytical rigor and enthusiasm for consumer product innovation.'
-    ]
-  },
-  {
-    id: 'growth-lead',
-    title: 'D2C Performance & Growth Marketing Lead',
-    department: 'Growth & Marketing',
-    location: 'Remote / Mumbai (Hybrid)',
-    type: 'Full-time',
-    experience: '4-7 years',
-    summary: 'Scale Wooff from thousands of smiling kids to millions across India through data-driven paid acquisition, retention, and funnel optimization.',
-    responsibilities: [
-      'Own end-to-end paid acquisition strategy across Meta Ads, Google Performance Max, and Quick Commerce channels.',
-      'Build creative testing frameworks with our design team, iterating rapidly on hooks, video reels, and parent testimonials.',
-      'Optimize retention loops, email/WhatsApp CRM flows, subscription models, and lifetime customer value (LTV).',
-      'Analyze customer unit economics (CAC, ROAS, blended payback periods) and report actionable insights directly to founders.'
-    ],
-    requirements: [
-      'Proven track record scaling a D2C, mom-and-baby, or consumer health brand from early traction to ₹5Cr+ annual run rate.',
-      'Deep expertise in Meta Ads Manager, Google Ads, GA4, Shopify/custom analytics, and Klaviyo/WhatsApp CRM.',
-      'Numbers-obsessed mindset combined with intuitive consumer psychology understanding.',
-      'High-energy, proactive, and resilient startup operator.'
-    ]
-  },
-  {
-    id: 'brand-designer',
-    title: 'Lead Brand & Packaging Designer',
-    department: 'Design & Creative',
-    location: 'Remote / Mumbai (Hybrid)',
-    type: 'Full-time',
-    experience: '3-5 years',
-    summary: 'Bring the playful universe of Wooff to life across sustainable packaging, unboxing experiences, mascot animations, and digital design systems.',
-    responsibilities: [
-      'Elevate Wooff’s visual identity across packaging cartons, tube artwork, retail displays, and PR unboxing kits.',
-      'Direct character storytelling and playful micro-animations featuring our beloved monkey mascot.',
-      'Create high-converting landing page layouts, web assets, and dynamic interactive storefront visuals.',
-      'Partner closely with creative copywriters to craft charming, warm, and delightful brand moments.'
-    ],
-    requirements: [
-      'A jaw-dropping portfolio demonstrating mastery in consumer packaging design, typography, and digital art.',
-      'Proficiency in Adobe Illustrator, Photoshop, Figma, and 3D mockups (Blender or Cinema4D is a big plus).',
-      'Passion for children’s books, playful illustration, and premium minimalist aesthetics.',
-      'Thorough knowledge of prepress production, CMYK printing substrates, and eco-friendly packaging materials.'
-    ]
-  },
-  {
-    id: 'social-creator',
-    title: 'Social Storyteller & Community Creator',
-    department: 'Growth & Marketing',
-    location: 'Remote / Mumbai',
-    type: 'Full-time',
-    experience: '2-4 years',
-    summary: 'Be the authentic voice of Wooff on Instagram, YouTube, and LinkedIn — creating engaging reels, parent education content, and dentist interviews.',
-    responsibilities: [
-      'Conceptualize, shoot, and edit engaging short-form video content (Reels, TikToks, Shorts) debunking oral health myths.',
-      'Build relationships with pediatric dentists, biological wellness advocates, and mindful parent creators.',
-      'Engage authentically in comments, DMs, and parenting forums to foster an active, loyal brand community.',
-      'Monitor viral parenting trends and turn customer questions into educational video moments.'
-    ],
-    requirements: [
-      'Natural camera presence and exceptional mobile video editing skills (CapCut, Premiere, After Effects).',
-      'Deep familiarity with Instagram culture, mom-influencer communities, and educational storytelling.',
-      'Witty, empathetic, and relatable communication style with zero corporate jargon.',
-      'Ability to move fast, test ideas rapidly, and learn from audience engagement data.'
-    ]
-  },
-  {
-    id: 'operations-fulfillment',
-    title: 'Operations & Supply Chain Associate',
-    department: 'Operations',
-    location: 'Mumbai, India',
-    type: 'Full-time',
-    experience: '2-4 years',
-    summary: 'Ensure every tube of Wooff reaches families on time, managing 3PL fulfillment, inventory levels, and logistics partners.',
-    responsibilities: [
-      'Manage day-to-day warehouse operations, order fulfillment workflows, and courier partner dispatch with Shiprocket/Delhivery.',
-      'Maintain real-time inventory tracking, raw material procurement forecasting, and packaging buffer stocks.',
-      'Resolve logistics exceptions, tracking escalations, and deliver delight to customers experiencing shipping delays.',
-      'Work with manufacturing facilities to schedule batch runs and streamline batch release certificates.'
-    ],
-    requirements: [
-      'Experience in Indian e-commerce fulfillment, logistics aggregators (Shiprocket, Bluedart, Delhivery), and inventory management.',
-      'Meticulous attention to detail and strong spreadsheet / ERP skills.',
-      'Resourceful problem solver with customer-first mindset.'
-    ]
-  }
-];
+const JOB_OPENINGS = [];
+
 
 const PERKS = [
   {
@@ -144,10 +40,6 @@ const PERKS = [
 ];
 
 export default function Careers() {
-  const [selectedDept, setSelectedDept] = useState('All');
-  const [expandedJobId, setExpandedJobId] = useState(null);
-  const [applicationRole, setApplicationRole] = useState(null);
-
   // Application form states
   const [formData, setFormData] = useState({
     name: '',
@@ -161,25 +53,6 @@ export default function Careers() {
   const [submitError, setSubmitError] = useState(null);
 
   const formSectionRef = useRef(null);
-
-  const departments = ['All', 'Product & R&D', 'Growth & Marketing', 'Design & Creative', 'Operations'];
-
-  const filteredJobs = selectedDept === 'All'
-    ? JOB_OPENINGS
-    : JOB_OPENINGS.filter((job) => job.department === selectedDept);
-
-  const toggleJob = (id) => {
-    setExpandedJobId((prev) => (prev === id ? null : id));
-  };
-
-  const handleApplyClick = (job) => {
-    setApplicationRole(job.title);
-    setSubmitSuccess(false);
-    setSubmitError(null);
-    if (formSectionRef.current) {
-      formSectionRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   const handleFormChange = (e) => {
     const { name, value } = e.target;
@@ -196,7 +69,7 @@ export default function Careers() {
     setIsSubmitting(true);
     setSubmitError(null);
 
-    const targetPosition = applicationRole || 'General Application / Open Pitch';
+    const targetPosition = 'General Application / Open Pitch';
     const messagePayload = `
 CAREER APPLICATION DETAILS:
 ---------------------------
@@ -251,7 +124,7 @@ ${formData.coverNote}
       <section className="careers-hero-section">
         <div className="careers-container text-center">
           <span className="careers-pill-badge">
-            <i className="fa-solid fa-sparkles me-1"></i> WE'RE HIRING • GROW WITH US
+            <i className="fa-solid fa-sparkles me-1"></i> GROW WITH US • TALENT COMMUNITY
           </span>
           <h2 className="careers-hero-title">
             Help Us Turn Brushing Battles <br className="d-none d-md-block" />
@@ -259,12 +132,12 @@ ${formData.coverNote}
           </h2>
           <p className="careers-hero-lead">
             We are reinventing kids’ daily oral care with clean science, biocompatible nano-hydroxyapatite,
-            and irresistible chocolate taste. We are looking for curious minds, passionate creators, and empathetic
+            and irresistible chocolate taste. We are always looking for curious minds, passionate creators, and empathetic
             builders who want to build India's most beloved pediatric oral care brand.
           </p>
           <div className="careers-hero-actions">
             <a href="#open-roles" className="btn-wooff-primary">
-              Explore Open Positions <i className="fa-solid fa-arrow-down ms-2"></i>
+              View Openings <i className="fa-solid fa-arrow-down ms-2"></i>
             </a>
             <a href="#culture" className="btn-wooff-secondary">
               Life at Wooff
@@ -359,123 +232,40 @@ ${formData.coverNote}
       <section id="open-roles" className="careers-jobs-section">
         <div className="careers-container">
           <div className="section-head text-center">
-            <span className="section-sub-badge">CURRENT OPPORTUNITIES</span>
-            <h3 className="section-main-heading">Find Your Place in the Pack</h3>
+            <span className="section-sub-badge">CAREER OPPORTUNITIES</span>
+            <h3 className="section-main-heading">Current Openings</h3>
             <p className="section-lead-text">
-              We are actively expanding across product R&D, brand storytelling, performance marketing, and operations.
+              We do not have any active openings at this moment.
             </p>
           </div>
 
-          {/* Department Filter Tabs */}
-          <div className="job-filters-wrap">
-            {departments.map((dept) => (
-              <button
-                key={dept}
-                type="button"
-                className={`filter-pill-btn ${selectedDept === dept ? 'active' : ''}`}
-                onClick={() => setSelectedDept(dept)}
-              >
-                {dept}
-              </button>
-            ))}
-          </div>
-
-          {/* Jobs List */}
-          <div className="job-openings-list">
-            {filteredJobs.length === 0 ? (
-              <div className="no-jobs-card text-center">
-                <i className="fa-solid fa-mug-hot no-jobs-icon"></i>
-                <h4>No open roles in this department right now</h4>
-                <p>Don't let that stop you! Send us an open pitch using the application form below.</p>
-              </div>
-            ) : (
-              filteredJobs.map((job) => {
-                const isExpanded = expandedJobId === job.id;
-                return (
-                  <div className={`job-listing-card ${isExpanded ? 'is-open' : ''}`} key={job.id}>
-                    <div className="job-card-header" onClick={() => toggleJob(job.id)}>
-                      <div className="job-header-info">
-                        <div className="job-meta-tags">
-                          <span className="job-dept-tag">{job.department}</span>
-                          <span className="job-type-tag">{job.type}</span>
-                          <span className="job-loc-tag">
-                            <i className="fa-solid fa-location-dot me-1"></i>
-                            {job.location}
-                          </span>
-                        </div>
-                        <h4 className="job-title">{job.title}</h4>
-                        <p className="job-summary">{job.summary}</p>
-                      </div>
-
-                      <div className="job-header-action">
-                        <button
-                          type="button"
-                          className="btn-toggle-job"
-                          aria-label={isExpanded ? 'Collapse job details' : 'Expand job details'}
-                        >
-                          <i className={`fa-solid ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
-                        </button>
-                      </div>
-                    </div>
-
-                    {isExpanded && (
-                      <div className="job-details-drawer">
-                        <hr className="job-drawer-divider" />
-                        
-                        <div className="job-spec-grid">
-                          <div className="job-spec-col">
-                            <h5 className="job-spec-title">
-                              <i className="fa-solid fa-list-check me-2"></i> What You'll Do
-                            </h5>
-                            <ul className="job-spec-list">
-                              {job.responsibilities.map((r, i) => (
-                                <li key={i}>{r}</li>
-                              ))}
-                            </ul>
-                          </div>
-
-                          <div className="job-spec-col">
-                            <h5 className="job-spec-title">
-                              <i className="fa-solid fa-star me-2"></i> What We're Looking For
-                            </h5>
-                            <ul className="job-spec-list">
-                              {job.requirements.map((req, i) => (
-                                <li key={i}>{req}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-
-                        <div className="job-apply-footer">
-                          <button
-                            type="button"
-                            className="btn-apply-role"
-                            onClick={() => handleApplyClick(job)}
-                          >
-                            Apply for {job.title} <i className="fa-solid fa-paper-plane ms-2"></i>
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })
-            )}
+          <div className="no-jobs-card text-center">
+            <i className="fa-solid fa-mug-hot no-jobs-icon"></i>
+            <h4 style={{ color: '#4B2E1E', fontWeight: 800, marginBottom: '0.75rem', fontSize: '1.4rem' }}>
+              No Open Roles Right Now
+            </h4>
+            <p style={{ color: '#6C5547', maxWidth: '580px', margin: '0 auto 1.75rem', lineHeight: '1.6', fontSize: '1.02rem' }}>
+              We're currently fully staffed across our core team. However, our pack is always growing!
+              If you believe you can bring something truly special to Wooff, we'd love to read your open pitch.
+            </p>
+            <a href="#apply-section" className="btn-wooff-primary">
+              Send an Open Pitch / General Application <i className="fa-solid fa-arrow-down ms-2"></i>
+            </a>
           </div>
         </div>
       </section>
 
       {/* 5. Interactive Application Form */}
-      <section ref={formSectionRef} className="careers-apply-section">
+      <section ref={formSectionRef} id="apply-section" className="careers-apply-section">
         <div className="careers-container">
           <div className="apply-card-wrapper">
             <div className="apply-head text-center">
-              <span className="apply-pill">EASY APPLICATION</span>
+              <span className="apply-pill">GENERAL APPLICATION</span>
               <h3 className="apply-title">
-                {applicationRole ? `Apply for: ${applicationRole}` : 'Submit Your Application / Dream Role'}
+                Submit an Open Pitch / Application
               </h3>
               <p className="apply-subtitle">
-                Fill out the form below or email your resume to{' '}
+                Don’t see an open role that fits? Tell us about yourself below or email your resume to{' '}
                 <a href="mailto:careers@wooffkids.com" className="apply-email-link">
                   careers@wooffkids.com
                 </a>

@@ -67,7 +67,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link to="/careers" className="footer-link">
-                  Careers <span className="badge rounded-pill bg-warning text-dark ms-1" style={{ fontSize: '0.65rem' }}>We're Hiring</span>
+                  Careers
                 </Link>
               </li>
             </ul>
