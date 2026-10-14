@@ -244,10 +244,21 @@ export default function Ingredients() {
               </p>
               
               <div className="research-quote-badge">
-                <div className="dentist-avatar"><i className="fa-solid fa-user-doctor"></i></div>
+                <div className="dentist-avatar">
+                  <img 
+                    src="/images/dr-shrushti-avatar.webp" 
+                    alt="Dr. Shrushti Bhankhariya" 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      if (e.target.nextSibling) e.target.nextSibling.style.display = 'block';
+                    }}
+                  />
+                  <i className="fa-solid fa-user-doctor" style={{ display: 'none' }}></i>
+                </div>
                 <div className="dentist-info">
                   <strong>Dr. Shrushti Bhankhariya</strong>
-                  <span>Pediatric Science Board Member</span>
+                  <span>Dentist</span>
                 </div>
               </div>
 
