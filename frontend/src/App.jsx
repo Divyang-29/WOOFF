@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import ScrollToTop from './components/ScrollToTop';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
@@ -118,6 +119,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <AppContent />
+        <Analytics />
       </CartProvider>
     </AuthProvider>
   );
