@@ -134,7 +134,7 @@ export default function CartDrawer() {
             Proceed to Checkout • ₹{cartSubtotal.toFixed(2)}
           </button>
 
-          <p className="cart-footer-note">Taxes and shipping calculated at checkout</p>
+          <p className="cart-footer-note">Free Shipping on all orders • Taxes included</p>
         </div>
       </div>
     </div>

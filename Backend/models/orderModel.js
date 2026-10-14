@@ -127,7 +127,7 @@ const createCheckoutOrder = async (
         .reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
         .toFixed(2)
     );
-    const shipping_amount = subtotal >= 400 ? 0.0 : 49.0; // Free shipping over ₹400
+    const shipping_amount = 0.0; // Free shipping for all products
     let discount_amount = 0.0;
     let appliedCouponCode = null;
 
