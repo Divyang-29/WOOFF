@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { loadShiprocketScript } from '../../utils/shiprocket';
 import {
   getCachedProductBySlug,
   setCachedProduct,
@@ -29,9 +28,6 @@ export default function ProductDetails() {
 
   // Payment States
   const [paymentError, setPaymentError] = useState(null);
-
-  // Shiprocket Checkout States
-  const [isProcessingShiprocket, setIsProcessingShiprocket] = useState(false);
 
   // Perfora-style states
   const [pincode, setPincode] = useState('');
@@ -130,66 +126,6 @@ export default function ProductDetails() {
     });
   };
 
-  const handleShiprocketCheckout = async (e) => {
-    e.preventDefault();
-    if (!data || data.stock <= 0) return;
-
-    try {
-      setPaymentError(null);
-      setIsProcessingShiprocket(true);
-
-      // STEP 1: Ensure Shiprocket script and hidden sellerDomain are ready
-      await loadShiprocketScript();
-
-      // STEP 2: Request Shiprocket Access Token from backend
-      const response = await fetch('/api/shiprocket/checkout/initiate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          items: [
-            {
-              variant_id: String(data.id),
-              quantity: quantity,
-            },
-          ],
-          redirect_url: `${window.location.origin}/order-success`,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok || !result.success || !result.token) {
-        if (
-          result.isPendingChannelSync ||
-          result.message?.includes('pending') ||
-          result.message?.includes('Something went wrong')
-        ) {
-          throw new Error(
-            'Shiprocket Checkout channel is pending activation from Shiprocket team. In the meantime, please click "PAY VIA RAZORPAY" below.'
-          );
-        }
-        throw new Error(
-          result.message || 'Shiprocket checkout initiation pending catalog sync configuration.'
-        );
-      }
-
-      // STEP 3: Open Shiprocket Checkout Modal via HeadlessCheckout
-      if (window.HeadlessCheckout && typeof window.HeadlessCheckout.addToCart === 'function') {
-        window.HeadlessCheckout.addToCart(e, result.token, {
-          fallbackUrl: `${window.location.origin}/product/${data.slug || data.id}`,
-        });
-      } else {
-        throw new Error('Shiprocket HeadlessCheckout library not loaded in browser.');
-      }
-    } catch (err) {
-      console.error('Shiprocket checkout error:', err);
-      setPaymentError(err.message || 'Unable to open Shiprocket Checkout.');
-    } finally {
-      setIsProcessingShiprocket(false);
-    }
-  };
 
   useEffect(() => {
     let isMounted = true;
