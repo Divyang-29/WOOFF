@@ -9,14 +9,14 @@ export default defineConfig({
     host: true,
     proxy: {
       '/api': {
-        target: process.env.VITE_BACKEND_URL || 'http://localhost:8080',
+        target: process.env.VITE_BACKEND_URL || 'https://api.wooff.care',
         changeOrigin: true,
-        secure: false,
+        secure: true,
       },
       '/contact': {
-        target: process.env.VITE_BACKEND_URL || 'http://localhost:8080',
+        target: process.env.VITE_BACKEND_URL || 'https://api.wooff.care',
         changeOrigin: true,
-        secure: false,
+        secure: true,
       },
     },
   },

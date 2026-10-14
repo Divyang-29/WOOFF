@@ -14,9 +14,9 @@ export const loadShiprocketScript = () => {
       domainInput = document.createElement("input");
       domainInput.type = "hidden";
       domainInput.id = "sellerDomain";
-      // Defaults to current hostname or onrender
+      // Defaults to current hostname or wooff.care
       domainInput.value = window.location.hostname.includes("localhost")
-        ? "wooff-frontend.onrender.com"
+        ? "wooff.care"
         : window.location.hostname;
       document.body.appendChild(domainInput);
     }

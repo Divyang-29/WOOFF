@@ -1,23 +1,53 @@
+import axios from 'axios';
+
 /**
  * Centralized API Endpoints Configuration for Wooff Frontend.
  * Automatically prepends `import.meta.env.VITE_API_URL` if defined,
- * otherwise falls back to relative paths for Vite proxy forwarding.
+ * otherwise falls back to 'https://api.wooff.care'.
  */
-const rawBaseUrl = import.meta.env.VITE_API_URL || '';
+const rawBaseUrl = import.meta.env.VITE_API_URL || 'https://api.wooff.care';
 export const API_BASE_URL = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
 
-// Intercept window.fetch so all relative API calls (/api/... and /terms-and-conditions) automatically route to API_BASE_URL in production
+// Configure Axios baseURL and interceptors for all axios requests
+if (API_BASE_URL) {
+  axios.defaults.baseURL = API_BASE_URL;
+}
+
+axios.interceptors.request.use(
+  (config) => {
+    if (API_BASE_URL && config.url) {
+      if (config.url.includes('onrender.com') || config.url.includes('localhost:8080') || config.url.includes('127.0.0.1:8080')) {
+        config.url = config.url
+          .replace(/https?:\/\/[a-zA-Z0-9-]+\.onrender\.com/g, API_BASE_URL)
+          .replace(/https?:\/\/(localhost|127\.0\.0\.1):8080/g, API_BASE_URL);
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Intercept window.fetch so all relative API calls (/api/... and /terms-and-conditions) or legacy URLs automatically route to API_BASE_URL in production
 if (API_BASE_URL && typeof window !== 'undefined' && window.fetch) {
   const originalFetch = window.fetch;
   window.fetch = function (resource, config) {
     if (typeof resource === 'string') {
-      if (resource.startsWith('/api') || resource.startsWith('/terms-and-conditions')) {
+      if (resource.includes('onrender.com') || resource.includes('localhost:8080') || resource.includes('127.0.0.1:8080')) {
+        resource = resource
+          .replace(/https?:\/\/[a-zA-Z0-9-]+\.onrender\.com/g, API_BASE_URL)
+          .replace(/https?:\/\/(localhost|127\.0\.0\.1):8080/g, API_BASE_URL);
+      } else if (resource.startsWith('/api') || resource.startsWith('/terms-and-conditions')) {
         resource = `${API_BASE_URL}${resource}`;
       }
     } else if (resource instanceof Request && resource.url) {
       try {
         const parsedUrl = new URL(resource.url);
-        if (parsedUrl.pathname.startsWith('/api') || parsedUrl.pathname.startsWith('/terms-and-conditions')) {
+        if (parsedUrl.hostname.includes('onrender.com') || parsedUrl.host.includes('localhost:8080') || parsedUrl.host.includes('127.0.0.1:8080')) {
+          const newUrl = resource.url
+            .replace(/https?:\/\/[a-zA-Z0-9-]+\.onrender\.com/g, API_BASE_URL)
+            .replace(/https?:\/\/(localhost|127\.0\.0\.1):8080/g, API_BASE_URL);
+          resource = new Request(newUrl, resource);
+        } else if (parsedUrl.pathname.startsWith('/api') || parsedUrl.pathname.startsWith('/terms-and-conditions')) {
           resource = new Request(`${API_BASE_URL}${parsedUrl.pathname}${parsedUrl.search}`, resource);
         }
       } catch {
