@@ -44,6 +44,13 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
   const [successOrder, setSuccessOrder] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('online'); // 'online' | 'cod'
 
+  // Scroll to top immediately when order confirmation is reached
+  useEffect(() => {
+    if (successOrder) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+  }, [successOrder]);
+
   // Pincode auto-fetch state
   const [isFetchingPincode, setIsFetchingPincode] = useState(false);
 
@@ -412,33 +419,33 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
 
         <div className="order-details-card">
           <div className="detail-row">
-            <span>Order Reference:</span>
-            <strong>{successOrder.orderNumber}</strong>
+            <span className="detail-label">Order Reference:</span>
+            <strong className="detail-value detail-value-order">{successOrder.orderNumber}</strong>
           </div>
           {successOrder.isCod ? (
             <div className="detail-row">
-              <span>Payment Mode:</span>
-              <strong style={{ color: '#2e7d32' }}>
+              <span className="detail-label">Payment Mode:</span>
+              <strong className="detail-value" style={{ color: '#2e7d32' }}>
                 <i className="fa-solid fa-money-bill-wave me-1"></i> Cash on Delivery (COD)
               </strong>
             </div>
           ) : (
             <div className="detail-row">
-              <span>Payment ID:</span>
-              <code>{successOrder.paymentId}</code>
+              <span className="detail-label">Payment ID:</span>
+              <code className="detail-value detail-value-code">{successOrder.paymentId}</code>
             </div>
           )}
           <div className="detail-row">
-            <span>{successOrder.isCod ? 'Amount Due on Delivery:' : 'Amount Paid:'}</span>
-            <strong style={{ fontSize: '1.1rem', color: '#4B2E1E' }}>₹{successOrder.totalAmount}</strong>
+            <span className="detail-label">{successOrder.isCod ? 'Amount Due on Delivery:' : 'Amount Paid:'}</span>
+            <strong className="detail-value" style={{ fontSize: '1.1rem', color: '#4B2E1E' }}>₹{successOrder.totalAmount}</strong>
           </div>
           <div className="detail-row">
-            <span>Shipping To:</span>
-            <span>{successOrder.shippingAddress}</span>
+            <span className="detail-label">Shipping To:</span>
+            <span className="detail-value">{successOrder.shippingAddress}</span>
           </div>
           <div className="detail-row">
-            <span>Confirmation Sent To:</span>
-            <span>{successOrder.customerEmail}</span>
+            <span className="detail-label">Confirmation Sent To:</span>
+            <span className="detail-value detail-value-email">{successOrder.customerEmail}</span>
           </div>
         </div>
 

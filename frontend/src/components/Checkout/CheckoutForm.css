@@ -444,13 +444,14 @@
 /* Success Screen */
 .checkout-success-container {
   max-width: 650px;
-  margin: 40px auto;
+  margin: 30px auto;
   background: #ffffff;
   border-radius: 20px;
-  padding: 40px;
+  padding: 40px 32px;
   text-align: center;
   border: 1px solid #eadfd5;
   box-shadow: 0 12px 40px rgba(75, 46, 30, 0.08);
+  box-sizing: border-box;
 }
 
 .success-icon-badge {
@@ -478,18 +479,21 @@
   font-size: 1.05rem;
   color: #645348;
   margin-bottom: 28px;
+  line-height: 1.5;
 }
 
 .order-details-card {
   background: #fdfbf9;
   border: 1px solid #ede3da;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 20px;
   text-align: left;
   margin-bottom: 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .detail-row {
@@ -498,13 +502,51 @@
   align-items: flex-start;
   font-size: 0.95rem;
   color: #55443a;
-  gap: 16px;
+  gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+.detail-row .detail-label,
 .detail-row span:first-child {
   color: #837267;
-  font-size: 0.9rem;
-  min-width: 140px;
+  font-size: 0.88rem;
+  flex: 0 0 auto;
+  max-width: 44%;
+  line-height: 1.4;
+}
+
+.detail-row .detail-value,
+.detail-row span:last-child,
+.detail-row strong,
+.detail-row code {
+  flex: 1 1 auto;
+  text-align: right;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+
+.detail-value-order {
+  font-family: inherit;
+  font-weight: 700;
+  color: #4B2E1E;
+  word-break: break-word;
+}
+
+.detail-value-email {
+  word-break: break-all !important;
+  overflow-wrap: anywhere !important;
+  color: #4B2E1E;
+}
+
+.detail-value-code {
+  word-break: break-all !important;
+  overflow-wrap: anywhere !important;
+  font-size: 0.85rem;
+  background: #f1ede7;
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .fulfillment-badge {
@@ -513,11 +555,14 @@
   color: #0b57d0;
   padding: 12px 16px;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
   display: inline-flex;
   align-items: center;
+  text-align: left;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .success-actions {
@@ -662,5 +707,73 @@
   .gateways-icons .badge {
     font-size: 0.7rem;
     padding: 4px 8px;
+  }
+
+  /* Order Confirmation Screen Mobile Styles */
+  .checkout-success-container {
+    margin: 10px auto 25px auto;
+    padding: 24px 14px;
+    border-radius: 16px;
+    max-width: 100%;
+  }
+
+  .success-icon-badge {
+    width: 60px;
+    height: 60px;
+    font-size: 26px;
+    margin-bottom: 14px;
+  }
+
+  .success-title {
+    font-size: 1.45rem;
+  }
+
+  .success-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  .order-details-card {
+    padding: 16px 12px;
+    margin-bottom: 18px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+
+  .detail-row {
+    font-size: 0.86rem;
+    gap: 8px;
+  }
+
+  .detail-row .detail-label,
+  .detail-row span:first-child {
+    font-size: 0.8rem;
+    max-width: 40%;
+  }
+
+  .detail-value-order {
+    font-size: 0.86rem;
+  }
+
+  .fulfillment-badge {
+    font-size: 0.8rem;
+    padding: 10px 12px;
+    margin-bottom: 20px;
+  }
+
+  .success-actions {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .btn-primary-action,
+  .btn-secondary-action {
+    width: 100%;
+    padding: 14px 18px;
+    text-align: center;
+    justify-content: center;
+    box-sizing: border-box;
   }
 }
