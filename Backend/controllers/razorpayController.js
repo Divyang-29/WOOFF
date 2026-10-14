@@ -154,10 +154,10 @@ const verifyPaymentHandler = async (req, res) => {
     }
 
     if (resolvedDbOrderId) {
-      // 1. Update Order status
+      // 1. Update Order status: marked as paid & confirmed
       await pool.query(
         `UPDATE orders
-         SET payment_status = 'paid', order_status = 'processing', updated_at = CURRENT_TIMESTAMP
+         SET payment_status = 'paid', order_status = 'confirmed', updated_at = CURRENT_TIMESTAMP
          WHERE id = $1`,
         [resolvedDbOrderId]
       );

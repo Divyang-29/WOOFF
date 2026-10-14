@@ -313,7 +313,7 @@ const getUserOrders = async (userId, options = {}) => {
 
   if (!isAdmin) {
     values.push(userId);
-    conditions.push(`o.user_id = $${values.length}`);
+    conditions.push(`(o.user_id = $${values.length} OR (o.customer_email IS NOT NULL AND LOWER(o.customer_email) = (SELECT LOWER(email) FROM users WHERE id = $${values.length} LIMIT 1)))`);
   }
 
   if (status) {

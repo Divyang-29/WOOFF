@@ -42,7 +42,7 @@ async function reconcilePendingOrders() {
           const paymentId = capturedPayment?.id || "rzp_reconciled";
 
           await pool.query(
-            "UPDATE orders SET payment_status = 'paid', order_status = 'processing', updated_at = CURRENT_TIMESTAMP WHERE id = $1",
+            "UPDATE orders SET payment_status = 'paid', order_status = 'confirmed', updated_at = CURRENT_TIMESTAMP WHERE id = $1",
             [row.id]
           );
           await pool.query(
@@ -54,6 +54,21 @@ async function reconcilePendingOrders() {
           createShiprocketFulfillment(row.id).catch((err) => {
             console.error(`[Auto-Reconciliation Shiprocket Dispatch Error] Order #${row.id}:`, err.message);
           });
+        } else if (rzpOrder && rzpOrder.status === "attempted" && Number(rzpOrder.amount_paid || 0) === 0) {
+          // If customer attempted payment and all attempts failed, mark failed
+          const payments = await razorpay.orders.fetchPayments(row.provider_order_id);
+          const hasSuccess = payments.items?.some((p) => p.status === "captured");
+          const hasFailed = payments.items?.some((p) => p.status === "failed");
+          if (!hasSuccess && hasFailed) {
+            await pool.query(
+              "UPDATE orders SET payment_status = 'failed', order_status = 'cancelled', updated_at = CURRENT_TIMESTAMP WHERE id = $1",
+              [row.id]
+            );
+            await pool.query(
+              "UPDATE payment_transactions SET provider_payment_id = $1, status = 'failed', failure_message = 'Payment failed on Razorpay', updated_at = CURRENT_TIMESTAMP WHERE order_id = $2",
+              [payments.items[0]?.id || "failed", row.id]
+            );
+          }
         }
       } catch (orderErr) {
         // Individual check failure non-fatal

@@ -5,6 +5,52 @@ import Banner from '../../components/Banner/Banner';
 import { API_ENDPOINTS } from '../../api';
 import './Account.css';
 
+// Helper to format customer-friendly order and payment status badges
+const getOrderStatusMeta = (order) => {
+  const isPaid = order.payment_status === 'paid';
+  const isCod = String(order.payment_method || '').toLowerCase() === 'cod';
+  const rawStatus = (order.order_status || 'pending').toLowerCase();
+  const paymentStatus = (order.payment_status || 'pending').toLowerCase();
+
+  if (rawStatus === 'delivered') {
+    return {
+      badgeClass: 'delivered',
+      label: 'Delivered',
+      subtext: isPaid ? '✓ Paid • Delivered' : isCod ? '💵 Paid on Delivery' : 'Delivered',
+    };
+  }
+
+  if (rawStatus === 'shipped') {
+    return {
+      badgeClass: 'shipped',
+      label: 'Shipped',
+      subtext: isPaid ? '✓ Paid • On the way' : isCod ? '💵 COD • On the way' : 'Dispatched',
+    };
+  }
+
+  if (rawStatus === 'cancelled' || paymentStatus === 'failed') {
+    return {
+      badgeClass: 'cancelled',
+      label: 'Payment Incomplete',
+      subtext: '✕ Payment Failed / Cancelled',
+    };
+  }
+
+  if (isPaid || rawStatus === 'confirmed' || rawStatus === 'processing' || isCod) {
+    return {
+      badgeClass: 'confirmed',
+      label: 'Confirmed',
+      subtext: isPaid ? '✓ Payment Completed' : '💵 Cash on Delivery',
+    };
+  }
+
+  return {
+    badgeClass: 'pending',
+    label: 'Payment Pending',
+    subtext: 'Payment Pending',
+  };
+};
+
 export default function Account() {
   const { user, logout, isAuthenticated, updateUser } = useAuth();
   const navigate = useNavigate();
@@ -379,9 +425,14 @@ export default function Account() {
                                 • {order.created_at ? String(order.created_at).split('T')[0] : 'Recent'}
                               </span>
                             </div>
-                            <span className={`order-status-badge ${order.order_status || 'pending'}`}>
-                              {order.order_status || 'Pending'}
-                            </span>
+                            {(() => {
+                              const meta = getOrderStatusMeta(order);
+                              return (
+                                <span className={`order-status-badge ${meta.badgeClass}`}>
+                                  {meta.label}
+                                </span>
+                              );
+                            })()}
                           </div>
                           <div className="order-card-body">
                             <div className="small text-muted">
@@ -438,34 +489,36 @@ export default function Account() {
                   </div>
                 ) : (
                   <div className="orders-list-wrap">
-                    {orders.map((order) => (
-                      <div key={order.id} className="order-history-card">
-                        <div className="order-card-header">
-                          <div>
-                            <span className="order-number">Order #{order.order_number || order.id}</span>
-                            <span className="order-date ms-2">
-                              {order.created_at ? new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}
+                    {orders.map((order) => {
+                      const meta = getOrderStatusMeta(order);
+                      return (
+                        <div key={order.id} className="order-history-card">
+                          <div className="order-card-header">
+                            <div>
+                              <span className="order-number">Order #{order.order_number || order.id}</span>
+                              <span className="order-date ms-2">
+                                {order.created_at ? new Date(order.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent'}
+                              </span>
+                            </div>
+                            <span className={`order-status-badge ${meta.badgeClass}`}>
+                              {meta.label}
                             </span>
                           </div>
-                          <span className={`order-status-badge ${order.order_status || 'pending'}`}>
-                            {order.order_status || 'Pending'}
-                          </span>
-                        </div>
 
-                        <div className="order-card-body">
-                          <div className="order-product-thumbnails">
-                            <img
-                              src="/assets/tooth_paste.webp"
-                              alt="Wooff Product"
-                              className="order-thumb-img"
-                            />
-                            <div>
-                              <div className="fw-bold text-dark small">Wooff Toothpaste</div>
-                              <div className="text-muted small">
-                                {order.payment_status === 'paid' ? 'Payment Completed' : 'Payment Pending'}
+                          <div className="order-card-body">
+                            <div className="order-product-thumbnails">
+                              <img
+                                src="/assets/tooth_paste.webp"
+                                alt="Wooff Product"
+                                className="order-thumb-img"
+                              />
+                              <div>
+                                <div className="fw-bold text-dark small">Wooff Toothpaste</div>
+                                <div className="text-muted small">
+                                  {meta.subtext}
+                                </div>
                               </div>
                             </div>
-                          </div>
 
                           <div className="text-end">
                             <div className="small text-muted">Total</div>
@@ -480,9 +533,10 @@ export default function Account() {
                           </div>
                         )}
                       </div>
-                    ))}
-                  </div>
-                )}
+                    );
+                  })}
+                </div>
+              )}
               </div>
             )}
 

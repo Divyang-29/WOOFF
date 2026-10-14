@@ -122,10 +122,10 @@ const verifyPaymentSignature = async ({
         [providerPaymentId, providerOrderId, orderId]
       );
 
-      // 2. Update Order Record: payment_status = paid, order_status = processing
+      // 2. Update Order Record: payment_status = paid, order_status = confirmed
       await client.query(
         `UPDATE orders
-         SET payment_status = 'paid', order_status = 'processing', updated_at = CURRENT_TIMESTAMP
+         SET payment_status = 'paid', order_status = 'confirmed', updated_at = CURRENT_TIMESTAMP
          WHERE id = $1`,
         [orderId]
       );
@@ -250,7 +250,7 @@ const processWebhookEvent = async (webhookBody, signatureHeader, rawBody = null)
 
       await client.query(
         `UPDATE orders
-         SET payment_status = 'paid', order_status = 'processing', updated_at = CURRENT_TIMESTAMP
+         SET payment_status = 'paid', order_status = 'confirmed', updated_at = CURRENT_TIMESTAMP
          WHERE id = $1`,
         [order.id]
       );
