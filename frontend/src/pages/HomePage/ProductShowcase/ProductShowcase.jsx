@@ -15,7 +15,7 @@ export default function ProductShowcase() {
         <div className="showcase-header">
           <h2>  The Toothpaste Kids Want.
             <br />
-            The Science Moms Trust.</h2>
+            The Science Parents Trust.</h2>
         </div>
 
         {/* Center Product Display */}

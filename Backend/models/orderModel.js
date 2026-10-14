@@ -13,7 +13,7 @@ const generateOrderNumber = () => {
 // Checkout & Create Order (Database Transaction with Coupon Integration)
 const createCheckoutOrder = async (
   userId,
-  { address_id, notes, coupon_code, email, customer_email, address, cart_items, items }
+  { address_id, notes, coupon_code, email, customer_email, address, cart_items, items, payment_method = "prepaid" }
 ) => {
   const client = await pool.connect();
   try {
@@ -132,11 +132,14 @@ const createCheckoutOrder = async (
         currency, payment_status, order_status,
         shipping_address_line_1, shipping_address_line_2, shipping_city, shipping_state,
         shipping_postal_code, shipping_landmark, shipping_address_type,
-        customer_phone, customer_name, customer_email, notes, coupon_code
+        customer_phone, customer_name, customer_email, notes, coupon_code, payment_method
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)
       RETURNING *
     `;
+
+    const normalizedPaymentMethod = String(payment_method || "prepaid").toLowerCase();
+    const isCod = normalizedPaymentMethod === "cod";
 
     const orderValues = [
       order_number,
@@ -148,7 +151,7 @@ const createCheckoutOrder = async (
       total_amount,
       "INR",
       "pending",
-      "pending",
+      isCod ? "confirmed" : "pending",
       shippingAddress.address_line_1,
       shippingAddress.address_line_2 || null,
       shippingAddress.city,
@@ -161,6 +164,7 @@ const createCheckoutOrder = async (
       resolvedEmail,
       notes ? notes.trim() : null,
       appliedCouponCode,
+      normalizedPaymentMethod,
     ];
 
     const orderRes = await client.query(orderQuery, orderValues);

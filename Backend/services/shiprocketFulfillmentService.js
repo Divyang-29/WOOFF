@@ -251,7 +251,7 @@ async function createShiprocketFulfillment(orderId) {
       tax: 0,
       hsn: DEFAULT_HSN,
     })),
-    payment_method: "Prepaid",
+    payment_method: String(order.payment_method || "").toLowerCase() === "cod" ? "COD" : "Prepaid",
     shipping_charges: parseFloat(order.shipping_amount || 0),
     giftwrap_charges: 0,
     transaction_charges: 0,

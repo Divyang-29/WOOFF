@@ -9,6 +9,7 @@ const {
 } = require("../models/orderModel");
 const { logAdminAction } = require("../services/auditService");
 const { recordOrUpdateAbandonedCart } = require("../models/abandonedCartModel");
+const { createShiprocketFulfillment } = require("../services/shiprocketFulfillmentService");
 
 // Checkout Endpoint (POST /api/orders/checkout)
 const checkoutHandler = async (req, res) => {
@@ -24,6 +25,7 @@ const checkoutHandler = async (req, res) => {
       address,
       cart_items,
       items,
+      payment_method = "razorpay",
       // Flat address fields support
       full_name,
       fullName,
@@ -64,6 +66,8 @@ const checkoutHandler = async (req, res) => {
       }
     }
 
+    const normalizedPaymentMethod = String(payment_method || "razorpay").toLowerCase();
+
     const order = await createCheckoutOrder(userId, {
       address_id,
       notes,
@@ -71,9 +75,55 @@ const checkoutHandler = async (req, res) => {
       email: email || customer_email,
       address: resolvedAddress,
       cart_items: cart_items || items,
+      payment_method: normalizedPaymentMethod,
     });
 
-    // Initialize Razorpay SDK and generate Razorpay Order
+    // ── Handle Cash on Delivery (COD) Flow ─────────────────────────
+    if (normalizedPaymentMethod === "cod") {
+      try {
+        await pool.query(
+          `INSERT INTO payment_transactions (
+            order_id, payment_provider, provider_order_id, amount, currency, status, payment_method, metadata
+          )
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+          [
+            order.id,
+            "cod",
+            `cod_${order.id}_${Date.now()}`,
+            order.total_amount,
+            "INR",
+            "pending",
+            "cash_on_delivery",
+            JSON.stringify({
+              order_number: order.order_number,
+              customer_email: order.customer_email,
+              type: "cod",
+            }),
+          ]
+        );
+      } catch (txErr) {
+        console.warn("Failed to record payment_transactions for COD:", txErr.message);
+      }
+
+      // Automatically dispatch to Shiprocket with COD payment method
+      setImmediate(() => {
+        createShiprocketFulfillment(order.id).catch((err) => {
+          console.error(`[Shiprocket COD Dispatch Error] Order #${order.id}:`, err.message);
+        });
+      });
+
+      return res.status(201).json({
+        success: true,
+        is_cod: true,
+        message: "Cash on delivery order placed successfully.",
+        order,
+        order_id: order.id,
+        amount: Math.round(Number(order.total_amount) * 100),
+        currency: "INR",
+      });
+    }
+
+    // ── Handle Online Prepaid Flow (Razorpay) ─────────────────────────
     const key_id = process.env.RAZORPAY_KEY_ID;
     const key_secret = process.env.RAZORPAY_KEY_SECRET;
 
@@ -104,9 +154,9 @@ const checkoutHandler = async (req, res) => {
     try {
       await pool.query(
         `INSERT INTO payment_transactions (
-          order_id, payment_provider, provider_order_id, amount, currency, status, metadata
+          order_id, payment_provider, provider_order_id, amount, currency, status, payment_method, metadata
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
         [
           order.id,
           "razorpay",
@@ -114,6 +164,7 @@ const checkoutHandler = async (req, res) => {
           order.total_amount,
           "INR",
           "created",
+          "online",
           JSON.stringify({
             order_number: order.order_number,
             razorpay_order_id: razorpayOrder.id,

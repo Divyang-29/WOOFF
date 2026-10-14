@@ -42,6 +42,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successOrder, setSuccessOrder] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState('online'); // 'online' | 'cod'
 
   // Pincode auto-fetch state
   const [isFetchingPincode, setIsFetchingPincode] = useState(false);
@@ -257,6 +258,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
           pincode: formData.pincode.trim(),
         },
         notes: formData.notes.trim() || null,
+        payment_method: paymentMethod === 'cod' ? 'cod' : 'razorpay',
       };
 
       const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
@@ -271,7 +273,36 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
 
       const { data } = response;
 
-      if (!data.success || !data.razorpay_order_id) {
+      if (!data.success) {
+        throw new Error(data.message || 'Failed to initialize payment session from server.');
+      }
+
+      // ── Handle Cash on Delivery (COD) Success ───────────────────
+      if (data.is_cod) {
+        clearCart();
+        invalidateProductCache();
+
+        const orderConfirmation = {
+          orderNumber: data.order?.order_number || `WOOFF-${data.order_id}`,
+          orderId: data.order_id || data.order?.id,
+          totalAmount: ((data.amount || Math.round(grandTotal * 100)) / 100).toFixed(2),
+          customerName: formData.fullName,
+          customerEmail: formData.email,
+          shippingAddress: `${formData.addressLine1}, ${formData.city}, ${formData.state} - ${formData.pincode}`,
+          isCod: true,
+          paymentMethod: 'Cash on Delivery (COD)',
+        };
+
+        setSuccessOrder(orderConfirmation);
+        if (typeof onOrderSuccess === 'function') {
+          onOrderSuccess(orderConfirmation);
+        }
+        setIsSubmitting(false);
+        return;
+      }
+
+      // ── Handle Razorpay Online Prepaid Flow ───────────────────────
+      if (!data.razorpay_order_id) {
         throw new Error(data.message || 'Failed to initialize payment session from server.');
       }
 
@@ -383,13 +414,22 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
             <span>Order Reference:</span>
             <strong>{successOrder.orderNumber}</strong>
           </div>
+          {successOrder.isCod ? (
+            <div className="detail-row">
+              <span>Payment Mode:</span>
+              <strong style={{ color: '#2e7d32' }}>
+                <i className="fa-solid fa-money-bill-wave me-1"></i> Cash on Delivery (COD)
+              </strong>
+            </div>
+          ) : (
+            <div className="detail-row">
+              <span>Payment ID:</span>
+              <code>{successOrder.paymentId}</code>
+            </div>
+          )}
           <div className="detail-row">
-            <span>Payment ID:</span>
-            <code>{successOrder.paymentId}</code>
-          </div>
-          <div className="detail-row">
-            <span>Amount Paid:</span>
-            <strong>₹{successOrder.totalAmount}</strong>
+            <span>{successOrder.isCod ? 'Amount Due on Delivery:' : 'Amount Paid:'}</span>
+            <strong style={{ fontSize: '1.1rem', color: '#4B2E1E' }}>₹{successOrder.totalAmount}</strong>
           </div>
           <div className="detail-row">
             <span>Shipping To:</span>
@@ -429,7 +469,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
 
   return (
     <div className="checkout-component-wrapper">
-      <div className="checkout-grid">
+      <form id="checkoutForm" onSubmit={handleSubmit} noValidate className="checkout-grid">
         {/* LEFT COLUMN: Shipping Address Form */}
         <div className="checkout-form-column">
           <div className="checkout-card">
@@ -450,7 +490,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
               </div>
             )}
 
-            <form onSubmit={handleSubmit} noValidate>
+            <div>
               {/* Full Name */}
               <div className="form-group mb-2 mb-md-3">
                 <label htmlFor="fullName" className="form-label">
@@ -635,39 +675,7 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
                   disabled={isSubmitting}
                 />
               </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                id="submitCheckoutBtn"
-                className="checkout-submit-btn"
-                disabled={isSubmitting || itemsToCheckout.length === 0}
-              >
-                {isSubmitting ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    Connecting to Razorpay Secure Gateway...
-                  </>
-                ) : (
-                  <>
-                    <i className="fa-solid fa-lock me-2"></i>
-                    PAY ₹{grandTotal.toFixed(2)} VIA RAZORPAY
-                  </>
-                )}
-              </button>
-
-              <div className="checkout-trust-indicators">
-                <span>
-                  <i className="fa-solid fa-shield-halved text-success me-1"></i> 256-Bit SSL Encrypted
-                </span>
-                <span>
-                  <i className="fa-solid fa-bolt text-warning me-1"></i> Instant Confirmation
-                </span>
-                <span>
-                  <i className="fa-solid fa-truck text-primary me-1"></i> Shiprocket Express
-                </span>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
 
@@ -728,17 +736,115 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
               </div>
             </div>
 
-            <div className="payment-gateways-accepted">
-              <span className="gateways-label">Accepted Payment Methods:</span>
-              <div className="gateways-icons">
-                <span className="badge bg-light text-dark border">UPI (GPay / PhonePe / Paytm)</span>
-                <span className="badge bg-light text-dark border">Credit & Debit Cards</span>
-                <span className="badge bg-light text-dark border">NetBanking</span>
+            {/* Payment Method Selection */}
+            <div className="checkout-payment-section">
+              <span className="checkout-payment-heading">Select Payment Method</span>
+
+              {/* 1. Online Payment (Razorpay) */}
+              <div
+                className={`payment-option-card ${paymentMethod === 'online' ? 'selected' : ''}`}
+                onClick={() => setPaymentMethod('online')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => (e.key === ' ' || e.key === 'Enter') && setPaymentMethod('online')}
+              >
+                <input
+                  type="radio"
+                  id="pay-online"
+                  name="paymentMethodOption"
+                  value="online"
+                  checked={paymentMethod === 'online'}
+                  onChange={() => setPaymentMethod('online')}
+                />
+                <div className="payment-option-content">
+                  <label htmlFor="pay-online" className="payment-option-title mb-0">
+                    💳 Online Payment
+                    <span className="payment-option-badge">Instant</span>
+                  </label>
+                  <span className="payment-option-desc">
+                    Instant UPI (GPay, PhonePe, Paytm), Cards & NetBanking via Razorpay
+                  </span>
+                </div>
+              </div>
+
+              {/* 2. Cash on Delivery (COD) */}
+              <div
+                className={`payment-option-card ${paymentMethod === 'cod' ? 'selected' : ''}`}
+                onClick={() => setPaymentMethod('cod')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => (e.key === ' ' || e.key === 'Enter') && setPaymentMethod('cod')}
+              >
+                <input
+                  type="radio"
+                  id="pay-cod"
+                  name="paymentMethodOption"
+                  value="cod"
+                  checked={paymentMethod === 'cod'}
+                  onChange={() => setPaymentMethod('cod')}
+                />
+                <div className="payment-option-content">
+                  <label htmlFor="pay-cod" className="payment-option-title mb-0">
+                    💵 Cash on Delivery (COD)
+                  </label>
+                  <span className="payment-option-desc">
+                    Pay with cash or UPI at your doorstep upon delivery
+                  </span>
+                </div>
               </div>
             </div>
+
+            {/* Action / Submit Button */}
+            <button
+              type="submit"
+              id="submitCheckoutBtn"
+              className={`checkout-submit-btn ${paymentMethod === 'cod' ? 'cod-mode' : ''}`}
+              disabled={isSubmitting || itemsToCheckout.length === 0}
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  {paymentMethod === 'cod' ? 'Confirming Your Order...' : 'Connecting to Razorpay Secure Gateway...'}
+                </>
+              ) : paymentMethod === 'cod' ? (
+                <>
+                  <i className="fa-solid fa-truck-fast me-2"></i>
+                  PLACE ORDER (CASH ON DELIVERY)
+                </>
+              ) : (
+                <>
+                  <i className="fa-solid fa-lock me-2"></i>
+                  PAY ₹{grandTotal.toFixed(2)} VIA RAZORPAY
+                </>
+              )}
+            </button>
+
+            {/* Trust Indicators */}
+            <div className="checkout-trust-indicators">
+              <span>
+                <i className="fa-solid fa-shield-halved text-success me-1"></i> 256-Bit SSL
+              </span>
+              <span>
+                <i className="fa-solid fa-bolt text-warning me-1"></i> Instant Sync
+              </span>
+              <span>
+                <i className="fa-solid fa-truck text-primary me-1"></i> Express Delivery
+              </span>
+            </div>
+
+            {paymentMethod === 'online' && (
+              <div className="payment-gateways-accepted">
+                <span className="gateways-label">Accepted Payment Methods:</span>
+                <div className="gateways-icons">
+                  <span className="badge bg-light text-dark border">UPI (GPay / PhonePe / Paytm)</span>
+                  <span className="badge bg-light text-dark border">Credit & Debit Cards</span>
+                  <span className="badge bg-light text-dark border">NetBanking</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

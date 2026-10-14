@@ -141,7 +141,7 @@ export default function ProductDetails() {
       try {
         const response = await fetch(`/api/products/${slug}?_t=${Date.now()}`);
         const result = await response.json();
-        
+
         if (result.success && isMounted) {
           setData(result.product);
           setCachedProduct(slug, result.product);
@@ -234,21 +234,21 @@ export default function ProductDetails() {
   return (
     <div className="product-page-wrapper">
       <div className="product-container">
-        
+
         {/* Top Section: Image Gallery & Sticky Info */}
         <div className="product-hero-section">
-          
+
           {/* Gallery Section - 1 Big Image + Bottom Thumbnails Row */}
           <div className="product-gallery-container">
             {/* Big Main Image Preview */}
-            <div 
+            <div
               className="gallery-main-card"
               onClick={() => setLightboxImage(allImages[selectedImageIndex] || allImages[0])}
             >
-              <img 
-                src={getOptimizedImageUrl(allImages[selectedImageIndex] || allImages[0], { width: 850 })} 
-                alt={`${data.title} preview`} 
-                className="gallery-main-img" 
+              <img
+                src={getOptimizedImageUrl(allImages[selectedImageIndex] || allImages[0], { width: 850 })}
+                alt={`${data.title} preview`}
+                className="gallery-main-img"
                 fetchPriority="high"
                 decoding="async"
                 onError={(e) => {
@@ -259,10 +259,10 @@ export default function ProductDetails() {
               {/* Invisible pre-decoded gallery buffers for instant 0ms switching */}
               <div style={{ display: 'none' }} aria-hidden="true">
                 {allImages.map((img, idx) => (
-                  <img 
+                  <img
                     key={`pre-decoded-${idx}`}
-                    src={getOptimizedImageUrl(img, { width: 850 })} 
-                    alt="" 
+                    src={getOptimizedImageUrl(img, { width: 850 })}
+                    alt=""
                     decoding="async"
                   />
                 ))}
@@ -281,7 +281,7 @@ export default function ProductDetails() {
             {allImages.length > 1 && (
               <div className="gallery-thumbnails-row">
                 {allImages.map((img, idx) => (
-                  <button 
+                  <button
                     key={idx}
                     type="button"
                     className={`gallery-thumb-card ${idx === selectedImageIndex ? 'active' : ''}`}
@@ -289,10 +289,10 @@ export default function ProductDetails() {
                     onMouseEnter={() => setSelectedImageIndex(idx)}
                     aria-label={`View photo ${idx + 1}`}
                   >
-                    <img 
-                      src={getOptimizedImageUrl(img, { width: 160 })} 
-                      alt={`${data.title} thumbnail ${idx + 1}`} 
-                      className="gallery-thumb-img" 
+                    <img
+                      src={getOptimizedImageUrl(img, { width: 160 })}
+                      alt={`${data.title} thumbnail ${idx + 1}`}
+                      className="gallery-thumb-img"
                       loading="eager"
                       decoding="async"
                       onError={(e) => {
@@ -313,7 +313,7 @@ export default function ProductDetails() {
                 {data.category_name}
               </Link>
             )}
-            
+
             <h1 className="product-title">
               {slug === 'choco-toothpaste' || data.slug === 'choco-toothpaste'
                 ? 'Wooff Kids Chocolate Flavour Toothpaste, 50 g (Above 2 Years)'
@@ -322,7 +322,7 @@ export default function ProductDetails() {
                   : data.title)}
             </h1>
 
-            <div 
+            <div
               className="product-rating-row"
               onClick={() => {
                 const el = document.getElementById('customer-reviews-section');
@@ -347,7 +347,7 @@ export default function ProductDetails() {
                 </span>
               )}
             </div>
-            
+
             <div className="product-pricing">
               <span className="final-price">₹{data.final_price}</span>
               {data.price > data.final_price && (
@@ -379,22 +379,22 @@ export default function ProductDetails() {
 
             <div className="quantity-and-cart-row">
               <div className="quantity-selector">
-                <button 
+                <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   disabled={quantity <= 1}
                   className="qty-btn"
                   aria-label="Decrease quantity"
                 >-</button>
                 <span className="qty-value">{quantity}</span>
-                <button 
+                <button
                   onClick={() => setQuantity(quantity + 1)}
                   className="qty-btn"
                   aria-label="Increase quantity"
                 >+</button>
               </div>
 
-              <button 
-                className="add-to-cart-btn" 
+              <button
+                className="add-to-cart-btn"
                 disabled={data.stock <= 0}
                 onClick={() => addToCart(data, quantity)}
               >
@@ -403,10 +403,10 @@ export default function ProductDetails() {
             </div>
 
             {/* Direct Checkout Form Button */}
-            <button 
+            <button
               type="button"
               id="proceedToCheckoutBtn"
-              className="buy-now-btn" 
+              className="buy-now-btn"
               disabled={data.stock <= 0}
               onClick={handleProceedToCheckout}
             >
@@ -434,9 +434,9 @@ export default function ProductDetails() {
             <div className="delivery-pincode-wrapper mt-4">
               <div className="pincode-single-line-box">
                 <span className="pincode-inline-label">Check Delivery Timeline</span>
-                <input 
-                  type="text" 
-                  className="pincode-input" 
+                <input
+                  type="text"
+                  className="pincode-input"
                   placeholder="Enter Pincode"
                   value={pincode}
                   maxLength={6}
@@ -447,9 +447,9 @@ export default function ProductDetails() {
                   }}
                   onKeyDown={(e) => e.key === 'Enter' && !isCheckingPincode && handleCheckPincode()}
                 />
-                <button 
+                <button
                   type="button"
-                  className="btn-pincode-check" 
+                  className="btn-pincode-check"
                   onClick={handleCheckPincode}
                   disabled={isCheckingPincode}
                 >
@@ -493,10 +493,10 @@ export default function ProductDetails() {
 
             {/* 4. Collapsible Product Details Accordions */}
             <div className="product-info-accordions mt-4">
-              
+
               {/* Key Benefits */}
               <div className="accordion-block">
-                <button 
+                <button
                   className={`accordion-header-btn ${openAccordions.benefits ? 'active' : ''}`}
                   onClick={() => toggleAccordion('benefits')}
                 >
@@ -517,7 +517,7 @@ export default function ProductDetails() {
 
               {/* How To Use */}
               <div className="accordion-block">
-                <button 
+                <button
                   className={`accordion-header-btn ${openAccordions.howToUse ? 'active' : ''}`}
                   onClick={() => toggleAccordion('howToUse')}
                 >
@@ -537,7 +537,7 @@ export default function ProductDetails() {
 
               {/* Key Features */}
               <div className="accordion-block">
-                <button 
+                <button
                   className={`accordion-header-btn ${openAccordions.keyFeatures ? 'active' : ''}`}
                   onClick={() => toggleAccordion('keyFeatures')}
                 >
@@ -547,7 +547,7 @@ export default function ProductDetails() {
                 {openAccordions.keyFeatures && (
                   <div className="accordion-body-content">
                     <ul className="features-bullet-list">
-                      <li>Dentist formulated & pediatric board approved</li>
+                      <li>Dentist formulated</li>
                       <li>SLS-Free, Paraben-Free, Artificial Dye Free</li>
                       <li>Cruelty-Free & 100% Vegan ingredients</li>
                       <li>Nurtures good oral bacteria & balances microbiome</li>
@@ -570,7 +570,7 @@ export default function ProductDetails() {
         <ProductFAQ faqs={data.faqs} />
 
         {/* Dynamic Customer Reviews Dashboard & Grid */}
-        <ProductReviews 
+        <ProductReviews
           productId={data.id}
           productSlug={data.slug}
           initialRatingAvg={data.rating_avg}
