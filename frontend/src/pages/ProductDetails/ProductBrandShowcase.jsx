@@ -1,29 +1,11 @@
 import React from 'react';
 import './ProductBrandShowcase.css';
 
-export default function ProductBrandShowcase({ flavor }) {
-  const isCacao = flavor?.toLowerCase().includes('choco') || flavor?.toLowerCase().includes('cacao');
-
-  const bannerImage = isCacao
-    ? 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=1400&q=80'
-    : 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?auto=format&fit=crop&w=1400&q=80';
-
+export default function ProductBrandShowcase() {
   return (
     <section className="product-brand-showcase-section">
       
-      {/* 1. Top Large Full-Width Visual Media Banner */}
-      <div className="showcase-banner-card">
-        <img 
-          src={bannerImage} 
-          alt="Wooff Natural Oral Care Ingredients" 
-          className="showcase-banner-img"
-          loading="lazy"
-          decoding="async"
-        />
-        <div className="showcase-banner-overlay">
-          <span className="banner-tagline">100% PREBIOTIC & ENAMEL SAFE</span>
-        </div>
-      </div>
+      {/* 1. Top Large Full-Width Visual Media Banner - Hidden for right now as requested */}
 
       {/* 2. Bottom 2-Column Founder & Mission Cards */}
       <div className="showcase-story-grid">
@@ -33,15 +15,25 @@ export default function ProductBrandShowcase({ flavor }) {
           <span className="story-eyebrow">Meet Dr. Shrushti</span>
           <h3 className="story-card-title">Our Founder</h3>
           <p className="story-card-desc">
-            &ldquo;As a dentist, I saw how something as essential as brushing became a daily struggle for parents and kids. I created Woof Kids to turn brushing battles into joyful moments with flavours kids love and thoughtfully formulated oral care that parents can trust.&rdquo;
+            &ldquo;As a dentist, I saw how something as essential as brushing became a daily struggle for parents and kids. I created Wooff Kids to turn brushing battles into joyful moments with flavours kids love and thoughtfully formulated oral care that parents can trust.&rdquo;
           </p>
           <div className="founder-card-author">
-            <h4 className="founder-author-name">Dr. Shrushti Bhankhariya</h4>
-            <span className="founder-author-role">Dentist</span>
+            <div className="founder-avatar-wrap">
+              <img 
+                src="/images/dr-shrushti-avatar.webp" 
+                alt="Dr. Shrushti Bhankhariya" 
+                className="founder-avatar-img" 
+                loading="lazy"
+              />
+            </div>
+            <div className="founder-author-text">
+              <h4 className="founder-author-name">Dr. Shrushti Bhankhariya</h4>
+              <span className="founder-author-role">Dentist &amp; Founder</span>
+            </div>
           </div>
           <div className="story-icon-footer">
             <div className="icon-circle">
-              <i className="fa-solid fa-user-doctor"></i>
+              <i className="fa-solid fa-tooth"></i>
             </div>
           </div>
         </div>

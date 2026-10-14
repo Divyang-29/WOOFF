@@ -441,7 +441,12 @@ export default function About() {
             </blockquote>
             <div className="founder-signature-block">
               <div className="founder-avatar-circle">
-                <i className="fa-solid fa-user-doctor"></i>
+                <img 
+                  src="/images/dr-shrushti-avatar.webp" 
+                  alt="Dr. Shrushti Bhankhariya" 
+                  className="founder-photo-img" 
+                  loading="lazy"
+                />
               </div>
               <div className="founder-details">
                 <h3>Dr. Shrushti Bhankhariya</h3>
