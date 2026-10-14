@@ -135,6 +135,7 @@ export default function Admin() {
   const [contactMessages, setContactMessages] = useState([]);
   const [usersList, setUsersList] = useState([]);
   const [ingredientsList, setIngredientsList] = useState([]);
+  const [certificatesList, setCertificatesList] = useState([]);
   const [auditLogsList, setAuditLogsList] = useState([]);
 
   // -------------------------------------------------------------------
@@ -196,6 +197,18 @@ export default function Admin() {
     display_order: 1,
     is_active: true,
   });
+
+  // Quality Certificates & Trust Badges CMS Modal State
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const [editingCertificate, setEditingCertificate] = useState(null);
+  const [certificateForm, setCertificateForm] = useState({
+    title: '',
+    slug: '',
+    image_url: '',
+    description: '',
+    product_id: '',
+  });
+  const [uploadingCertImage, setUploadingCertImage] = useState(false);
 
   // Shiprocket dispatch state
   const [fulfillingOrderId, setFulfillingOrderId] = useState(null);
@@ -351,6 +364,7 @@ export default function Admin() {
         faqsResult,
         termsResult,
         ingredientsResult,
+        certificatesResult,
         contactResult,
         auditLogsResult,
         abandonedCartsResult,
@@ -369,6 +383,7 @@ export default function Admin() {
         fetch(API_ENDPOINTS.FAQS),
         fetch(API_ENDPOINTS.TERMS),
         fetch(API_ENDPOINTS.INGREDIENTS),
+        fetch(API_ENDPOINTS.CERTIFICATES),
         fetch(API_ENDPOINTS.CONTACT, { headers }),
         fetch(`${API_ENDPOINTS.ADMIN.AUDIT_LOGS}?page=${auditLogsPagination.page}&limit=${auditLogsPagination.limit}&action=${auditActionFilter}&entity_type=${auditEntityFilter}&search=${encodeURIComponent(auditSearchQuery)}`, { headers }),
         fetch(`${API_ENDPOINTS.ADMIN.ABANDONED_CARTS}?page=${abandonedPage}&limit=15&sort=${abandonedSort}&status=${abandonedStatusFilter}&search=${encodeURIComponent(abandonedSearchQuery)}`, { headers }),
@@ -429,6 +444,14 @@ export default function Admin() {
         if (ingData.ingredients && Array.isArray(ingData.ingredients)) {
           setIngredientsList(ingData.ingredients);
         }
+      }
+
+      if (certificatesResult.status === 'fulfilled' && certificatesResult.value.ok) {
+        const certData = await certificatesResult.value.json();
+        const list = Array.isArray(certData)
+          ? certData
+          : certData?.certificates || certData?.data || [];
+        if (Array.isArray(list)) setCertificatesList(list);
       }
 
       if (contactResult.status === 'fulfilled' && contactResult.value.ok) {
@@ -2216,6 +2239,120 @@ export default function Admin() {
     }
   };
 
+  // -------------------------------------------------------------------
+  // CERTIFICATES & TRUST BADGES CRUD HANDLERS
+  // -------------------------------------------------------------------
+  const handleOpenAddCertificate = () => {
+    setEditingCertificate(null);
+    setCertificateForm({
+      title: '',
+      slug: '',
+      image_url: '',
+      description: '',
+      product_id: '',
+    });
+    setShowCertificateModal(true);
+  };
+
+  const handleOpenEditCertificate = (cert) => {
+    setEditingCertificate(cert);
+    setCertificateForm({
+      title: cert.title || '',
+      slug: cert.slug || '',
+      image_url: cert.image_url || '',
+      description: cert.description || '',
+      product_id: cert.product_id ? String(cert.product_id) : '',
+    });
+    setShowCertificateModal(true);
+  };
+
+  const handleCertImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCertImage(true);
+    handleSecureAssetUpload(file, (url) => {
+      setCertificateForm((prev) => ({ ...prev, image_url: url }));
+      setUploadingCertImage(false);
+    });
+    e.target.value = '';
+  };
+
+  const handleSaveCertificate = async (e) => {
+    e.preventDefault();
+    if (!certificateForm.title?.trim()) {
+      showToast('danger', 'Certificate title is required.');
+      return;
+    }
+    if (!certificateForm.image_url?.trim()) {
+      showToast('danger', 'Certificate image (upload or URL) is required.');
+      return;
+    }
+
+    try {
+      const isEdit = !!editingCertificate;
+      const url = isEdit
+        ? `${API_ENDPOINTS.CERTIFICATES}/${editingCertificate.id}`
+        : API_ENDPOINTS.CERTIFICATES;
+      const method = isEdit ? 'PUT' : 'POST';
+
+      const payload = {
+        title: certificateForm.title.trim(),
+        slug: certificateForm.slug?.trim() || undefined,
+        image_url: certificateForm.image_url.trim(),
+        description: certificateForm.description?.trim() || null,
+        product_id: certificateForm.product_id ? parseInt(certificateForm.product_id, 10) : null,
+      };
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('success', `Certificate "${certificateForm.title}" saved successfully!`);
+        setShowCertificateModal(false);
+        const refRes = await fetch(API_ENDPOINTS.CERTIFICATES);
+        if (refRes.ok) {
+          const rData = await refRes.json();
+          const list = Array.isArray(rData) ? rData : rData.certificates || rData.data || [];
+          if (Array.isArray(list)) setCertificatesList(list);
+        }
+      } else {
+        showToast('danger', data.message || 'Failed to save certificate.');
+      }
+    } catch (err) {
+      showToast('danger', 'Network error while saving certificate.');
+    }
+  };
+
+  const handleDeleteCertificate = (id, title) => {
+    triggerConfirm({
+      title: 'Delete Quality Certificate',
+      message: `Are you sure you want to delete certificate "${title}"? This will remove it from the homepage trust badge showcase.`,
+      confirmText: 'Delete Certificate',
+      danger: true,
+      action: async () => {
+        try {
+          const res = await fetch(`${API_ENDPOINTS.CERTIFICATES}/${id}`, {
+            method: 'DELETE',
+            headers: getAuthHeader(),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data.message || 'Failed to delete certificate.');
+          setCertificatesList((prev) => prev.filter((c) => c.id !== id));
+          showToast('success', `Certificate "${title}" deleted.`);
+        } catch (err) {
+          showToast('danger', err.message || 'Error deleting certificate.');
+        }
+      },
+    });
+  };
+
   // If Admin Lock Active, render Admin Login Screen
   if (!adminAccessGranted) {
     return (
@@ -2402,6 +2539,12 @@ export default function Admin() {
             <i className="fa-solid fa-flask-vial width-20"></i> Hero Ingredients CMS ({ingredientsList.length})
           </button>
           <button
+            className={`admin-nav-item ${activeTab === 'certificates' ? 'active' : ''}`}
+            onClick={() => setActiveTab('certificates')}
+          >
+            <i className="fa-solid fa-certificate width-20"></i> Quality Certificates ({certificatesList.length})
+          </button>
+          <button
             className={`admin-nav-item ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
@@ -2439,6 +2582,7 @@ export default function Admin() {
               {activeTab === 'products' && <><i className="fa-solid fa-box-open text-warning me-2"></i> Products CRUD Catalog</>}
               {activeTab === 'categories' && <><i className="fa-solid fa-folder-open text-warning me-2"></i> Product Categories</>}
               {activeTab === 'ingredients' && <><i className="fa-solid fa-flask-vial text-warning me-2"></i> Hero Formulation Ingredients CMS</>}
+              {activeTab === 'certificates' && <><i className="fa-solid fa-certificate text-warning me-2"></i> Quality Certificates & Trust Badges CMS</>}
               {activeTab === 'reels' && <><i className="fa-solid fa-video text-warning me-2"></i> Brand Video Reels Manager</>}
               {activeTab === 'testimonials' && <><i className="fa-solid fa-quote-left text-warning me-2"></i> Customer Testimonials</>}
               {activeTab === 'reviews' && <><i className="fa-solid fa-star text-warning me-2"></i> Customer Reviews Management</>}
@@ -4617,6 +4761,115 @@ export default function Admin() {
         )}
 
         {/* -------------------------------------------------------------
+            TAB: QUALITY CERTIFICATES & TRUST BADGES CMS
+           ------------------------------------------------------------- */}
+        {activeTab === 'certificates' && (
+          <div className="admin-card-box">
+            <div className="admin-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+              <div>
+                <h3 className="admin-card-title mb-1">
+                  <i className="fa-solid fa-certificate text-primary me-2"></i> Quality Certificates & Trust Badges ({certificatesList.length})
+                </h3>
+                <p className="text-muted small mb-0">
+                  Manage FDA/GMP certificates, clinical approvals, and security seals rendered dynamically across the home page and product pages.
+                </p>
+              </div>
+
+              <button className="admin-btn admin-btn-primary" onClick={handleOpenAddCertificate}>
+                <i className="fa-solid fa-plus me-1"></i> Add New Certificate
+              </button>
+            </div>
+
+            <div className="admin-table-container">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Badge / Logo</th>
+                    <th>Certificate Title</th>
+                    <th>Slug Identifier</th>
+                    <th>Description</th>
+                    <th>Associated Product</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {certificatesList.length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="text-center py-5 text-muted">
+                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>📜</div>
+                        <div className="fw-bold">No certificates recorded in database</div>
+                        <p className="small text-muted mb-3">Click "Add New Certificate" to publish trust badges to the store.</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    certificatesList.map((cert) => (
+                      <tr key={cert.id || cert.slug}>
+                        <td>
+                          <div style={{
+                            width: '56px',
+                            height: '56px',
+                            background: '#F8FAFC',
+                            borderRadius: '10px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            border: '1px solid #E2E8F0',
+                            padding: '4px',
+                            overflow: 'hidden'
+                          }}>
+                            <img
+                              src={cert.image_url || '/assets/ce_certified.svg'}
+                              alt={cert.title}
+                              style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                              onError={(e) => { e.target.src = '/assets/ce_certified.svg'; }}
+                            />
+                          </div>
+                        </td>
+                        <td>
+                          <div className="fw-bold text-dark">{cert.title}</div>
+                          <span className="badge bg-success-subtle text-success border border-success-subtle small mt-1">Verified Credential</span>
+                        </td>
+                        <td>
+                          <code className="text-muted small">{cert.slug || '-'}</code>
+                        </td>
+                        <td className="small text-muted" style={{ maxWidth: '320px' }}>
+                          {cert.description || <span className="fst-italic text-black-50">No description provided</span>}
+                        </td>
+                        <td className="small">
+                          {cert.product_title ? (
+                            <span className="badge bg-light text-dark border">
+                              <i className="fa-solid fa-link me-1"></i> {cert.product_title}
+                            </span>
+                          ) : (
+                            <span className="badge bg-light text-muted border">Global / All Products</span>
+                          )}
+                        </td>
+                        <td>
+                          <div className="d-flex gap-2">
+                            <button
+                              className="admin-btn admin-btn-outline admin-btn-sm"
+                              onClick={() => handleOpenEditCertificate(cert)}
+                            >
+                              <i className="fa-solid fa-pen-to-square me-1"></i> Edit
+                            </button>
+                            <button
+                              className="admin-btn admin-btn-danger admin-btn-sm"
+                              onClick={() => handleDeleteCertificate(cert.id, cert.title)}
+                            >
+                              <i className="fa-solid fa-trash-can me-1"></i> Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* -------------------------------------------------------------
             TAB: ADMIN AUDIT TRAIL ACTIVITY LOGS
            ------------------------------------------------------------- */}
         {activeTab === 'audit_logs' && (
@@ -6218,6 +6471,157 @@ export default function Admin() {
                 <button type="button" className="admin-btn admin-btn-outline" onClick={() => setShowIngredientModal(false)}>Cancel</button>
                 <button type="submit" className="admin-btn admin-btn-primary">
                   {editingIngredient ? 'Update Ingredient' : 'Add Hero Ingredient'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* -------------------------------------------------------------
+          CERTIFICATE ADD / EDIT MODAL (Dynamic Quality Credentials CMS)
+         ------------------------------------------------------------- */}
+      {showCertificateModal && (
+        <div className="admin-modal-backdrop" onClick={() => setShowCertificateModal(false)}>
+          <div className="admin-modal-card" style={{ maxWidth: '620px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h3 className="fw-bold mb-0" style={{ color: '#4B2E1E' }}>
+                <i className="fa-solid fa-certificate text-warning me-2"></i>
+                {editingCertificate ? `Edit Certificate: ${editingCertificate.title}` : 'Add Quality Certificate'}
+              </h3>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => setShowCertificateModal(false)}
+              ></button>
+            </div>
+
+            <form onSubmit={handleSaveCertificate}>
+              <div className="row g-3 mb-3">
+                <div className="col-12 col-md-7">
+                  <label className="form-label small fw-bold">Certificate / Badge Title *</label>
+                  <input
+                    type="text"
+                    className="form-control fw-bold"
+                    placeholder="e.g. FDA Registered Facility"
+                    value={certificateForm.title}
+                    onChange={(e) => setCertificateForm({ ...certificateForm, title: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="col-12 col-md-5">
+                  <label className="form-label small fw-bold">Slug (Optional)</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="e.g. fda-registered-facility"
+                    value={certificateForm.slug}
+                    onChange={(e) => setCertificateForm({ ...certificateForm, slug: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              {/* Image Upload & URL Section */}
+              <div className="mb-3 p-3 bg-light rounded-3 border">
+                <label className="form-label small fw-bold d-flex justify-content-between align-items-center mb-2">
+                  <span>Certificate Image / Logo *</span>
+                  {uploadingCertImage && <span className="text-primary small"><i className="fa-solid fa-spinner fa-spin me-1"></i> Uploading...</span>}
+                </label>
+
+                <div className="d-flex align-items-center gap-3 mb-2">
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '10px',
+                    background: '#FFFFFF',
+                    border: '1px solid #CBD5E1',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4px',
+                    flexShrink: 0,
+                    overflow: 'hidden'
+                  }}>
+                    {certificateForm.image_url ? (
+                      <img
+                        src={certificateForm.image_url}
+                        alt="Preview"
+                        style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                        onError={(e) => { e.target.src = '/assets/ce_certified.svg'; }}
+                      />
+                    ) : (
+                      <i className="fa-solid fa-image text-muted fs-4"></i>
+                    )}
+                  </div>
+
+                  <div className="flex-grow-1">
+                    <input
+                      type="file"
+                      className="form-control form-control-sm mb-1"
+                      accept="image/*"
+                      onChange={handleCertImageUpload}
+                      disabled={uploadingCertImage}
+                    />
+                    <div className="small text-muted">Upload an image file (PNG, SVG, WEBP, JPG max 10MB)</div>
+                  </div>
+                </div>
+
+                <div className="mt-2">
+                  <label className="form-label small text-muted mb-1">Or Direct Asset URL / Path:</label>
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    placeholder="e.g. /assets/ce_certified.svg or https://..."
+                    value={certificateForm.image_url}
+                    onChange={(e) => setCertificateForm({ ...certificateForm, image_url: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label small fw-bold">Description / Safety Claim</label>
+                <textarea
+                  className="form-control"
+                  rows="3"
+                  placeholder="e.g. Manufactured in an ISO & FDA certified cleanroom facility."
+                  value={certificateForm.description}
+                  onChange={(e) => setCertificateForm({ ...certificateForm, description: e.target.value })}
+                ></textarea>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label small fw-bold">Associated Product (Optional)</label>
+                <select
+                  className="form-select"
+                  value={certificateForm.product_id}
+                  onChange={(e) => setCertificateForm({ ...certificateForm, product_id: e.target.value })}
+                >
+                  <option value="">Global (All Store Products & Homepage)</option>
+                  {products.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.title}
+                    </option>
+                  ))}
+                </select>
+                <div className="small text-muted mt-1">If unselected, this badge appears globally across all products and storefront sections.</div>
+              </div>
+
+              <div className="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                <button
+                  type="button"
+                  className="admin-btn admin-btn-outline"
+                  onClick={() => setShowCertificateModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="admin-btn admin-btn-primary"
+                  disabled={uploadingCertImage}
+                >
+                  <i className="fa-solid fa-check me-1"></i>
+                  {editingCertificate ? 'Update Certificate' : 'Save Certificate'}
                 </button>
               </div>
             </form>
