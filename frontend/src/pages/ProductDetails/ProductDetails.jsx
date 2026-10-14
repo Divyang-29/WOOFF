@@ -7,6 +7,7 @@ import {
   setCachedProduct,
   getOptimizedImageUrl,
 } from '../../utils/productData';
+import { preloadImages } from '../../utils/imagePreloader';
 import KeyIngredients from './KeyIngredients';
 import ProductBrandShowcase from './ProductBrandShowcase';
 import ProductFAQ from './ProductFAQ';
@@ -202,7 +203,7 @@ export default function ProductDetails() {
 
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`/api/products/${slug}`);
+        const response = await fetch(`/api/products/${slug}?_t=${Date.now()}`);
         const result = await response.json();
         
         if (result.success && isMounted) {
@@ -255,15 +256,20 @@ export default function ProductDetails() {
     }
   }, [slug, data]);
 
-  if (loading && !data) return <div className="status-message">Loading product...</div>;
-  if ((error || !data) && !loading) return <div className="status-message error">{error || 'Product not found'}</div>;
-
+  // Deduplicate all images starting with hero_image
   const heroImg = data?.hero_image || data?.primary_image;
   const rawGallery = data?.gallery_images || data?.images || [];
-  const galleryImagesRaw = typeof rawGallery === 'string' ? JSON.parse(rawGallery) : (rawGallery || []);
-  const galleryList = Array.isArray(galleryImagesRaw) ? galleryImagesRaw : [];
+  let galleryList = [];
+  if (Array.isArray(rawGallery)) {
+    galleryList = rawGallery;
+  } else if (typeof rawGallery === 'string') {
+    try {
+      galleryList = JSON.parse(rawGallery);
+    } catch (e) {
+      galleryList = [];
+    }
+  }
 
-  // Deduplicate all images starting with hero_image
   const allImages = [];
   if (heroImg) {
     allImages.push(heroImg);
@@ -273,11 +279,21 @@ export default function ProductDetails() {
       allImages.push(img);
     }
   });
-
-  // Ensure at least one fallback image exists if product has no images
   if (allImages.length === 0) {
     allImages.push('/assets/tooth_paste.webp');
   }
+
+  // Preload all gallery image sizes in background immediately
+  useEffect(() => {
+    if (allImages && allImages.length > 0) {
+      const fullUrls = allImages.map((img) => getOptimizedImageUrl(img, { width: 850 }));
+      const thumbUrls = allImages.map((img) => getOptimizedImageUrl(img, { width: 160 }));
+      preloadImages([...fullUrls, ...thumbUrls]);
+    }
+  }, [data?.id, data?.slug]);
+
+  if (loading && !data) return <div className="status-message">Loading product...</div>;
+  if ((error || !data) && !loading) return <div className="status-message error">{error || 'Product not found'}</div>;
 
   return (
     <div className="product-page-wrapper">
@@ -304,6 +320,17 @@ export default function ProductDetails() {
                   e.target.src = '/assets/tooth_paste.webp';
                 }}
               />
+              {/* Invisible pre-decoded gallery buffers for instant 0ms switching */}
+              <div style={{ display: 'none' }} aria-hidden="true">
+                {allImages.map((img, idx) => (
+                  <img 
+                    key={`pre-decoded-${idx}`}
+                    src={getOptimizedImageUrl(img, { width: 850 })} 
+                    alt="" 
+                    decoding="async"
+                  />
+                ))}
+              </div>
               <div className="zoom-hint" title="Click to enlarge">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"></circle>
@@ -330,7 +357,7 @@ export default function ProductDetails() {
                       src={getOptimizedImageUrl(img, { width: 160 })} 
                       alt={`${data.title} thumbnail ${idx + 1}`} 
                       className="gallery-thumb-img" 
-                      loading="lazy"
+                      loading="eager"
                       decoding="async"
                       onError={(e) => {
                         e.target.onerror = null;
@@ -392,6 +419,23 @@ export default function ProductDetails() {
                   <span className="original-price">₹{data.price}</span>
                   <span className="save-badge">Save {Math.round(((data.price - data.final_price) / data.price) * 100)}%</span>
                 </>
+              )}
+            </div>
+
+            {/* Real-time Inventory & Stock Status Badge */}
+            <div className="product-stock-badge-row">
+              {Number(data.stock) > 20 ? (
+                <span className="stock-pill stock-pill--in">
+                  <span className="stock-dot stock-dot--green"></span> In Stock ({data.stock} units available)
+                </span>
+              ) : Number(data.stock) > 0 ? (
+                <span className="stock-pill stock-pill--low">
+                  <span className="stock-dot stock-dot--amber"></span> Only {data.stock} units left in stock - order soon!
+                </span>
+              ) : (
+                <span className="stock-pill stock-pill--out">
+                  <span className="stock-dot stock-dot--red"></span> Currently Out of Stock
+                </span>
               )}
             </div>
 

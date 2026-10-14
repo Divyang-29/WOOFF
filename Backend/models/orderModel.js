@@ -222,6 +222,13 @@ const createCheckoutOrder = async (
 
     await client.query("COMMIT");
 
+    try {
+      const { clearProductCache } = require("../controllers/productController");
+      if (typeof clearProductCache === "function") {
+        clearProductCache();
+      }
+    } catch (e) {}
+
     return {
       ...newOrder,
       items: createdItems,
@@ -389,6 +396,14 @@ const updateOrderStatusByAdmin = async (orderId, newStatus) => {
     );
 
     await client.query("COMMIT");
+
+    try {
+      const { clearProductCache } = require("../controllers/productController");
+      if (typeof clearProductCache === "function") {
+        clearProductCache();
+      }
+    } catch (e) {}
+
     return updateRes.rows[0];
   } catch (error) {
     await client.query("ROLLBACK");

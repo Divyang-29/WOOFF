@@ -10,6 +10,7 @@ import CartDrawer from './components/Cart/CartDrawer';
 import AuthModal from './components/AuthModal/AuthModal';
 import CookieConsent from './components/CookieConsent/CookieConsent';
 import { prefetchProducts } from './utils/productData';
+import { initGlobalImagePreloader } from './utils/imagePreloader';
 
 // Core Storefront Pages (Eagerly bundled for instant 0ms routing)
 import About from './pages/About/About';
@@ -49,6 +50,8 @@ function AppContent() {
   useEffect(() => {
     // Silently prefetch products in background after initial render
     prefetchProducts();
+    // Warm up image cache for all product photos, thumbnails, and key visual assets
+    initGlobalImagePreloader();
   }, []);
 
   return (

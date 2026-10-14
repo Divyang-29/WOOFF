@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const https = require("https");
 const pool = require("../config/db");
+const { clearProductCache } = require("./productController");
 
 const SHIPROCKET_API_KEY = process.env.SHIPROCKET_CHECKOUT_API_KEY || "bZfz2R7b6m8ukacm";
 const SHIPROCKET_SECRET_KEY = process.env.SHIPROCKET_CHECKOUT_SECRET_KEY || "YcssswKA3BhRv3k93XwhgAkOS2dh9uub";
@@ -536,7 +537,18 @@ exports.handleOrderWebhook = async (req, res, next) => {
            VALUES ($1, $2, $3, $4, $5, $6, $7)`,
           [dbOrderId, variantId || null, productName, productSku, unitPrice, qty, lineTotal]
         );
+
+        // Decrement product inventory in database
+        if (variantId) {
+          await pool.query(
+            "UPDATE products SET stock = GREATEST(0, stock - $1), updated_at = CURRENT_TIMESTAMP WHERE id = $2",
+            [qty, variantId]
+          );
+        }
       }
+
+      // Immediately invalidate product memory cache so stock changes appear instantly
+      clearProductCache();
 
       // Record payment transaction
       const paymentObj = Array.isArray(payload.payments) && payload.payments.length > 0 ? payload.payments[0] : null;

@@ -8,6 +8,7 @@ import {
   setCachedProduct,
   getOptimizedImageUrl,
 } from '../../utils/productData';
+import { preloadProduct } from '../../utils/imagePreloader';
 import './Products.css';
 
 export default function Products() {
@@ -83,7 +84,14 @@ export default function Products() {
                 <div className="card-image-wrapper">
                   <Link
                     to={`/product/${product.slug}`}
-                    onMouseEnter={() => setCachedProduct(product.slug, product)}
+                    onMouseEnter={() => {
+                      setCachedProduct(product.slug, product);
+                      preloadProduct(product);
+                    }}
+                    onTouchStart={() => {
+                      setCachedProduct(product.slug, product);
+                      preloadProduct(product);
+                    }}
                   >
                     <img 
                       src={getOptimizedImageUrl(product.primary_image || product.hero_image, { width: 500 })} 
@@ -103,7 +111,14 @@ export default function Products() {
 
                 {/* Content Section */}
                 <div className="card-content">
-                  <Link to={`/product/${product.slug}`} className="card-title-link">
+                  <Link 
+                    to={`/product/${product.slug}`} 
+                    className="card-title-link"
+                    onMouseEnter={() => {
+                      setCachedProduct(product.slug, product);
+                      preloadProduct(product);
+                    }}
+                  >
                     <h3 className="card-title">{product.title}</h3>
                   </Link>
 

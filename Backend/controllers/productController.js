@@ -237,7 +237,7 @@ const getAllProductsHandler = async (req, res) => {
       setToMemoryCache(cacheKey, result);
     }
 
-    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+    res.set("Cache-Control", "no-cache, must-revalidate");
     return res.status(200).json({
       success: true,
       ...result,
@@ -261,7 +261,7 @@ const getProductDetailsHandler = async (req, res) => {
     const cacheKey = `product_${targetIdentifier}`;
     const cached = getFromMemoryCache(cacheKey);
     if (cached) {
-      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      res.set("Cache-Control", "no-cache, must-revalidate");
       return res.status(200).json({
         success: true,
         product: cached,
@@ -281,7 +281,7 @@ const getProductDetailsHandler = async (req, res) => {
     if (product.slug) setToMemoryCache(`product_${product.slug}`, product);
     if (product.id) setToMemoryCache(`product_${product.id}`, product);
 
-    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+    res.set("Cache-Control", "no-cache, must-revalidate");
     return res.status(200).json({
       success: true,
       product,
@@ -543,4 +543,5 @@ module.exports = {
   addReviewHandler,
   deleteReviewHandler,
   getAllReviewsHandler,
+  clearProductCache,
 };

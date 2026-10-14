@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { loadRazorpayScript } from '../../utils/razorpay';
+import { invalidateProductCache } from '../../utils/productData';
 import './CheckoutForm.css';
 
 const INDIAN_STATES = [
@@ -309,6 +310,8 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
             if (verifyRes.data.success) {
               // Clear cart on successful purchase
               clearCart();
+              // Invalidate cached product inventory so fresh real-time stock is reflected
+              invalidateProductCache();
 
               const orderConfirmation = {
                 orderNumber: data.order?.order_number || `WOOFF-${data.order_id}`,

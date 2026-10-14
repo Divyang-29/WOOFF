@@ -11,13 +11,13 @@ export function getOptimizedImageUrl(url, { width = 800, quality = 'auto' } = {}
 
   // Handle Cloudinary URLs: apply auto format, auto quality, and specific bounding width
   if (url.includes('res.cloudinary.com') && url.includes('/image/upload/')) {
-    if (url.includes('/image/upload/f_auto') || url.includes('/image/upload/w_')) {
+    if (url.includes(`w_${width}`)) {
       return url;
     }
-    return url.replace(
-      '/image/upload/',
-      `/image/upload/f_auto,q_${quality},w_${width}/`
-    );
+    const uploadIdx = url.indexOf('/image/upload/');
+    const rest = url.substring(uploadIdx + '/image/upload/'.length);
+    const path = rest.replace(/^(?:[a-z]_[^/]+,?)+\//, '');
+    return `${url.substring(0, uploadIdx)}/image/upload/f_auto,q_${quality},w_${width}/${path}`;
   }
 
   return url;
@@ -25,57 +25,29 @@ export function getOptimizedImageUrl(url, { width = 800, quality = 'auto' } = {}
 
 export const STATIC_PRODUCTS = [
   {
-    id: 9,
-    category_id: 1,
-    title: "Wooff Kids Chocolate Flavour Toothpaste, 50 g (Above 2 Years)",
-    slug: "choco-toothpaste",
-    price: "299.00",
-    final_price: "249.00",
-    primary_image: "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791781980/wooff_assets/b3fd4z5qwuoqeysk29zs.webp",
-    hero_image: "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791781980/wooff_assets/b3fd4z5qwuoqeysk29zs.webp",
-    images: [
-      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791781547/wooff_assets/zy37l64bppfrdlstenyc.webp",
-      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791781555/wooff_assets/my08smsbyzpd3qqosl6c.webp",
-      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791781991/wooff_assets/o0jeosfzzt79asi833jp.webp"
-    ],
-    gallery_images: [
-      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791781547/wooff_assets/zy37l64bppfrdlstenyc.webp",
-      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791781555/wooff_assets/my08smsbyzpd3qqosl6c.webp",
-      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791781991/wooff_assets/o0jeosfzzt79asi833jp.webp"
-    ],
-    description: "Brushing just got delicious! Wooff Kids Chocolate Flavour Toothpaste is a chocolate toothpaste for kids above 2 years, made with Nano-Hydroxyapatite, Theobromine, Lactoferrin, Coenzyme Q10 and more. A yummy chocolate taste helps kids look forward to brushing every day.",
-    stock: 100,
-    sku: "WOOFF-KIDS-CHOCO-50G-P1",
-    estimated_delivery: "2-4 business days",
-    rating_avg: "4.90",
-    review_count: 8,
-    is_active: true,
-    is_bestseller: false,
-    bundle_type: "single",
-    category_name: "Toothpaste",
-    category_slug: "toothpaste",
-    ingredients: [],
-    faqs: [],
-    reviews: []
-  },
-  {
     id: 10,
     category_id: 1,
     title: "Wooff Kids Chocolate Flavour Toothpaste, Pack of 2 (50 g each)",
     slug: "choco-toothpaste-pack-of-2",
     price: "599.00",
     final_price: "499.00",
-    primary_image: "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791788409/wooff_assets/vh3ks7obzzjdil6kzqah.webp",
-    hero_image: "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791788409/wooff_assets/vh3ks7obzzjdil6kzqah.webp",
+    primary_image: "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791967017/wooff_assets/dkc3onzzzg2yztw3lj8m.jpg",
+    hero_image: "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791967017/wooff_assets/dkc3onzzzg2yztw3lj8m.jpg",
     images: [
-      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791788417/wooff_assets/ujgcek9vnpbqqtj9rluq.webp",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791967017/wooff_assets/dkc3onzzzg2yztw3lj8m.jpg",
       "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791788427/wooff_assets/znq2j2izahb5wndbqkrz.webp",
-      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791788437/wooff_assets/dyyth1yoaikaitsqagdw.webp"
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791815462/wooff_assets/oxb6pybtd6bvrgcj4gdq.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791967034/wooff_assets/o75mhuuwshvx0cyotfqs.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791967056/wooff_assets/musj098zuar4zx6oa44f.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791967105/wooff_assets/xyreh4hk1lfyudwhwzu5.jpg"
     ],
     gallery_images: [
-      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791788417/wooff_assets/ujgcek9vnpbqqtj9rluq.webp",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791967017/wooff_assets/dkc3onzzzg2yztw3lj8m.jpg",
       "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791788427/wooff_assets/znq2j2izahb5wndbqkrz.webp",
-      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791788437/wooff_assets/dyyth1yoaikaitsqagdw.webp"
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791815462/wooff_assets/oxb6pybtd6bvrgcj4gdq.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791967034/wooff_assets/o75mhuuwshvx0cyotfqs.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791967056/wooff_assets/musj098zuar4zx6oa44f.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791967105/wooff_assets/xyreh4hk1lfyudwhwzu5.jpg"
     ],
     description: "Make brushing a daily habit with the Wooff Kids Chocolate Flavour Toothpaste Pack of 2. You get two 50g tubes (100g in total), so you always have one ready at home and one for travel, school or the grandparents’ house.\n\nMade for children above 2 years, Wooff Kids has a yummy chocolate taste that kids actually want to brush with. It contains Nano-Hydroxyapatite, Theobromine, Inulin, Vitamin C, Lactoferrin, Coenzyme Q10 and Calcium Gluconate.",
     stock: 100,
@@ -91,11 +63,51 @@ export const STATIC_PRODUCTS = [
     ingredients: [],
     faqs: [],
     reviews: []
+  },
+  {
+    id: 9,
+    category_id: 1,
+    title: "Wooff Kids Chocolate Flavour Toothpaste, 50 g (Above 2 Years)",
+    slug: "choco-toothpaste",
+    price: "299.00",
+    final_price: "249.00",
+    primary_image: "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791815488/wooff_assets/relp8zkrytkkiozl7shc.jpg",
+    hero_image: "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791815488/wooff_assets/relp8zkrytkkiozl7shc.jpg",
+    images: [
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791815488/wooff_assets/relp8zkrytkkiozl7shc.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966772/wooff_assets/wdxgpry8jlhkzrkthcyh.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966726/wooff_assets/pncpleuxeuskef84e6fp.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966736/wooff_assets/b4xw9nuz8spvxx5k5cto.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966752/wooff_assets/j48dfjncw6lhemjdeyk3.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966808/wooff_assets/kkylwilrooaywztjdmia.jpg"
+    ],
+    gallery_images: [
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791815488/wooff_assets/relp8zkrytkkiozl7shc.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966772/wooff_assets/wdxgpry8jlhkzrkthcyh.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966726/wooff_assets/pncpleuxeuskef84e6fp.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966736/wooff_assets/b4xw9nuz8spvxx5k5cto.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966752/wooff_assets/j48dfjncw6lhemjdeyk3.jpg",
+      "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966808/wooff_assets/kkylwilrooaywztjdmia.jpg"
+    ],
+    description: "Brushing just got delicious! Wooff Kids Chocolate Flavour Toothpaste is a chocolate toothpaste for kids above 2 years, made with Nano-Hydroxyapatite, Theobromine, Lactoferrin, Coenzyme Q10 and more. A yummy chocolate taste helps kids look forward to brushing every day.",
+    stock: 100,
+    sku: "WOOFF-KIDS-CHOCO-50G-P1",
+    estimated_delivery: "2-4 business days",
+    rating_avg: "4.90",
+    review_count: 8,
+    is_active: true,
+    is_bestseller: false,
+    bundle_type: "single",
+    category_name: "Toothpaste",
+    category_slug: "toothpaste",
+    ingredients: [],
+    faqs: [],
+    reviews: []
   }
 ];
 
-const CACHE_KEY_PRODUCTS = 'wooff_cached_products_v1';
-const CACHE_KEY_PRODUCT_PREFIX = 'wooff_cached_prod_v1_';
+const CACHE_KEY_PRODUCTS = 'wooff_cached_products_v2';
+const CACHE_KEY_PRODUCT_PREFIX = 'wooff_cached_prod_v2_';
 
 export function getCachedProducts() {
   try {
@@ -188,9 +200,11 @@ export function setCachedProduct(slugOrId, product) {
   }
 }
 
-/**
- * Background silent prefetch of products to warm up the cache
- */
+let onPrefetchCallback = null;
+export function registerPrefetchCallback(cb) {
+  onPrefetchCallback = cb;
+}
+
 export async function prefetchProducts() {
   try {
     const res = await fetch('/api/products');
@@ -198,9 +212,37 @@ export async function prefetchProducts() {
       const data = await res.json();
       if (data.success && Array.isArray(data.products) && data.products.length > 0) {
         setCachedProducts(data.products);
+        if (typeof onPrefetchCallback === 'function') {
+          onPrefetchCallback(data.products);
+        }
       }
     }
   } catch (err) {
     // Non-blocking prefetch failure
+  }
+}
+
+/**
+ * Invalidate product cache so fresh real-time stock is retrieved after purchase
+ */
+export function invalidateProductCache(slugOrId) {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.removeItem(CACHE_KEY_PRODUCTS);
+      if (slugOrId) {
+        localStorage.removeItem(`${CACHE_KEY_PRODUCT_PREFIX}${String(slugOrId).toLowerCase()}`);
+      } else {
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.startsWith(CACHE_KEY_PRODUCT_PREFIX) || key === CACHE_KEY_PRODUCTS)) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach((k) => localStorage.removeItem(k));
+      }
+    }
+  } catch (err) {
+    console.warn('Could not invalidate product cache:', err);
   }
 }

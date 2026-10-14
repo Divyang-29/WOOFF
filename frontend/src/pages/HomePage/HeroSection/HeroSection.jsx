@@ -100,21 +100,39 @@ export default function HeroSection() {
       setLoadingProgress(100);
       renderFrame(0);
 
-      // 2. Start fetching the other 239 frames AFTER the first one is ready
-      // Using requestIdleCallback ensures this doesn't freeze the main thread
-      const scheduleIdle =
-        typeof window !== 'undefined' && window.requestIdleCallback
-          ? window.requestIdleCallback.bind(window)
-          : (cb) => setTimeout(cb, 50);
+      // 2. Load first 12 frames for immediate initial responsiveness
+      for (let i = 1; i < Math.min(12, TOTAL_FRAMES); i++) {
+        const img = new Image();
+        img.src = getFramePath(i, isMobile);
+        preloadedImages[i] = img;
+      }
+      imagesRef.current = preloadedImages;
 
-      scheduleIdle(() => {
-        for (let i = 1; i < TOTAL_FRAMES; i++) {
+      // 3. Progressively fetch remaining frames in batches of 8 during idle time
+      let nextBatchStart = 12;
+      const loadNextBatch = () => {
+        if (nextBatchStart >= TOTAL_FRAMES) return;
+        const batchEnd = Math.min(nextBatchStart + 8, TOTAL_FRAMES);
+        for (let i = nextBatchStart; i < batchEnd; i++) {
           const img = new Image();
           img.src = getFramePath(i, isMobile);
           preloadedImages[i] = img;
         }
-        imagesRef.current = preloadedImages;
-      });
+        nextBatchStart = batchEnd;
+        if (nextBatchStart < TOTAL_FRAMES) {
+          if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+            window.requestIdleCallback(loadNextBatch, { timeout: 1000 });
+          } else {
+            setTimeout(loadNextBatch, 150);
+          }
+        }
+      };
+
+      if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+        window.requestIdleCallback(loadNextBatch, { timeout: 1000 });
+      } else {
+        setTimeout(loadNextBatch, 300);
+      }
     };
 
     firstFrame.onerror = () => {
