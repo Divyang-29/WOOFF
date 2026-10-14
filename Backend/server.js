@@ -239,6 +239,7 @@ const { ensureAdminSeed } = require("./models/adminModel");
 const { ensureProductColumns } = require("./models/productModel");
 const { ensureIngredientTableAndSeed } = require("./models/ingredientModel");
 const { ensureOrderColumns } = require("./models/orderModel");
+const { startReconciliationCron } = require("./services/reconciliationService");
 
 const PORT = process.env.PORT || 8080;
 
@@ -248,6 +249,7 @@ const server = app.listen(PORT, async () => {
   await ensureProductColumns();
   await ensureIngredientTableAndSeed();
   await ensureOrderColumns();
+  startReconciliationCron();
 });
 
 // Graceful Shutdown
