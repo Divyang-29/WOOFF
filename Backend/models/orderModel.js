@@ -3,6 +3,27 @@ const { getUserCart } = require("./cartModel");
 const { getAddressById, getUserAddresses } = require("./addressModel");
 const { validateCoupon } = require("./couponModel");
 
+// Auto migration to ensure all required columns and tables exist in PostgreSQL
+const ensureOrderColumns = async () => {
+  try {
+    await pool.query(`
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50) DEFAULT 'prepaid';
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS customer_email VARCHAR(255);
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS coupon_code VARCHAR(100);
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS shiprocket_order_id VARCHAR(100);
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS shiprocket_shipment_id VARCHAR(100);
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS shiprocket_awb_code VARCHAR(100);
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS shiprocket_courier_name VARCHAR(150);
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS shiprocket_status VARCHAR(100);
+      ALTER TABLE orders ADD COLUMN IF NOT EXISTS shiprocket_response JSONB;
+    `);
+    console.log("[Database] Orders schema columns verified & synchronized.");
+  } catch (err) {
+    console.warn("[Database] ensureOrderColumns notice:", err.message);
+  }
+};
+ensureOrderColumns();
+
 // Generate Unique Order Number
 const generateOrderNumber = () => {
   const timestamp = Date.now().toString().slice(-8);
@@ -122,6 +143,13 @@ const createCheckoutOrder = async (
     );
     const order_number = generateOrderNumber();
 
+    // 5. Ensure column exists before transaction
+    try {
+      await client.query("ALTER TABLE orders ADD COLUMN IF NOT EXISTS payment_method VARCHAR(50) DEFAULT 'prepaid'");
+    } catch (migErr) {
+      // Non-fatal if DB user has DDL restriction
+    }
+
     // 6. Begin Database Transaction
     await client.query("BEGIN");
 
@@ -167,8 +195,35 @@ const createCheckoutOrder = async (
       normalizedPaymentMethod,
     ];
 
-    const orderRes = await client.query(orderQuery, orderValues);
-    const newOrder = orderRes.rows[0];
+    await client.query("SAVEPOINT order_insert_savepoint");
+    let newOrder;
+    try {
+      const orderRes = await client.query(orderQuery, orderValues);
+      newOrder = orderRes.rows[0];
+      await client.query("RELEASE SAVEPOINT order_insert_savepoint");
+    } catch (insertErr) {
+      if (insertErr.code === "42703" && String(insertErr.message).includes("payment_method")) {
+        await client.query("ROLLBACK TO SAVEPOINT order_insert_savepoint");
+        console.warn("[createCheckoutOrder] 'payment_method' column missing in orders table, executing fallback insert without it");
+        const fallbackOrderQuery = `
+          INSERT INTO orders (
+            order_number, user_id, subtotal, shipping_amount, discount_amount, tax_amount, total_amount,
+            currency, payment_status, order_status,
+            shipping_address_line_1, shipping_address_line_2, shipping_city, shipping_state,
+            shipping_postal_code, shipping_landmark, shipping_address_type,
+            customer_phone, customer_name, customer_email, notes, coupon_code
+          )
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
+          RETURNING *
+        `;
+        const fallbackValues = orderValues.slice(0, 22);
+        const fbRes = await client.query(fallbackOrderQuery, fallbackValues);
+        newOrder = fbRes.rows[0];
+        newOrder.payment_method = normalizedPaymentMethod;
+      } else {
+        throw insertErr;
+      }
+    }
 
     // Increment coupon used_count if applied
     if (appliedCouponCode) {
@@ -555,6 +610,7 @@ const getOrderByOrderNumber = async (orderNumber) => {
 };
 
 module.exports = {
+  ensureOrderColumns,
   generateOrderNumber,
   createCheckoutOrder,
   getUserOrders,

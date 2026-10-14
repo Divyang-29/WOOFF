@@ -238,6 +238,7 @@ app.use(errorHandler);
 const { ensureAdminSeed } = require("./models/adminModel");
 const { ensureProductColumns } = require("./models/productModel");
 const { ensureIngredientTableAndSeed } = require("./models/ingredientModel");
+const { ensureOrderColumns } = require("./models/orderModel");
 
 const PORT = process.env.PORT || 8080;
 
@@ -246,6 +247,7 @@ const server = app.listen(PORT, async () => {
   await ensureAdminSeed();
   await ensureProductColumns();
   await ensureIngredientTableAndSeed();
+  await ensureOrderColumns();
 });
 
 // Graceful Shutdown
