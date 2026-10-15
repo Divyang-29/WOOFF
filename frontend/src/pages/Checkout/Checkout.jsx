@@ -11,6 +11,13 @@ export default function Checkout() {
   // If redirected from Buy Now on product page with a single item
   const directItem = location.state?.directItem ? [location.state.directItem] : null;
 
+  // Meta Pixel InitiateCheckout tracking on checkout page load
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', { currency: 'INR' });
+    }
+  }, []);
+
   return (
     <div className="checkout-page">
       {!isOrderComplete && (

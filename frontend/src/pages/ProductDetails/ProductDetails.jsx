@@ -111,6 +111,9 @@ export default function ProductDetails() {
 
   const handleProceedToCheckout = () => {
     if (!data || data.stock <= 0) return;
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', { currency: 'INR' });
+    }
     navigate('/checkout', {
       state: {
         directItem: {
@@ -191,6 +194,19 @@ export default function ProductDetails() {
       document.title = `${data.title} | Wooff Care`;
     }
   }, [slug, data]);
+
+  // Meta Pixel ViewContent event
+  useEffect(() => {
+    if (data && (data.name || data.title)) {
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'ViewContent', {
+          content_name: data.name || data.title,
+          value: parseFloat(data.final_price || data.price || 0),
+          currency: 'INR',
+        });
+      }
+    }
+  }, [data?.id, data?.slug]);
 
   // Deduplicate all images starting with hero_image
   const heroImg = data?.hero_image || data?.primary_image;

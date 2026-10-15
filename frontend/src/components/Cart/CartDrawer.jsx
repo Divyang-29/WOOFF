@@ -127,6 +127,9 @@ export default function CartDrawer() {
             className="checkout-btn" 
             disabled={cartItems.length === 0}
             onClick={() => {
+              if (typeof window !== 'undefined' && window.fbq) {
+                window.fbq('track', 'InitiateCheckout', { currency: 'INR' });
+              }
               closeCart();
               navigate('/checkout');
             }}

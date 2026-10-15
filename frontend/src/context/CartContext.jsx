@@ -105,6 +105,15 @@ export const CartProvider = ({ children }) => {
     // Auto open drawer when adding to cart
     openCart();
 
+    // Meta Pixel AddToCart tracking
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'AddToCart', {
+        content_name: product.name || product.title || title,
+        value: price * quantityToAdd,
+        currency: 'INR',
+      });
+    }
+
     // Sync to backend API if user is authenticated
     const token = localStorage.getItem('token');
     if (token && productId) {

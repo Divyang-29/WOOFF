@@ -44,12 +44,19 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
   const [successOrder, setSuccessOrder] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('online'); // 'online' | 'cod'
 
-  // Scroll to top immediately when order confirmation is reached
+  // Scroll to top immediately and track Meta Pixel Purchase when order confirmation is reached
   useEffect(() => {
     if (successOrder) {
       window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'Purchase', {
+          value: parseFloat(successOrder.totalAmount || successOrder.totalPrice || 0),
+          currency: 'INR',
+        });
+      }
     }
   }, [successOrder]);
+
 
   // Pincode auto-fetch state
   const [isFetchingPincode, setIsFetchingPincode] = useState(false);
