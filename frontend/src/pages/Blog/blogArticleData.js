@@ -1,17 +1,18 @@
 // Comprehensive editorial data & enrichment helper for Wooff Journal
 
 export const RICH_ARTICLES = {
-  'choco-toothpaste': {
-    title: 'Choco Flavoured Toothpaste: Make Brushing a Treat',
-    meta_title: 'Choco Flavoured Toothpaste: Fun Brushing for Kids | Wooff',
-    meta_description: 'Choco flavoured toothpaste that kids ask for. See how Wooff turns brushing into a routine children enjoy.',
+  'choco-flavoured-toothpaste': {
+    title: 'Choco Flavoured Toothpaste: 8 Tips to End Brushing Fights',
+    meta_title: 'Choco Flavoured Toothpaste: 8 Tips to End Brushing Fights | Wooff',
+    meta_description: 'Child hates brushing? See how choco flavoured toothpaste helps, plus 8 easy tips and an age-by-age routine to make brushing a treat for your kid.',
+    canonical_url: 'https://wooff.care/blog/choco-flavoured-toothpaste',
     category: 'Kids Routine & Science',
-    tags: ['ChocoToothpaste', 'KidsRoutine', 'NanoHydroxyapatite', 'ParentingTips', 'BrushHappily'],
-    updated_at: '2026-10-12T12:00:00Z',
-    reading_time: '3 min read',
+    tags: ['ChocoToothpaste', 'KidsRoutine', 'ParentingTips', 'BrushingHacks', 'KidsDentistry', 'NanoHydroxyapatite'],
+    updated_at: '2026-10-16T10:00:00Z',
+    reading_time: '4 min read',
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.webp',
-    excerpt: 'Choco flavoured toothpaste turns a daily chore into something kids look forward to. Wooff is built for that.',
-    image_caption: 'Wooff 100% natural choco flavoured kids toothpaste with bio-identical nano-hydroxyapatite and organic cocoa theobromine.',
+    excerpt: 'Child hates brushing? See how choco flavoured toothpaste helps, plus 8 easy tips and an age-by-age routine to make brushing a treat for your kid.',
+    image_caption: 'Wooff Kids choco flavoured toothpaste — turns daily brushing battles into joyful habits.',
     author: {
       name: 'Wooff Team',
       role: 'Pediatric Oral Care Team',
@@ -19,93 +20,255 @@ export const RICH_ARTICLES = {
       bio: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
     },
     toc: [
-      { id: 'in-brief', title: '1. In Brief' },
-      { id: 'four-ways', title: '2. Four Ways to Get Kids Brushing Happily' },
-      { id: 'what-makes-wooff-different', title: '3. What Makes Wooff Different' },
-      { id: 'faq-section', title: '4. Frequently Asked Questions' },
-      { id: 'next-steps', title: '5. Explore the Range' },
+      { id: 'introduction', title: '1. Why Switching to Choco Flavour Helps' },
+      { id: 'why-children-resist', title: '2. Why Children Resist Brushing, and Where Flavour Fits' },
+      { id: 'sensory-sensitivities', title: '3. If Your Child Is Sensitive to Taste, Smell or Touch' },
+      { id: 'how-to-switch', title: '4. How to Switch to a Choco Flavoured Toothpaste' },
+      { id: 'routine-for-every-age', title: '5. A Brushing Routine for Every Age' },
+      { id: '8-ways-to-make-brushing-a-treat', title: '6. 8 Ways to Make Brushing a Treat' },
+      { id: 'how-to-brush-properly', title: '7. How to Brush a Child\'s Teeth Properly' },
+      { id: 'what-it-can-and-cant-do', title: '8. What Choco Flavoured Toothpaste Can and Can\'t Do' },
+      { id: 'safety-basics', title: '9. Safety Basics' },
+      { id: 'trying-wooff-kids', title: '10. Trying Wooff Kids Choco Toothpaste' },
+      { id: 'faq-section', title: '11. Frequently Asked Questions' },
     ],
     sections: [
       {
-        id: 'in-brief',
-        title: 'In Brief',
-        paragraphs: [
-          'Choco flavoured toothpaste turns a daily chore into something kids look forward to. Wooff is built for that.',
-          'Mornings and bedtimes are often marked by negotiations, stalled routines, and reluctant brushers. Replacing spicy or sharp mint with a gentle, delectable chocolate flavor transforms oral care into a daily treat that children actively request.',
-        ],
-        quote: '“When brushing tastes like an indulgent cocoa treat without sugar or artificial sweeteners, resistance turns into excitement.”',
+        id: 'introduction',
+        title: 'Choco Flavoured Toothpaste',
+        bodyHtml: `
+          <p class="article-paragraph">Choco flavoured toothpaste is toothpaste that tastes of chocolate instead of mint. For a child who refuses to brush because mint feels sharp or "spicy", switching to a chocolate flavour can take away one reason for the daily battle. On its own, though, it won't build the habit. A steady routine, the right amount of toothpaste and an adult who stays involved do most of that work.</p>
+          <p class="article-paragraph">This guide covers how to make the switch, a brushing routine for each age, and practical ways to make brushing something your child looks forward to.</p>
+        `,
+        quote: '“For a child who refuses to brush because mint feels sharp or spicy, switching to a chocolate flavour takes away one reason for the daily battle. On its own, though, it won\'t build the habit — steady routine and parental support do that work.”',
       },
       {
-        id: 'four-ways',
-        title: 'Four Ways to Get Kids Brushing Happily',
-        paragraphs: [
-          'Developing lifelong dental habits does not have to be a battle of wills. Here are four dentist-tested strategies to make brushing time smooth and joyful:',
-        ],
-        subsections: [
-          {
-            title: 'Let Them Choose the Moment',
-            content: 'Give a choice between brushing before or after the bedtime story. Choice reduces pushback.',
-          },
-          {
-            title: 'Use a Timer',
-            content: 'Play a two-minute song. Kids brush longer when time feels like a game.',
-          },
-          {
-            title: 'Brush Together',
-            content: 'Children copy adults. Brush alongside them.',
-          },
-          {
-            title: 'Pick a Taste They Like',
-            content: 'A choco flavour removes the biggest barrier: dislike of strong mint.',
-          },
-        ],
+        id: 'why-children-resist',
+        title: 'Why Children Resist Brushing, and Where Flavour Fits',
+        bodyHtml: `
+          <p class="article-paragraph">Children push back against brushing for different reasons, and flavour fixes only one of them:</p>
+          <div class="article-table-responsive-wrapper">
+            <div class="table-heading-label">Why Kids Resist & What Actually Helps</div>
+            <table class="article-comparison-table">
+              <thead>
+                <tr>
+                  <th>What's going on</th>
+                  <th>What helps</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="metric-name">The toothpaste tastes too strong</td>
+                  <td>A milder flavour, such as chocolate</td>
+                </tr>
+                <tr>
+                  <td class="metric-name">The brush feels uncomfortable</td>
+                  <td>A toothbrush with a small head and soft bristles</td>
+                </tr>
+                <tr>
+                  <td class="metric-name">They want to be in charge</td>
+                  <td>Small choices, and a turn at brushing themselves</td>
+                </tr>
+                <tr>
+                  <td class="metric-name">They're bored</td>
+                  <td>A two-minute song or timer</td>
+                </tr>
+                <tr>
+                  <td class="metric-name">They're tired at bedtime</td>
+                  <td>Brushing after the last snack but before story time, so it's done before they get too sleepy</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="article-paragraph">If taste is the main problem, a choco flavoured toothpaste is worth trying. If it's one of the others, the tips below matter more than the flavour.</p>
+        `,
       },
       {
-        id: 'what-makes-wooff-different',
-        title: 'What Makes Wooff Different',
-        paragraphs: [
-          "Wooff combines nano-hydroxyapatite and calcium gluconate with theobromine, inulin, vitamin C, lactoferrin and coenzyme Q10 in one kids' formula.",
-          'Rather than stripping the oral microbiome with harsh foaming agents and synthetic dyes, Wooff nourishes beneficial oral flora, remineralizes developing enamel safely, and makes every brush stroke 100% safe to swallow.',
-        ],
-        callout: {
-          title: 'The Wooff Super-Blend',
-          text: 'Bio-identical Nano-Hydroxyapatite (nHAp) + Calcium Gluconate + Theobromine + Inulin Prebiotics + Vitamin C + Lactoferrin + CoQ10.',
-        },
+        id: 'sensory-sensitivities',
+        title: 'If Your Child Is Sensitive to Taste, Smell or Touch',
+        bodyHtml: `
+          <p class="article-paragraph">Some children find strong flavours, foam or the feel of bristles overwhelming. This is especially common in autistic children. In a survey of parents of 206 children with disabilities, sensory sensitivities in autistic children were linked with more difficulty with oral care at home and at the dentist. A 2020 study found that autistic children with stronger sensory responses cooperated less with toothbrushing.</p>
+          <p class="article-paragraph"><strong>If this sounds like your child:</strong></p>
+          <div class="article-features-checklist">
+            <ul>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Choose a mild flavour and a soft toothbrush with a small head</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Use only a small amount of toothpaste, which also means less foam</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Brush in the same place, at the same time and in the same order every day</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Show the steps with pictures, or count or sing through them</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Ask a paediatric dentist or an occupational therapist for more ideas</span></li>
+            </ul>
+          </div>
+        `,
       },
       {
-        id: 'next-steps',
-        title: 'Explore the Range',
-        paragraphs: [
-          'Ready to transform your child’s daily brushing routine into joyful smiles?',
-        ],
+        id: 'how-to-switch',
+        title: 'How to Switch to a Choco Flavoured Toothpaste',
+        bodyHtml: `
+          <div class="article-features-checklist">
+            <ol class="article-numbered-list">
+              <li><strong>Introduce it as something new, not a fix.</strong> Let your child look at the tube and smell the paste before the first brush.</li>
+              <li><strong>Use the amount on the pack.</strong> Squeeze it onto the brush yourself so the amount stays small.</li>
+              <li><strong>Keep the routine the same.</strong> Brush at the same times each day: once in the morning and last thing at night.</li>
+              <li><strong>Give it a week.</strong> New tastes can take a few tries to accept, so keep going for a week or so before you decide whether it's working.</li>
+            </ol>
+          </div>
+          <p class="article-paragraph">Before you switch, check that the toothpaste suits your child's age and dental needs. Our <strong><a href="/blog/chocolate-flavoured-toothpaste" class="article-inline-link">guide to choosing a chocolate flavoured toothpaste</a></strong> explains what to look for on the label.</p>
+        `,
+      },
+      {
+        id: 'routine-for-every-age',
+        title: 'A Brushing Routine for Every Age',
+        bodyHtml: `
+          <div class="article-table-responsive-wrapper">
+            <div class="table-heading-label">Age-by-Age Brushing Protocol</div>
+            <table class="article-comparison-table">
+              <thead>
+                <tr>
+                  <th>Age</th>
+                  <th>Who brushes</th>
+                  <th>Toothpaste amount</th>
+                  <th>Tip</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="metric-name">Under 3</td>
+                  <td>You brush their teeth</td>
+                  <td>Follow the pack. For fluoride toothpaste, a smear</td>
+                  <td>Start as soon as the first tooth appears</td>
+                </tr>
+                <tr>
+                  <td class="metric-name">3 to 6</td>
+                  <td>Your child brushes while you supervise</td>
+                  <td>Follow the pack. For fluoride toothpaste, a pea-sized amount</td>
+                  <td>Let them have a go, then help them finish</td>
+                </tr>
+                <tr>
+                  <td class="metric-name">7 and over</td>
+                  <td>Your child brushes on their own</td>
+                  <td>Follow the pack</td>
+                  <td>Keep checking that they clean every surface</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="article-paragraph"><strong>At every age:</strong></p>
+          <div class="article-features-checklist">
+            <ul>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Brush twice a day for about 2 minutes, including last thing at night before bed.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Take your child to the dentist when their first milk teeth appear, or before they are 12 months old, and keep up regular check-ups.</span></li>
+            </ul>
+          </div>
+        `,
+      },
+      {
+        id: '8-ways-to-make-brushing-a-treat',
+        title: '8 Ways to Make Brushing a Treat',
+        bodyHtml: `
+          <div class="article-features-checklist">
+            <ol class="article-numbered-list">
+              <li><strong>Offer small choices.</strong> Let your child pick their toothbrush, or whether to brush before or after their bath. Having a say makes brushing feel less like an order.</li>
+              <li><strong>Use a two-minute timer.</strong> A sand timer, a phone timer or a favourite two-minute song shows them how long is long enough.</li>
+              <li><strong>Brush together.</strong> Children copy what they see. Brushing at the same time turns it into something you do as a family.</li>
+              <li><strong>Take turns.</strong> Let your child brush first, then take a "checking turn" yourself to reach the spots they miss.</li>
+              <li><strong>Practise on a toy.</strong> Brushing a doll's or teddy's teeth first can make the real thing feel familiar.</li>
+              <li><strong>Praise the effort.</strong> Notice when they brush without a fuss. A simple sticker chart helps younger children see their progress.</li>
+              <li><strong>Keep rewards sugar-free.</strong> Use stickers, stories or extra play time rather than sweets.</li>
+              <li><strong>Stay calm on bad nights.</strong> Keep brushing short and gentle when your child is tired, but don't skip it.</li>
+            </ol>
+          </div>
+        `,
+      },
+      {
+        id: 'how-to-brush-properly',
+        title: 'How to Brush a Child\'s Teeth Properly',
+        bodyHtml: `
+          <div class="article-features-checklist">
+            <ul>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Use a toothbrush with a small head and soft bristles.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Clean every surface of every tooth: the outside, the inside and the chewing surfaces, including along the gumline.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Brush for about 2 minutes.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Help your child spit out the toothpaste. With a fluoride toothpaste, the NHS advises not rinsing afterwards, so the fluoride keeps working. With other toothpastes, follow the directions on the pack.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Replace the toothbrush when the bristles look worn or splayed.</span></li>
+            </ul>
+          </div>
+        `,
+      },
+      {
+        id: 'what-it-can-and-cant-do',
+        title: 'What Choco Flavoured Toothpaste Can and Can\'t Do',
+        bodyHtml: `
+          <p class="article-paragraph"><strong>It can</strong> make brushing more pleasant for a child who dislikes mint, which may make the twice-daily routine easier to keep.</p>
+          <p class="article-paragraph"><strong>It can't:</strong></p>
+          <div class="article-features-checklist">
+            <ul>
+              <li><i class="fa-solid fa-circle-xmark text-danger checklist-icon"></i><span>Prevent cavities through its flavour. Protection depends on the active ingredient, such as fluoride, hydroxyapatite or theobromine, and the evidence for each is very different.</span></li>
+              <li><i class="fa-solid fa-circle-xmark text-danger checklist-icon"></i><span>Cancel out sugar. How often your child has sweets, biscuits or sugary drinks still matters.</span></li>
+              <li><i class="fa-solid fa-circle-xmark text-danger checklist-icon"></i><span>Replace supervision or dental check-ups.</span></li>
+            </ul>
+          </div>
+          <p class="article-paragraph">Most choco flavoured toothpastes sold in India are fluoride-free. Fluoride toothpaste has the strongest evidence for preventing tooth decay, so if your child has had cavities or is at higher risk, ask your dentist which toothpaste to use. For the evidence on each ingredient, read <strong><a href="/blog/chocolate-toothpaste" class="article-inline-link">does chocolate toothpaste work, and is it safe?</a></strong></p>
+        `,
+      },
+      {
+        id: 'safety-basics',
+        title: 'Safety Basics',
+        bodyHtml: `
+          <div class="article-features-checklist">
+            <ul>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Keep the amount small and supervise brushing.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Teach "spit, don't swallow", and store the tube out of reach between brushes. A sweet-tasting paste can tempt children to eat it.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Close the cap after use and follow the storage directions on the pack.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>If your child has a food allergy, check the ingredient list first. Some chocolate toothpastes contain cocoa extract or milk-derived proteins such as lactoferrin.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Swallowing a little while learning is common and not a cause for worry. If your child eats a large amount, such as much of a tube, speak to your doctor.</span></li>
+              <li><i class="fa-solid fa-triangle-exclamation text-warning checklist-icon"></i><span><strong>Keep chocolate toothpaste away from pets.</strong> Theobromine, found in many chocolate toothpastes, is toxic to dogs.</span></li>
+            </ul>
+          </div>
+        `,
+      },
+      {
+        id: 'trying-wooff-kids',
+        title: 'Trying Wooff Kids Choco Toothpaste',
+        bodyHtml: `
+          <p class="article-paragraph"><strong><a href="/product/choco-toothpaste" class="article-inline-link">Wooff Kids Choco Toothpaste</a></strong> is our choco flavoured toothpaste for children above 2 years. It is sugar-free and fluoride-free, and the front of the carton states its two main ingredients: 2% nano-hydroxyapatite and 2% theobromine. We don't claim it prevents cavities or repairs enamel; it's there to make brushing taste better, so the routine above is easier to keep. Wooff Kids was founded by Dr. Shrushti Bhankhariya, a dentist.</p>
+          <p class="article-paragraph fst-italic text-muted"><em>This guide is general information and doesn't replace advice from your child's dentist.</em></p>
+        `,
         customLinks: [
-          { text: 'See the product page', url: '/products' },
-          { text: 'Browse all kids toothpaste', url: '/products' },
+          { text: 'View Wooff Kids Choco Toothpaste (Single 50g)', url: '/product/choco-toothpaste' },
+          { text: 'View Pack of 2 (50g each)', url: '/product/choco-toothpaste-pack-of-2' },
         ],
       },
     ],
     faqs: [
       {
-        q: 'How much should my child use?',
-        a: 'A pea-sized amount, with an adult watching.',
+        q: 'My child hates brushing. Will choco flavoured toothpaste help?',
+        a: 'It can, if the taste of mint is the problem. If your child resists the brush itself, the routine or being told what to do, use the other tips in this guide alongside the change of flavour.',
       },
       {
-        q: 'How often?',
-        a: 'Twice daily, morning and night.',
+        q: 'How long should my child brush?',
+        a: 'For about 2 minutes, twice a day, including last thing at night before bed. A timer or a two-minute song helps.',
       },
       {
-        q: 'Is it suitable for toddlers?',
-        a: 'Follow the age guidance on the pack and consult a dentist for very young children.',
+        q: 'Should my child rinse after brushing?',
+        a: 'With a fluoride toothpaste, the NHS advises spitting out and not rinsing, so the fluoride keeps working. For other toothpastes, follow the directions on the pack.',
       },
       {
-        q: 'Does it taste like real chocolate?',
-        a: 'It has a cocoa-style flavour, made to be mild and kid-friendly.',
+        q: 'How do I teach my child to spit out toothpaste?',
+        a: 'Show them how you do it, practise with a little water, and praise every try. Until they can spit reliably, keep the amount small and supervise.',
+      },
+      {
+        q: 'When can my child brush on their own?',
+        a: 'NHS guidance says children aged 7 and over should be able to brush their own teeth, but it\'s still a good idea to watch and check.',
+      },
+      {
+        q: 'Is it OK to reward brushing with chocolate?',
+        a: 'Stickers, praise or extra play time work better as rewards. If your child does have chocolate, keep it to mealtimes and never after the bedtime brush.',
       },
     ],
     conclusion_takeaways: [
-      'Choco flavoured toothpaste turns twice-daily brushing into something children look forward to.',
-      'Giving simple choices and brushing together builds confidence and routine.',
-      "Wooff pairs kid-loved cocoa flavor with dentist-backed nHAp, prebiotic inulin, and botanicals.",
+      'Choco flavoured toothpaste removes the taste barrier for children who resist sharp mint.',
+      'Flavor alone doesn\'t build the habit — a predictable morning and bedtime routine is essential.',
+      'Supervise brushing up to age 7, use small amounts, and keep toothpaste stored safely away from pets.',
     ],
     disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
     related_slugs: ['chocolate-flavoured-toothpaste', 'chocolate-toothpaste'],
@@ -453,7 +616,7 @@ export const RICH_ARTICLES = {
       },
       {
         q: "What if my child doesn't like the taste?",
-        a: 'Buy a single tube before a multipack. Opened toothpaste usually can\'t be returned for hygiene reasons, and that includes ours (see our <a href="/refund-policy" class="article-inline-link">refund and cancellation policy</a>). If your child still resists brushing, these <a href="/blog/choco-toothpaste" class="article-inline-link">tips to make brushing fun</a> may help.',
+        a: 'Buy a single tube before a multipack. Opened toothpaste usually can\'t be returned for hygiene reasons, and that includes ours (see our <a href="/refund-policy" class="article-inline-link">refund and cancellation policy</a>). If your child still resists brushing, these <a href="/blog/choco-flavoured-toothpaste" class="article-inline-link">tips to make brushing fun</a> may help.',
       },
     ],
     conclusion_takeaways: [
@@ -463,7 +626,7 @@ export const RICH_ARTICLES = {
       'Wooff Kids Choco Toothpaste lists all active ingredients transparently on the carton with no false claims.',
     ],
     disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
-    related_slugs: ['choco-toothpaste', 'chocolate-toothpaste'],
+    related_slugs: ['choco-flavoured-toothpaste', 'chocolate-toothpaste'],
   },
   'chocolate-toothpaste': {
     title: 'Chocolate Toothpaste: What Parents Should Know',
@@ -574,9 +737,12 @@ export const RICH_ARTICLES = {
       'Store the tube out of reach, replace brushes every three months, and schedule dental visits twice a year.',
     ],
     disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
-    related_slugs: ['chocolate-flavoured-toothpaste', 'choco-toothpaste'],
+    related_slugs: ['chocolate-flavoured-toothpaste', 'choco-flavoured-toothpaste'],
   },
 };
+
+// Backwards-compatible alias for legacy /blog/choco-toothpaste URLs
+RICH_ARTICLES['choco-toothpaste'] = RICH_ARTICLES['choco-flavoured-toothpaste'];
 
 // Helper: Enrich base blog with full editorial metadata
 export function getEnrichedBlog(baseBlog, allBlogs = []) {

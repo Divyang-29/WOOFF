@@ -293,7 +293,7 @@ export default function SinglePackEditorial() {
         </div>
         <div className="spe-note-box mt-3 text-center">
           <span>Always brush with adult supervision. If your child still resists, check our </span>
-          <Link to="/blog/choco-toothpaste" className="spe-link fw-bold">
+          <Link to="/blog/choco-flavoured-toothpaste" className="spe-link fw-bold">
             tips to make brushing fun &rarr;
           </Link>
         </div>

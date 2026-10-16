@@ -323,9 +323,9 @@ async function seedStaticData() {
         created_at: new Date(Date.now() - 30 * 60 * 1000),
       },
       {
-        title: "Choco Flavoured Toothpaste: Make Brushing a Treat",
-        slug: "choco-toothpaste",
-        content: "Choco flavoured toothpaste turns a daily chore into something kids look forward to. Wooff is built for that. Developing lifelong dental habits doesn't have to be a battle of wills: let them choose the moment, use a 2-minute timer, brush together, and pick a taste they love. Wooff combines nano-hydroxyapatite and calcium gluconate with theobromine, inulin, vitamin C, lactoferrin, and coenzyme Q10 in one clean kids' formula.",
+        title: "Choco Flavoured Toothpaste: 8 Tips to End Brushing Fights",
+        slug: "choco-flavoured-toothpaste",
+        content: "Choco flavoured toothpaste is toothpaste that tastes of chocolate instead of mint. For a child who refuses to brush because mint feels sharp or \"spicy\", switching to a chocolate flavour can take away one reason for the daily battle. On its own, though, it won't build the habit. A steady routine, the right amount of toothpaste and an adult who stays involved do most of that work.",
         image_url: "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.jpg",
         author: "Wooff Team",
         created_at: new Date(Date.now() - 60 * 60 * 1000),

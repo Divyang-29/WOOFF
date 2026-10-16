@@ -24,13 +24,13 @@ const STATIC_BLOG_FALLBACKS = [
     created_at: '2026-10-16T08:00:00Z',
   },
   {
-    id: 'choco-toothpaste',
-    slug: 'choco-toothpaste',
-    title: 'Choco Flavoured Toothpaste: Make Brushing a Treat',
-    content: 'Choco flavoured toothpaste turns a daily chore into something kids look forward to. Wooff is built for that.',
+    id: 'choco-flavoured-toothpaste',
+    slug: 'choco-flavoured-toothpaste',
+    title: 'Choco Flavoured Toothpaste: 8 Tips to End Brushing Fights',
+    content: 'Child hates brushing? See how choco flavoured toothpaste helps, plus 8 easy tips and an age-by-age routine to make brushing a treat for your kid.',
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.webp',
     author: 'Wooff Team',
-    created_at: '2026-10-12T12:00:00Z',
+    created_at: '2026-10-16T10:00:00Z',
   },
 ];
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Banner from '../../components/Banner/Banner';
 import { API_ENDPOINTS } from '../../api';
 import { getEnrichedBlog, RICH_ARTICLES } from './blogArticleData';
@@ -21,12 +21,14 @@ function getInitialBlogData(slug) {
 
   // 3. Fuzzy fallback to ensure 0ms render without failure
   if (!rich) {
-    if (cleanSlug.includes('flavoured') || cleanSlug.includes('guide')) {
+    if (cleanSlug.includes('choco-flavoured') || cleanSlug.includes('choco-toothpaste') || cleanSlug.includes('treat') || cleanSlug.includes('fights')) {
+      rich = RICH_ARTICLES['choco-flavoured-toothpaste'];
+    } else if (cleanSlug.includes('flavoured') || cleanSlug.includes('guide')) {
       rich = RICH_ARTICLES['chocolate-flavoured-toothpaste'];
     } else if (cleanSlug.includes('parents') || cleanSlug.includes('know')) {
       rich = RICH_ARTICLES['chocolate-toothpaste'];
     } else {
-      rich = RICH_ARTICLES['chocolate-toothpaste'] || Object.values(RICH_ARTICLES)[0];
+      rich = RICH_ARTICLES['choco-flavoured-toothpaste'] || Object.values(RICH_ARTICLES)[0];
     }
   }
 
@@ -52,6 +54,14 @@ function getInitialBlogData(slug) {
 
 export default function SingleBlog() {
   const { slug } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (slug === 'choco-toothpaste') {
+      navigate('/blog/choco-flavoured-toothpaste', { replace: true });
+    }
+  }, [slug, navigate]);
+
   const initialData = getInitialBlogData(slug);
   const [blog, setBlog] = useState(initialData);
   const [allBlogs, setAllBlogs] = useState([]);
