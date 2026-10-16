@@ -8,11 +8,11 @@ const STATIC_BLOG_FALLBACKS = [
   {
     id: 'chocolate-toothpaste',
     slug: 'chocolate-toothpaste',
-    title: 'Chocolate Toothpaste: What Parents Should Know',
-    content: 'Is chocolate toothpaste safe and effective for kids? Ingredients, usage and expert-style answers from Wooff.',
+    title: 'Chocolate Toothpaste for Kids: Is It Safe & Does It Work?',
+    content: "Is chocolate toothpaste safe for kids? Learn what's inside, what theobromine does, fluoride-free facts and how much to use. A simple guide for parents.",
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794125/wooff_blogs/chocolate-toothpaste-wood.webp',
     author: 'Wooff Team',
-    created_at: '2026-10-12T13:30:00Z',
+    created_at: '2026-10-16T12:00:00Z',
   },
   {
     id: 'chocolate-flavoured-toothpaste',
