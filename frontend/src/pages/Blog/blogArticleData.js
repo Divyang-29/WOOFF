@@ -964,9 +964,9 @@ export function getEnrichedBlog(baseBlog, allBlogs = []) {
     parsedTags = ['OralHealth', 'KidsWellness', 'WooffKids', 'DentalScience'];
   }
 
-  // Parse FAQs from database JSON or rich fallback
-  let parsedFaqs = [];
-  if (baseBlog.faqs) {
+  // Parse FAQs: Curated editorial FAQs from richData take priority
+  let parsedFaqs = Array.isArray(richData.faqs) && richData.faqs.length > 0 ? richData.faqs : [];
+  if (parsedFaqs.length === 0 && baseBlog.faqs) {
     try {
       parsedFaqs = typeof baseBlog.faqs === 'string' ? JSON.parse(baseBlog.faqs) : baseBlog.faqs;
     } catch (e) {
@@ -974,7 +974,7 @@ export function getEnrichedBlog(baseBlog, allBlogs = []) {
     }
   }
   if (!Array.isArray(parsedFaqs) || parsedFaqs.length === 0) {
-    parsedFaqs = richData.faqs || [
+    parsedFaqs = [
       {
         q: 'How does Wooff ensure safety for toddlers?',
         a: 'Every formula is 100% fluoride-free, SLS-free, dye-free, and formulated with bio-identical minerals and prebiotics that are completely safe if swallowed.',
@@ -986,9 +986,11 @@ export function getEnrichedBlog(baseBlog, allBlogs = []) {
     ];
   }
 
-  // Parse Conclusion Takeaways from database JSON or rich fallback
-  let parsedTakeaways = [];
-  if (baseBlog.conclusion_takeaways) {
+  // Parse Conclusion Takeaways: Curated takeaways take priority
+  let parsedTakeaways = Array.isArray(richData.conclusion_takeaways) && richData.conclusion_takeaways.length > 0
+    ? richData.conclusion_takeaways
+    : [];
+  if (parsedTakeaways.length === 0 && baseBlog.conclusion_takeaways) {
     try {
       parsedTakeaways = typeof baseBlog.conclusion_takeaways === 'string' 
         ? JSON.parse(baseBlog.conclusion_takeaways) 
@@ -998,7 +1000,7 @@ export function getEnrichedBlog(baseBlog, allBlogs = []) {
     }
   }
   if (!Array.isArray(parsedTakeaways) || parsedTakeaways.length === 0) {
-    parsedTakeaways = richData.conclusion_takeaways || [
+    parsedTakeaways = [
       'Prioritize gentle, biocompatible minerals over harsh chemicals.',
       'Daily consistency creates long-term positive oral wellness habits.',
       'Always consult your pediatric dentist for personalized oral care routines.',
@@ -1012,9 +1014,9 @@ export function getEnrichedBlog(baseBlog, allBlogs = []) {
     tags: parsedTags,
     updated_at: baseBlog.updated_at || richData.updated_at || baseBlog.created_at,
     reading_time: baseBlog.reading_time || estimatedReadingTime,
-    excerpt: baseBlog.excerpt || richData.excerpt || paragraphs[0] || '',
+    excerpt: richData.excerpt || baseBlog.excerpt || paragraphs[0] || '',
     image_caption: baseBlog.image_caption || richData.image_caption || 'Wooff Kids Botanical Dental Research & Clinical Insights.',
-    disclaimer: baseBlog.disclaimer || richData.disclaimer || null,
+    disclaimer: richData.disclaimer || baseBlog.disclaimer || null,
     meta_title: richData.meta_title || null,
     meta_description: richData.meta_description || null,
     author_profile: {

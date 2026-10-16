@@ -1,0 +1,12 @@
+-- Migration 025: Update chocolate-toothpaste blog FAQs to match chocolate-toothpaste.html
+UPDATE blogs 
+SET faqs = '[
+  {"q": "Is theobromine toothpaste better than fluoride toothpaste?", "a": "Not on current evidence. Fluoride toothpaste is supported by decades of clinical trials. Theobromine has mixed results in laboratory studies and has been tested only in small, short human studies. It is a promising ingredient, not a proven replacement for fluoride."},
+  {"q": "Is there a chocolate toothpaste with fluoride?", "a": "Chocolate-flavoured fluoride toothpastes have been sold in other countries, but most chocolate toothpastes on sale in India are fluoride-free. A fluoride toothpaste sold in India must show its fluoride content in ppm on the pack, so look for that figure."},
+  {"q": "Can adults use chocolate toothpaste?", "a": "Yes, if the pack''s age range allows it. Most chocolate toothpastes in India are made for children, but adults who dislike mint can use them too. Adults with a history of decay, sensitive teeth or gum problems should ask their dentist which toothpaste suits them."},
+  {"q": "Can I brush my dog''s teeth with chocolate toothpaste?", "a": "No. Theobromine is toxic to dogs, and xylitol, found in many toothpastes, is also dangerous for them. Use a toothpaste made for pets, and keep human toothpaste out of their reach."},
+  {"q": "Is it bad to eat chocolate after brushing at night?", "a": "It''s best avoided. The NHS advises brushing last thing at night before bed, so make the bedtime brush come after your child''s last snack or sweet of the day."},
+  {"q": "Does theobromine toothpaste have side effects?", "a": "In normal use the amount is small: a pea-sized amount of a 2% theobromine paste holds about 5 mg, less than a small piece of milk chocolate. The real risks are a child eating a large amount of toothpaste, when you should speak to your doctor, and pets, because theobromine is toxic to dogs."},
+  {"q": "Does chocolate toothpaste freshen breath?", "a": "Brushing your teeth and gums twice a day, and gently cleaning the tongue once a day, help prevent bad breath whatever the flavour. Mint adds a cooling feeling that chocolate doesn''t, so breath may not feel ''minty'' afterwards, but that''s taste, not cleanliness. If bad breath doesn''t go away, see a dentist: gum disease, tooth decay and a dry mouth can all cause it."}
+]'::jsonb
+WHERE slug = 'chocolate-toothpaste';
