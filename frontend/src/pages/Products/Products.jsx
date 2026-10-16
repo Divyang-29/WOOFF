@@ -7,6 +7,7 @@ import {
   setCachedProducts,
   setCachedProduct,
   getOptimizedImageUrl,
+  normalizeProduct,
 } from '../../utils/productData';
 import { preloadProduct } from '../../utils/imagePreloader';
 import './Products.css';
@@ -26,8 +27,9 @@ export default function Products() {
         const data = await response.json();
 
         if (data.success && isMounted) {
-          setProducts(data.products);
-          setCachedProducts(data.products);
+          const normalized = (data.products || []).map(normalizeProduct);
+          setProducts(normalized);
+          setCachedProducts(normalized);
           setError(null);
         } else if (isMounted && products.length === 0) {
           setError(data.message || 'Failed to load products');
@@ -119,7 +121,11 @@ export default function Products() {
                       preloadProduct(product);
                     }}
                   >
-                    <h3 className="card-title">{product.title}</h3>
+                    <h3 className="card-title">
+                      {product.slug === 'choco-toothpaste' || String(product.id) === '9'
+                        ? 'Wooff Kids Choco Toothpaste 50g (Above 2 Years)'
+                        : product.title}
+                    </h3>
                   </Link>
 
                   {/* Trust: Dynamic Ratings */}

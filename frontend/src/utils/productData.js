@@ -106,8 +106,23 @@ export const STATIC_PRODUCTS = [
   }
 ];
 
-const CACHE_KEY_PRODUCTS = 'wooff_cached_products_v2';
-const CACHE_KEY_PRODUCT_PREFIX = 'wooff_cached_prod_v2_';
+export function normalizeProduct(product) {
+  if (!product) return product;
+  const isSingle = product.slug === 'choco-toothpaste' || String(product.id) === '9';
+  const isPack2 = product.slug === 'choco-toothpaste-pack-of-2' || String(product.id) === '10';
+
+  return {
+    ...product,
+    title: isSingle
+      ? 'Wooff Kids Choco Toothpaste 50g (Above 2 Years)'
+      : isPack2
+        ? 'Wooff Kids Chocolate Flavour Toothpaste, Pack of 2 (50 g each)'
+        : (product.title || product.name),
+  };
+}
+
+const CACHE_KEY_PRODUCTS = 'wooff_cached_products_v3';
+const CACHE_KEY_PRODUCT_PREFIX = 'wooff_cached_prod_v3_';
 
 export function getCachedProducts() {
   try {
@@ -116,22 +131,23 @@ export function getCachedProducts() {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return parsed.map(normalizeProduct);
         }
       }
     }
   } catch (err) {
     console.warn('Could not read cached products:', err);
   }
-  return STATIC_PRODUCTS;
+  return STATIC_PRODUCTS.map(normalizeProduct);
 }
 
 export function setCachedProducts(products) {
   try {
     if (typeof window !== 'undefined' && window.localStorage && Array.isArray(products) && products.length > 0) {
-      localStorage.setItem(CACHE_KEY_PRODUCTS, JSON.stringify(products));
+      const normalized = products.map(normalizeProduct);
+      localStorage.setItem(CACHE_KEY_PRODUCTS, JSON.stringify(normalized));
       // Also cache individual items
-      products.forEach((p) => {
+      normalized.forEach((p) => {
         if (p.slug) {
           localStorage.setItem(`${CACHE_KEY_PRODUCT_PREFIX}${p.slug}`, JSON.stringify(p));
         }
@@ -146,14 +162,14 @@ export function setCachedProducts(products) {
 }
 
 export function getCachedProductBySlug(slugOrId) {
-  if (!slugOrId) return STATIC_PRODUCTS[0];
+  if (!slugOrId) return normalizeProduct(STATIC_PRODUCTS[0]);
   const query = String(slugOrId).trim().toLowerCase();
 
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
       const stored = localStorage.getItem(`${CACHE_KEY_PRODUCT_PREFIX}${query}`);
       if (stored) {
-        return JSON.parse(stored);
+        return normalizeProduct(JSON.parse(stored));
       }
     }
   } catch (err) {
@@ -165,21 +181,23 @@ export function getCachedProductBySlug(slugOrId) {
 
   // 1. Direct slug match
   let found = pool.find((p) => p.slug && p.slug.toLowerCase() === query);
-  if (found) return found;
+  if (found) return normalizeProduct(found);
 
   // 2. Direct ID match
   found = pool.find((p) => String(p.id) === query);
-  if (found) return found;
+  if (found) return normalizeProduct(found);
 
   // 3. Fuzzy matches
   if (query.includes('pack-of-2') || query.includes('bundle') || query.includes('p2')) {
-    return pool.find((p) => p.bundle_type === 'bundle-2') || STATIC_PRODUCTS[1];
+    const p2 = pool.find((p) => p.bundle_type === 'bundle-2') || STATIC_PRODUCTS[1];
+    return normalizeProduct(p2);
   }
   if (query.includes('choco') || query.includes('toothpaste')) {
-    return pool.find((p) => p.bundle_type === 'single') || STATIC_PRODUCTS[0];
+    const single = pool.find((p) => p.bundle_type === 'single') || STATIC_PRODUCTS[0];
+    return normalizeProduct(single);
   }
 
-  return STATIC_PRODUCTS[0];
+  return normalizeProduct(STATIC_PRODUCTS[0]);
 }
 
 export function setCachedProduct(slugOrId, product) {

@@ -718,7 +718,11 @@ export default function CheckoutForm({ initialItems = null, onOrderSuccess = nul
                         <span className="summary-item-badge">{qty}</span>
                       </div>
                       <div className="summary-item-details">
-                        <div className="summary-item-name">{item.title || item.name || 'Wooff Kids Toothpaste'}</div>
+                        <div className="summary-item-name">
+                          {item.slug === 'choco-toothpaste' || String(item.product_id || item.id) === '9'
+                            ? 'Wooff Kids Choco Toothpaste 50g (Above 2 Years)'
+                            : (item.title || item.name || 'Wooff Kids Toothpaste')}
+                        </div>
                         <div className="summary-item-qty">Qty: {qty}</div>
                       </div>
                       <div className="summary-item-price">₹{(unitPrice * qty).toFixed(2)}</div>

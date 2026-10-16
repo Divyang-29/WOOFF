@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { normalizeProduct } from '../utils/productData';
 
 const CartContext = createContext();
 
@@ -14,7 +15,11 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => {
     try {
       const saved = localStorage.getItem('wooff_cart_items');
-      return saved ? JSON.parse(saved) : [];
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return Array.isArray(parsed) ? parsed.map(normalizeProduct) : [];
+      }
+      return [];
     } catch {
       return [];
     }
@@ -67,11 +72,12 @@ export const CartProvider = ({ children }) => {
     const quantityToAdd = Math.max(1, parseInt(qty) || 1);
     
     // Normalize product structure
-    const productId = product.id || product.product_id;
-    const title = product.title || product.name || 'Toothpaste Product';
-    const price = parseFloat(product.final_price || product.price || 649);
-    const originalPrice = parseFloat(product.price || price);
-    const image = product.primary_image || product.image || '/images/hero_tubes.webp';
+    const norm = normalizeProduct(product);
+    const productId = norm.id || norm.product_id;
+    const title = norm.title || norm.name || 'Toothpaste Product';
+    const price = parseFloat(norm.final_price || norm.price || 649);
+    const originalPrice = parseFloat(norm.price || price);
+    const image = norm.primary_image || norm.image || '/images/hero_tubes.webp';
 
     // Update local state first for instant smooth UI
     setCartItems((prevItems) => {

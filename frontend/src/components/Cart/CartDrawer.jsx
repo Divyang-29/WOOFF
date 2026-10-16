@@ -75,7 +75,11 @@ export default function CartDrawer() {
                     />
                     
                     <div className="cart-item-details">
-                      <h4 className="cart-item-title">{item.title}</h4>
+                      <h4 className="cart-item-title">
+                        {item.slug === 'choco-toothpaste' || String(item.product_id || item.id) === '9'
+                          ? 'Wooff Kids Choco Toothpaste 50g (Above 2 Years)'
+                          : item.title}
+                      </h4>
                       <div className="cart-item-price-row">
                         <span className="cart-item-price">₹{parseFloat(item.final_price || item.price).toFixed(2)}</span>
                         {item.price > item.final_price && (
