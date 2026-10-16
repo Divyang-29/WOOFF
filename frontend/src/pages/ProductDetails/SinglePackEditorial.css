@@ -1,0 +1,377 @@
+/* ==========================================================================
+   Single Pack Editorial & Clinical Guide Styles
+   Only rendered for /product/choco-toothpaste (Single Pack)
+   ========================================================================== */
+
+.single-pack-editorial-wrapper {
+  margin-top: 3.5rem;
+  padding-top: 2rem;
+  border-top: 2px solid rgba(75, 46, 30, 0.12);
+  width: 100%;
+}
+
+.spe-section {
+  margin-bottom: 3.5rem;
+}
+
+.spe-section-header {
+  margin-bottom: 1.5rem;
+}
+
+.spe-pill-badge {
+  display: inline-block;
+  background-color: var(--primary-brown, #4B2E1E);
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.6rem;
+}
+
+.spe-section-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  font-weight: 700;
+  color: var(--primary-brown, #4B2E1E);
+  margin: 0;
+  line-height: 1.25;
+}
+
+/* Prose Block */
+.spe-prose-block {
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #382417;
+}
+
+.spe-prose-block p {
+  margin-bottom: 1.25rem;
+}
+
+.spe-disclaimer-lead {
+  background-color: #FAF5EE;
+  border-left: 4px solid var(--primary-brown, #4B2E1E);
+  padding: 1rem 1.25rem;
+  border-radius: 0 10px 10px 0;
+  font-style: italic;
+  font-size: 0.98rem;
+  color: #5A3E2B;
+}
+
+/* Callout Cards */
+.spe-callout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin: 1.75rem 0;
+}
+
+.spe-callout-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background-color: #FFFFFF;
+  border: 2px solid var(--primary-brown, #4B2E1E);
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
+}
+
+.spe-callout-icon {
+  font-size: 1.5rem;
+  color: var(--warm-orange, #e58b57);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.spe-callout-text strong {
+  display: block;
+  font-size: 1.05rem;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 0.35rem;
+}
+
+.spe-callout-text p {
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: #4A2E19;
+  margin: 0;
+}
+
+.spe-note-box {
+  background-color: #FEF7EE;
+  border: 1.5px dashed var(--warm-orange, #e58b57);
+  padding: 0.85rem 1.25rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+.spe-link {
+  color: var(--secondary-brown, #7A4E2D);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.spe-link:hover {
+  color: var(--warm-orange, #e58b57);
+}
+
+/* 5 Reasons Grid */
+.spe-reasons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.spe-reason-card {
+  background-color: #FFFFFF;
+  border: 2px solid var(--primary-brown, #4B2E1E);
+  border-radius: 16px;
+  padding: 1.5rem 1.25rem;
+  box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+}
+
+.spe-reason-card:hover {
+  transform: translateY(-3px);
+}
+
+.spe-reason-icon-circle {
+  width: 48px;
+  height: 48px;
+  background-color: #FAF5EE;
+  border: 2px solid var(--primary-brown, #4B2E1E);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--warm-orange, #e58b57);
+  margin-bottom: 1rem;
+}
+
+.spe-reason-card h3 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 0.5rem;
+}
+
+.spe-reason-card p {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #4A2E19;
+  margin: 0;
+}
+
+/* Responsive Table */
+.spe-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 2px solid var(--primary-brown, #4B2E1E);
+  border-radius: 14px;
+  box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
+  background-color: #FFFFFF;
+}
+
+.spe-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.spe-table th {
+  background-color: #FAF5EE;
+  color: var(--primary-brown, #4B2E1E);
+  font-weight: 800;
+  padding: 0.95rem 1.25rem;
+  border-bottom: 2px solid var(--primary-brown, #4B2E1E);
+}
+
+.spe-table td {
+  padding: 0.95rem 1.25rem;
+  border-bottom: 1px solid rgba(75, 46, 30, 0.12);
+  color: #382417;
+  line-height: 1.6;
+  vertical-align: top;
+}
+
+.spe-table tr:last-child td {
+  border-bottom: none;
+}
+
+.spe-cell-label {
+  font-weight: 700;
+  color: var(--primary-brown, #4B2E1E);
+  white-space: nowrap;
+  width: 25%;
+}
+
+.spe-comparison-table th.spe-highlight-col,
+.spe-comparison-table td.spe-highlight-col {
+  background-color: rgba(229, 139, 87, 0.08);
+}
+
+.spe-claim-box {
+  background-color: #FEF7EE;
+  border: 1.5px solid var(--primary-brown, #4B2E1E);
+  border-radius: 12px;
+  padding: 1.15rem 1.35rem;
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: #4A2E19;
+}
+
+/* 5-Step Routine Steps */
+.spe-routine-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.spe-step-card {
+  background-color: #FFFFFF;
+  border: 2px solid var(--primary-brown, #4B2E1E);
+  border-radius: 14px;
+  padding: 1.35rem 1rem;
+  box-shadow: 3px 3px 0px var(--primary-brown, #4B2E1E);
+  text-align: center;
+}
+
+.spe-step-num {
+  width: 36px;
+  height: 36px;
+  background-color: var(--warm-orange, #e58b57);
+  color: #FFFFFF;
+  border: 2px solid var(--primary-brown, #4B2E1E);
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem auto;
+}
+
+.spe-step-card h4 {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 0.4rem;
+}
+
+.spe-step-card p {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #4A2E19;
+  margin: 0;
+}
+
+/* Checklist Grid */
+.spe-checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.15rem;
+  margin-top: 1.25rem;
+}
+
+.spe-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background-color: #FFFFFF;
+  border: 1.5px solid rgba(75, 46, 30, 0.18);
+  border-radius: 12px;
+  padding: 1rem;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: #382417;
+}
+
+.spe-check-item i {
+  font-size: 1.15rem;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.spe-check-number {
+  width: 26px;
+  height: 26px;
+  background-color: var(--primary-brown, #4B2E1E);
+  color: #FFFFFF;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.spe-warning-item {
+  border-color: #D32F2F;
+  background-color: #FFF5F5;
+}
+
+/* Bullet list */
+.spe-bullet-list {
+  padding-left: 1.35rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+.spe-dentist-prompt-box {
+  background-color: #FAF5EE;
+  border: 2px solid var(--primary-brown, #4B2E1E);
+  border-radius: 14px;
+  padding: 1.35rem 1.5rem;
+  box-shadow: 4px 4px 0px var(--primary-brown, #4B2E1E);
+}
+
+.spe-dentist-prompt-box h4 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 0.75rem;
+}
+
+.spe-dentist-prompt-box ul {
+  padding-left: 1.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #4A2E19;
+}
+
+/* Footer Disclaimer */
+.spe-footer-disclaimer {
+  background-color: rgba(75, 46, 30, 0.05);
+  border-radius: 10px;
+  padding: 0.95rem 1.25rem;
+  font-size: 0.88rem;
+  color: #6E5341;
+  margin-top: 2rem;
+}
+
+.spe-footer-disclaimer p {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .spe-cell-label {
+    width: 35%;
+    white-space: normal;
+  }
+}

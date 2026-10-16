@@ -50,31 +50,97 @@ const DEFAULT_WOOFF_FAQS = [
   }
 ];
 
-export default function ProductFAQ({ faqs }) {
-  const baseList = (Array.isArray(faqs) && faqs.length > 0) ? faqs : DEFAULT_WOOFF_FAQS;
+export const SINGLE_PACK_CHOCO_FAQS = [
+  {
+    id: 'sugar-cavities',
+    question: 'Does chocolate toothpaste contain sugar or cause cavities?',
+    answer: 'Wooff Kids Choco Toothpaste contains no sugar and no chocolate; its taste comes from cocoa extract. Cavities form when plaque bacteria turn sugars from food and drinks into acid, so a sugar-free toothpaste doesn\'t feed them. The flavour doesn\'t protect teeth either: brushing twice a day and cutting down on sugary snacks do.'
+  },
+  {
+    id: 'toddler-2yo',
+    question: 'Can a 2-year-old use Wooff Kids Choco Toothpaste?',
+    answer: 'Yes. It is labelled for children above 2 years. Use a pea-sized amount, put it on the brush yourself, and brush your child\'s teeth for them until they are about 3. For children under 2, ask your dentist which toothpaste to use and how much.'
+  },
+  {
+    id: 'swallow-toothpaste',
+    question: 'What should I do if my child swallows the toothpaste?',
+    answer: 'Don\'t worry about the small amount children often swallow while learning to brush. Wooff Kids is sugar-free and fluoride-free, and a pea-sized amount contains only a tiny quantity of each ingredient. Toothpaste is still made to be spat out, so keep using a small amount and supervise brushing. If your child eats a large amount, such as much of the tube, speak to your doctor and keep the carton with you.'
+  },
+  {
+    id: 'fluoride-free-kids',
+    question: 'Is fluoride-free toothpaste good for kids?',
+    answer: 'It can suit some children, but it isn\'t automatically safer or more effective. Fluoride toothpaste has the strongest evidence for preventing tooth decay and remains the standard recommendation. If your child has had cavities or is at higher risk, ask your dentist before choosing a fluoride-free paste.'
+  },
+  {
+    id: 'theobromine-toothpaste',
+    question: 'What does theobromine do in toothpaste?',
+    answer: 'Theobromine is a natural compound found in cocoa. Laboratory studies have tested whether it helps tooth enamel take up minerals, with mixed results, and human studies so far are small and short. It hasn\'t been shown to prevent cavities, so treat it as an ingredient still under research rather than a proven one. Wooff Kids contains 2% theobromine.'
+  },
+  {
+    id: 'nhap-safety-kids',
+    question: 'Is nano-hydroxyapatite safe for children?',
+    answer: 'Hydroxyapatite is a calcium-phosphate mineral, the same type that makes up most of tooth enamel; "nano" means the particles are very small. In the European Union, nano-hydroxyapatite is permitted in toothpaste at up to 10%, provided the particles meet strict size and shape criteria. Wooff Kids contains 2%. As with any toothpaste, use the amount on the pack and teach your child to spit out the excess.'
+  },
+  {
+    id: 'adults-choco-toothpaste',
+    question: 'Can adults use chocolate toothpaste?',
+    answer: 'Yes. Wooff Kids is designed for children, but the pack says "above 2 years", so older children and adults who find mint too strong can use it too. Adults with sensitive teeth, gum problems or a history of decay should ask their dentist which toothpaste suits them.'
+  },
+  {
+    id: 'dogs-pets-safety',
+    question: 'Is Wooff toothpaste for dogs?',
+    answer: 'No. Despite the name, Wooff Kids is toothpaste for children. Never use it to brush a pet\'s teeth: it contains theobromine, which is toxic to dogs, and human toothpastes can contain other ingredients that are unsafe for pets, such as xylitol. Keep the tube out of your pet\'s reach.'
+  },
+  {
+    id: 'returns-opened-tube',
+    question: 'Can I return an opened tube?',
+    answer: 'For hygiene reasons, opened or used tubes can\'t be returned. If your order arrives damaged, leaking or incorrect, contact us within 48 hours of delivery and share an unedited video of the sealed parcel being opened. Full details are in our refund and cancellation policy.'
+  },
+  {
+    id: 'where-to-buy-choco',
+    question: 'Where can I buy Wooff Kids Choco Toothpaste?',
+    answer: 'On wooff.care, as a single 50 g tube or a pack of two 50 g tubes. You can pay by UPI, card, net banking or cash on delivery.'
+  },
+  {
+    id: 'delivery-timeline',
+    question: 'How long does delivery take?',
+    answer: 'Orders usually arrive in 2–4 business days. Enter your pincode on this page to check the delivery time for your area.'
+  }
+];
 
-  // Ensure user-specified toddler and chocolate taste FAQs are always present at top
-  const priorityFaqs = [
-    {
-      id: 'toddlers-suitable',
-      question: 'Is it suitable for toddlers?',
-      answer: 'Follow the age guidance on the pack and consult a dentist for very young children.',
-    },
-    {
-      id: 'chocolate-taste',
-      question: 'Does it taste like real chocolate?',
-      answer: 'It has a cocoa-style flavour, made to be mild and kid-friendly.',
-    },
-  ];
+export default function ProductFAQ({ faqs, isSinglePack = false }) {
+  let faqList = [];
 
-  const filteredRest = baseList.filter(
-    (item) =>
-      item.question !== 'Is it suitable for toddlers?' &&
-      item.question !== 'Does it taste like real chocolate?'
-  );
+  if (isSinglePack) {
+    faqList = SINGLE_PACK_CHOCO_FAQS;
+  } else {
+    const baseList = (Array.isArray(faqs) && faqs.length > 0) ? faqs : DEFAULT_WOOFF_FAQS;
 
-  const faqList = [...priorityFaqs, ...filteredRest];
-  const [openId, setOpenId] = useState('toddlers-suitable');
+    // Ensure user-specified toddler and chocolate taste FAQs are always present at top
+    const priorityFaqs = [
+      {
+        id: 'toddlers-suitable',
+        question: 'Is it suitable for toddlers?',
+        answer: 'Follow the age guidance on the pack and consult a dentist for very young children.',
+      },
+      {
+        id: 'chocolate-taste',
+        question: 'Does it taste like real chocolate?',
+        answer: 'It has a cocoa-style flavour, made to be mild and kid-friendly.',
+      },
+    ];
+
+    const filteredRest = baseList.filter(
+      (item) =>
+        item.question !== 'Is it suitable for toddlers?' &&
+        item.question !== 'Does it taste like real chocolate?'
+    );
+
+    faqList = [...priorityFaqs, ...filteredRest];
+  }
+
+  const [openId, setOpenId] = useState(isSinglePack ? 'sugar-cavities' : 'toddlers-suitable');
+
 
   const toggleFaq = (id) => {
     setOpenId(openId === id ? null : id);

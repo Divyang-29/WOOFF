@@ -11,6 +11,7 @@ import KeyIngredients from './KeyIngredients';
 import ProductBrandShowcase from './ProductBrandShowcase';
 import ProductFAQ from './ProductFAQ';
 import ProductReviews from './ProductReviews';
+import SinglePackEditorial from './SinglePackEditorial';
 import './ProductDetails.css';
 
 export default function ProductDetails() {
@@ -19,6 +20,7 @@ export default function ProductDetails() {
   const { addToCart } = useCart();
   const initialData = getCachedProductBySlug(slug);
   const [data, setData] = useState(initialData);
+  const isSinglePack = slug === 'choco-toothpaste' || data?.slug === 'choco-toothpaste';
   const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState(null);
   const [lightboxImage, setLightboxImage] = useState(null);
@@ -173,12 +175,12 @@ export default function ProductDetails() {
 
   useEffect(() => {
     if (slug === 'choco-toothpaste' || data?.slug === 'choco-toothpaste') {
-      document.title = 'Wooff Kids Chocolate Toothpaste | Kids Toothpaste 2+ Years';
+      document.title = 'Choco Toothpaste for Kids 2+ | Sugar-Free & Fluoride-Free';
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) {
         metaDesc.setAttribute(
           'content',
-          'Discover Wooff chocolate-flavoured toothpaste for kids. Explore its ingredients, formulation, and product details on the official Wooff website.'
+          'Choco toothpaste kids love to brush with. Sugar-free, fluoride-free, with 2% nano-hydroxyapatite & 2% theobromine. Made for kids 2+. Shop Wooff Kids now.'
         );
       }
     } else if (slug === 'choco-toothpaste-pack-of-2' || data?.slug === 'choco-toothpaste-pack-of-2') {
@@ -391,7 +393,11 @@ export default function ProductDetails() {
               )}
             </div>
 
-            <p className="product-description">{data.description}</p>
+            <p className="product-description">
+              {isSinglePack
+                ? 'Wooff Kids Choco Toothpaste is a sugar-free, fluoride-free chocolate toothpaste for children above 2 years. Its carton lists 2% nano-hydroxyapatite and 2% theobromine, and the formula also contains calcium gluconate, inulin, vitamin C, lactoferrin and coenzyme Q10.'
+                : data.description}
+            </p>
 
             <div className="quantity-and-cart-row">
               <div className="quantity-selector">
@@ -579,11 +585,14 @@ export default function ProductDetails() {
         {/* Reusable Key Ingredients Component */}
         <KeyIngredients ingredients={data.ingredients} maxDisplay={6} showViewAll={true} />
 
+        {/* Single Pack Editorial Content from choco-toothpaste.html - only rendered for single pack */}
+        {isSinglePack && <SinglePackEditorial />}
+
         {/* Product Brand Showcase (Large Banner & 2-Column Founder/Mission Cards) */}
         <ProductBrandShowcase flavor={data.title} />
 
         {/* Revitin-Style 2-Column Product FAQ Component */}
-        <ProductFAQ faqs={data.faqs} />
+        <ProductFAQ faqs={data.faqs} isSinglePack={isSinglePack} />
 
         {/* Dynamic Customer Reviews Dashboard & Grid */}
         <ProductReviews
