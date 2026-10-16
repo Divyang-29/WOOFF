@@ -17,11 +17,11 @@ const STATIC_BLOG_FALLBACKS = [
   {
     id: 'chocolate-flavoured-toothpaste',
     slug: 'chocolate-flavoured-toothpaste',
-    title: "Chocolate Flavoured Toothpaste: A Parent's Guide",
-    content: "Why kids love chocolate flavoured toothpaste, what is inside Wooff, and how to make brushing a daily habit.",
+    title: "Chocolate Flavoured Toothpaste: How to Choose the Best One",
+    content: "Buying chocolate flavoured toothpaste for your child? Check these 6 things on the label: age, fluoride, ingredients, sugar, claims and maker.",
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794134/wooff_blogs/FDP02976.webp',
     author: 'Wooff Team',
-    created_at: '2026-10-12T13:00:00Z',
+    created_at: '2026-10-16T08:00:00Z',
   },
   {
     id: 'choco-toothpaste',

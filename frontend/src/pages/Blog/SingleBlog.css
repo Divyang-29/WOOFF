@@ -1430,3 +1430,58 @@
     height: 72px;
   }
 }
+
+/* ==========================================================================
+   Rich Body HTML & Article Content Enhancements
+   ========================================================================== */
+.article-body-html {
+  font-size: 1.1rem;
+  line-height: 1.85;
+  color: #382417;
+}
+
+.article-body-html p {
+  font-size: 1.1rem;
+  line-height: 1.85;
+  color: #382417;
+  margin-bottom: 1.45rem;
+  font-weight: 400;
+}
+
+.article-body-html a,
+.article-paragraph a,
+.faq-answer-pane a,
+.article-features-checklist a {
+  color: var(--secondary-brown, #7A4E2D);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.article-body-html a:hover,
+.article-paragraph a:hover,
+.faq-answer-pane a:hover,
+.article-features-checklist a:hover {
+  color: var(--warm-orange, #e58b57);
+}
+
+.article-numbered-list {
+  padding-left: 1.35rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  color: #382417;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.article-numbered-list li {
+  margin-bottom: 0.25rem;
+}
+
+.article-numbered-list li strong {
+  color: var(--primary-brown, #4B2E1E);
+}
+

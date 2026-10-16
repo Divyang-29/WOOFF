@@ -440,33 +440,96 @@ export default function SingleBlog() {
                 <section key={section.id || sIdx} id={section.id} className="article-section-block">
                   <h2 className="article-h2">{section.title}</h2>
 
-                  {section.paragraphs && section.paragraphs.map((p, pIdx) => (
-                    <p key={pIdx} className="article-paragraph">{p}</p>
-                  ))}
+                  {section.bodyHtml ? (
+                    <div className="article-body-html" dangerouslySetInnerHTML={{ __html: section.bodyHtml }} />
+                  ) : (
+                    <>
+                      {section.paragraphs && section.paragraphs.map((p, pIdx) => (
+                        <p key={pIdx} className="article-paragraph" dangerouslySetInnerHTML={{ __html: p }} />
+                      ))}
 
-                  {/* Subsections (H3) */}
-                  {section.subsections && section.subsections.map((sub, subIdx) => (
-                    <div key={subIdx} className="article-subsection-block mt-3 mb-4">
-                      <h3 className="article-h3 mb-2">{sub.title}</h3>
-                      <p className="article-paragraph">{sub.content}</p>
-                    </div>
-                  ))}
+                      {/* Subsections (H3) */}
+                      {section.subsections && section.subsections.map((sub, subIdx) => (
+                        <div key={subIdx} className="article-subsection-block mt-3 mb-4">
+                          <h3 className="article-h3 mb-2">{sub.title}</h3>
+                          <p className="article-paragraph" dangerouslySetInnerHTML={{ __html: sub.content }} />
+                        </div>
+                      ))}
 
-                  {/* Inline Section Image */}
-                  {section.image && (
-                    <div className="article-inline-image-wrapper my-4">
-                      <img
-                        src={typeof section.image === 'string' ? section.image : section.image.url}
-                        alt={section.image?.alt || section.title}
-                        className="article-inline-image"
-                        style={{ width: '100%', borderRadius: '16px', objectFit: 'cover' }}
-                      />
-                      {section.image?.caption && (
-                        <p className="single-blog-image-caption mt-2">
-                          <i className="fa-solid fa-camera me-1" /> {section.image.caption}
-                        </p>
+                      {/* Inline Section Image */}
+                      {section.image && (
+                        <div className="article-inline-image-wrapper my-4">
+                          <img
+                            src={typeof section.image === 'string' ? section.image : section.image.url}
+                            alt={section.image?.alt || section.title}
+                            className="article-inline-image"
+                            style={{ width: '100%', borderRadius: '16px', objectFit: 'cover' }}
+                          />
+                          {section.image?.caption && (
+                            <p className="single-blog-image-caption mt-2">
+                              <i className="fa-solid fa-camera me-1" /> {section.image.caption}
+                            </p>
+                          )}
+                        </div>
                       )}
-                    </div>
+
+                      {/* Editorial Quote */}
+                      {section.quote && (
+                        <blockquote className="article-editorial-quote">
+                          <p>{section.quote}</p>
+                          <cite>— Wooff Clinical Research Division</cite>
+                        </blockquote>
+                      )}
+
+                      {/* Pro-Tip Callout Box */}
+                      {section.callout && (
+                        <div className="article-pro-tip-box">
+                          <div className="pro-tip-badge">
+                            <i className="fa-solid fa-lightbulb" /> {section.callout.title}
+                          </div>
+                          <p className="pro-tip-text">{section.callout.text}</p>
+                        </div>
+                      )}
+
+                      {/* Custom List */}
+                      {section.list && (
+                        <div className="article-features-checklist">
+                          <ul>
+                            {section.list.map((li, lIdx) => (
+                              <li key={lIdx}>
+                                <i className="fa-solid fa-circle-check checklist-icon" />
+                                <span dangerouslySetInnerHTML={{ __html: li }} />
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Responsive Comparison Table */}
+                      {section.table && (
+                        <div className="article-table-responsive-wrapper">
+                          <div className="table-heading-label">{section.table.title || 'Clinical Data Comparison'}</div>
+                          <table className="article-comparison-table">
+                            <thead>
+                              <tr>
+                                {section.table.headers.map((h, hIdx) => (
+                                  <th key={hIdx} dangerouslySetInnerHTML={{ __html: h }} />
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {section.table.rows.map((row, rIdx) => (
+                                <tr key={rIdx}>
+                                  {row.map((cell, cIdx) => (
+                                    <td key={cIdx} className={cIdx === 0 ? 'metric-name' : cIdx === 2 ? 'wooff-highlight' : ''} dangerouslySetInnerHTML={{ __html: cell }} />
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </>
                   )}
 
                   {/* Custom Links */}
@@ -477,65 +540,6 @@ export default function SingleBlog() {
                           {lnk.text} &rarr;
                         </Link>
                       ))}
-                    </div>
-                  )}
-
-                  {/* Editorial Quote */}
-                  {section.quote && (
-                    <blockquote className="article-editorial-quote">
-                      <p>{section.quote}</p>
-                      <cite>— Wooff Clinical Research Division</cite>
-                    </blockquote>
-                  )}
-
-                  {/* Pro-Tip Callout Box */}
-                  {section.callout && (
-                    <div className="article-pro-tip-box">
-                      <div className="pro-tip-badge">
-                        <i className="fa-solid fa-lightbulb" /> {section.callout.title}
-                      </div>
-                      <p className="pro-tip-text">{section.callout.text}</p>
-                    </div>
-                  )}
-
-                  {/* Custom List */}
-                  {section.list && (
-                    <div className="article-features-checklist">
-                      <ul>
-                        {section.list.map((li, lIdx) => (
-                          <li key={lIdx}>
-                            <i className="fa-solid fa-circle-check checklist-icon" />
-                            <span>{li}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* Responsive Comparison Table */}
-                  {section.table && (
-                    <div className="article-table-responsive-wrapper">
-                      <div className="table-heading-label">Clinical Data Comparison</div>
-                      <table className="article-comparison-table">
-                        <thead>
-                          <tr>
-                            {section.table.headers.map((h, hIdx) => (
-                              <th key={hIdx}>{h}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {section.table.rows.map((row, rIdx) => (
-                            <tr key={rIdx}>
-                              {row.map((cell, cIdx) => (
-                                <td key={cIdx} className={cIdx === 0 ? 'metric-name' : cIdx === 2 ? 'wooff-highlight' : ''}>
-                                  {cell}
-                                </td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
                     </div>
                   )}
                 </section>
@@ -563,7 +567,7 @@ export default function SingleBlog() {
                       </button>
                       {openFaq === idx && (
                         <div className="faq-answer-pane">
-                          <p>{faq.a}</p>
+                          <p dangerouslySetInnerHTML={{ __html: faq.a }} />
                         </div>
                       )}
                     </div>

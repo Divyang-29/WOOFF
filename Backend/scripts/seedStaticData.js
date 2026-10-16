@@ -315,9 +315,9 @@ async function seedStaticData() {
         created_at: new Date(),
       },
       {
-        title: "Chocolate Flavoured Toothpaste: A Parent's Guide",
+        title: "Chocolate Flavoured Toothpaste: How to Choose the Best One",
         slug: "chocolate-flavoured-toothpaste",
-        content: "Chocolate flavoured toothpaste is a kids' toothpaste whose taste makes brushing easier to accept. Wooff pairs that taste with a mineral-and-care formula. Many children dislike strong mint; a taste they enjoy means less fuss, longer brushing, and a habit that sticks. Packed with theobromine, nano-hydroxyapatite, calcium gluconate, inulin, vitamin C, lactoferrin, and coenzyme Q10.",
+        content: "Chocolate flavoured toothpaste is toothpaste that tastes of chocolate instead of mint, usually made for children who resist brushing. To choose a good one, look past the flavour and check six things on the pack: the age range, whether it contains fluoride, the active ingredient, the full ingredient list, whether claims match that list, and who makes it. Buying chocolate flavoured toothpaste for your child? Check these 6 things on the label to make an informed, dentist-approved choice.",
         image_url: "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794134/wooff_blogs/FDP02976.webp",
         author: "Wooff Team",
         created_at: new Date(Date.now() - 30 * 60 * 1000),
