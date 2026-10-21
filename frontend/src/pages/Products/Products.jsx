@@ -129,14 +129,10 @@ export default function Products() {
                   </Link>
 
                   {/* Trust: Dynamic Ratings */}
-                  {Number(product.review_count) > 0 ? (
-                    <div className="card-rating">
-                      <span className="stars">{renderStars(product.rating_avg)}</span>
-                      <span className="review-count">({product.review_count})</span>
-                    </div>
-                  ) : (
-                    <div className="card-rating card-rating-empty" style={{ minHeight: '1.5rem' }}></div>
-                  )}
+                  <div className="card-rating">
+                    <span className="stars">{renderStars(product.rating_avg)}</span>
+                    <span className="review-count">({Number(product.review_count) || 0})</span>
+                  </div>
 
                   {/* Pricing Breakdown */}
                   <div className="card-pricing">

@@ -360,9 +360,13 @@ export default function ProductDetails() {
                   </span>
                 </>
               ) : (
-                <span className="reviews-count no-reviews">
-                  No reviews yet • <span style={{ textDecoration: 'underline', color: 'var(--primary-brown, #4B2E1E)', fontWeight: 600 }}>Be the first to review</span>
-                </span>
+                <>
+                  <div className="stars">☆☆☆☆☆</div>
+                  <span className="rating-score">0.0</span>
+                  <span className="reviews-count">
+                    • 0 Reviews • <span style={{ textDecoration: 'underline', color: 'var(--primary-brown, #4B2E1E)', fontWeight: 600 }}>Be the first to review</span>
+                  </span>
+                </>
               )}
             </div>
 
