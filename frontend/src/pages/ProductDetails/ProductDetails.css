@@ -57,6 +57,10 @@
   justify-content: center;
   border: 1.5px solid rgba(75, 46, 30, 0.08);
   box-shadow: 0 8px 24px rgba(75, 46, 30, 0.05);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+  cursor: grab;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
               box-shadow 0.3s ease;
 }
@@ -66,36 +70,27 @@
   box-shadow: 0 12px 30px rgba(75, 46, 30, 0.1);
 }
 
-/* Horizontal Scroll / Swipe Track */
-.gallery-main-track {
+.gallery-main-card.is-dragging {
+  cursor: grabbing;
+}
+
+/* Horizontal Slider Track */
+.gallery-slider-track {
   display: flex;
   width: 100%;
   height: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  scroll-behavior: smooth;
-  touch-action: pan-y;
+  will-change: transform;
 }
 
-.gallery-main-track::-webkit-scrollbar {
-  display: none;
-}
-
-/* Individual Slide Card */
-.gallery-slide-card {
+/* Slide Item */
+.gallery-slide-item {
   flex: 0 0 100%;
   width: 100%;
   height: 100%;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  cursor: pointer;
   box-sizing: border-box;
 }
 
@@ -108,12 +103,12 @@
   display: block;
   user-select: none;
   -webkit-user-drag: none;
-  pointer-events: auto;
+  pointer-events: none;
   transition: transform 0.4s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .gallery-slide-card:hover .gallery-main-img {
+  .gallery-main-card:hover:not(.is-dragging) .gallery-main-img {
     transform: scale(1.02);
   }
 }

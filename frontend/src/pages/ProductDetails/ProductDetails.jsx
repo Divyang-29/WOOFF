@@ -28,12 +28,14 @@ export default function ProductDetails() {
   const [quantity, setQuantity] = useState(1);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Gallery Refs
-  const galleryTrackRef = useRef(null);
+  // Gallery Swipe & Drag States
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const touchStartRef = useRef({ x: 0, y: 0, time: 0 });
+  const isSwipingHorizontally = useRef(null);
+  const dragOffsetRef = useRef(0);
+  const isMouseDownRef = useRef(false);
   const thumbRefs = useRef([]);
-  const isProgrammaticScroll = useRef(false);
-  const scrollTimeoutRef = useRef(null);
-  const touchStartRef = useRef({ x: 0, y: 0, moved: false });
 
   // Payment States
   const [paymentError, setPaymentError] = useState(null);
@@ -173,9 +175,6 @@ export default function ProductDetails() {
     };
 
     setSelectedImageIndex(0);
-    if (galleryTrackRef.current) {
-      galleryTrackRef.current.scrollTo({ left: 0, behavior: 'instant' });
-    }
     fetchProduct();
 
     return () => {
@@ -256,60 +255,109 @@ export default function ProductDetails() {
     }
   }, [data?.id, data?.slug]);
 
-  const scrollToImage = (index, smooth = true) => {
-    if (index < 0 || index >= allImages.length) return;
-    setSelectedImageIndex(index);
-    if (galleryTrackRef.current) {
-      isProgrammaticScroll.current = true;
-      const width = galleryTrackRef.current.clientWidth;
-      galleryTrackRef.current.scrollTo({
-        left: index * width,
-        behavior: smooth ? 'smooth' : 'auto',
-      });
-      clearTimeout(scrollTimeoutRef.current);
-      scrollTimeoutRef.current = setTimeout(() => {
-        isProgrammaticScroll.current = false;
-      }, 450);
+  const startDrag = (clientX, clientY) => {
+    touchStartRef.current = { x: clientX, y: clientY, time: Date.now() };
+    isSwipingHorizontally.current = null;
+    dragOffsetRef.current = 0;
+  };
+
+  const moveDrag = (clientX, clientY) => {
+    if (!touchStartRef.current.time) return;
+    const deltaX = clientX - touchStartRef.current.x;
+    const deltaY = clientY - touchStartRef.current.y;
+
+    if (isSwipingHorizontally.current === null) {
+      if (Math.abs(deltaX) > 7 || Math.abs(deltaY) > 7) {
+        if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+          isSwipingHorizontally.current = true;
+          setIsDragging(true);
+        } else {
+          isSwipingHorizontally.current = false;
+          return;
+        }
+      } else {
+        return;
+      }
+    }
+
+    if (isSwipingHorizontally.current) {
+      const isAtFirst = selectedImageIndex === 0 && deltaX > 0;
+      const isAtLast = selectedImageIndex === allImages.length - 1 && deltaX < 0;
+      const applied = (isAtFirst || isAtLast) ? deltaX * 0.3 : deltaX;
+      dragOffsetRef.current = applied;
+      setDragOffset(applied);
     }
   };
 
-  const handleGalleryScroll = (e) => {
-    if (isProgrammaticScroll.current) return;
-    const track = e.currentTarget;
-    const width = track.clientWidth;
-    if (!width) return;
-    const newIndex = Math.round(track.scrollLeft / width);
-    if (newIndex >= 0 && newIndex < allImages.length && newIndex !== selectedImageIndex) {
-      setSelectedImageIndex(newIndex);
+  const endDrag = () => {
+    if (!touchStartRef.current.time) return;
+    const deltaX = dragOffsetRef.current;
+    const wasHorizontal = isSwipingHorizontally.current;
+
+    touchStartRef.current = { x: 0, y: 0, time: 0 };
+    isSwipingHorizontally.current = null;
+    dragOffsetRef.current = 0;
+    setIsDragging(false);
+    setDragOffset(0);
+
+    if (wasHorizontal) {
+      const threshold = 35; // 35px threshold for quick, responsive swipe
+      if (deltaX < -threshold && selectedImageIndex < allImages.length - 1) {
+        setSelectedImageIndex((prev) => prev + 1);
+      } else if (deltaX > threshold && selectedImageIndex > 0) {
+        setSelectedImageIndex((prev) => prev - 1);
+      }
     }
   };
 
+  // Touch Event Handlers
   const handleTouchStart = (e) => {
     if (e.touches && e.touches[0]) {
-      touchStartRef.current = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-        moved: false,
-      };
+      startDrag(e.touches[0].clientX, e.touches[0].clientY);
     }
   };
 
   const handleTouchMove = (e) => {
     if (e.touches && e.touches[0]) {
-      const dx = Math.abs(e.touches[0].clientX - touchStartRef.current.x);
-      const dy = Math.abs(e.touches[0].clientY - touchStartRef.current.y);
-      if (dx > 10 || dy > 10) {
-        touchStartRef.current.moved = true;
-      }
+      moveDrag(e.touches[0].clientX, e.touches[0].clientY);
     }
   };
 
-  const handleSlideClick = (img) => {
-    if (touchStartRef.current.moved) return;
-    setLightboxImage(img);
+  const handleTouchEnd = () => {
+    endDrag();
   };
 
-  // Keep active thumbnail scrolled into view
+  // Mouse Drag Handlers (for DevTools & desktop click-and-drag)
+  const handleMouseDown = (e) => {
+    if (e.button !== 0) return;
+    isMouseDownRef.current = true;
+    startDrag(e.clientX, e.clientY);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isMouseDownRef.current) return;
+    moveDrag(e.clientX, e.clientY);
+  };
+
+  const handleMouseUp = () => {
+    if (!isMouseDownRef.current) return;
+    isMouseDownRef.current = false;
+    endDrag();
+  };
+
+  const handleMouseLeave = () => {
+    if (isMouseDownRef.current) {
+      isMouseDownRef.current = false;
+      endDrag();
+    }
+  };
+
+  const handleCardClick = () => {
+    if (isSwipingHorizontally.current) return;
+    setLightboxImage(allImages[selectedImageIndex] || allImages[0]);
+  };
+
+  // Auto-scroll active thumbnail into view
   useEffect(() => {
     if (thumbRefs.current[selectedImageIndex]) {
       thumbRefs.current[selectedImageIndex].scrollIntoView({
@@ -318,21 +366,6 @@ export default function ProductDetails() {
         inline: 'center',
       });
     }
-  }, [selectedImageIndex]);
-
-  // Keep scroll position aligned on resize / orientation change
-  useEffect(() => {
-    const handleResize = () => {
-      if (galleryTrackRef.current) {
-        const width = galleryTrackRef.current.clientWidth;
-        galleryTrackRef.current.scrollTo({
-          left: selectedImageIndex * width,
-          behavior: 'instant',
-        });
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
   }, [selectedImageIndex]);
 
   if (loading && !data) return <div className="status-message">Loading product...</div>;
@@ -348,20 +381,27 @@ export default function ProductDetails() {
           {/* Gallery Section - Swipeable Main Image + Bottom Thumbnails Row */}
           <div className="product-gallery-container">
             {/* Big Main Image Preview with Mobile Swipe & Desktop Nav */}
-            <div className="gallery-main-card">
+            <div
+              className={`gallery-main-card ${isDragging ? 'is-dragging' : ''}`}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              onTouchCancel={handleTouchEnd}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseLeave}
+              onClick={handleCardClick}
+            >
               <div
-                className="gallery-main-track"
-                ref={galleryTrackRef}
-                onScroll={handleGalleryScroll}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
+                className="gallery-slider-track"
+                style={{
+                  transform: `translateX(calc(-${selectedImageIndex * 100}% + ${dragOffset}px))`,
+                  transition: isDragging ? 'none' : 'transform 0.35s cubic-bezier(0.25, 1, 0.5, 1)',
+                }}
               >
                 {allImages.map((img, idx) => (
-                  <div
-                    key={idx}
-                    className="gallery-slide-card"
-                    onClick={() => handleSlideClick(img)}
-                  >
+                  <div key={idx} className="gallery-slide-item">
                     <img
                       src={getOptimizedImageUrl(img, { width: 850 })}
                       alt={`${data.title} preview ${idx + 1}`}
@@ -390,7 +430,10 @@ export default function ProductDetails() {
               <div
                 className="zoom-hint"
                 title="Click to enlarge"
-                onClick={() => setLightboxImage(allImages[selectedImageIndex] || allImages[0])}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxImage(allImages[selectedImageIndex] || allImages[0]);
+                }}
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"></circle>
@@ -408,7 +451,7 @@ export default function ProductDetails() {
                     className="gallery-nav-arrow gallery-nav-prev"
                     onClick={(e) => {
                       e.stopPropagation();
-                      scrollToImage(selectedImageIndex - 1);
+                      setSelectedImageIndex((prev) => Math.max(0, prev - 1));
                     }}
                     disabled={selectedImageIndex === 0}
                     aria-label="Previous image"
@@ -422,7 +465,7 @@ export default function ProductDetails() {
                     className="gallery-nav-arrow gallery-nav-next"
                     onClick={(e) => {
                       e.stopPropagation();
-                      scrollToImage(selectedImageIndex + 1);
+                      setSelectedImageIndex((prev) => Math.min(allImages.length - 1, prev + 1));
                     }}
                     disabled={selectedImageIndex === allImages.length - 1}
                     aria-label="Next image"
@@ -444,8 +487,8 @@ export default function ProductDetails() {
                     ref={(el) => (thumbRefs.current[idx] = el)}
                     type="button"
                     className={`gallery-thumb-card ${idx === selectedImageIndex ? 'active' : ''}`}
-                    onClick={() => scrollToImage(idx)}
-                    onMouseEnter={() => scrollToImage(idx)}
+                    onClick={() => setSelectedImageIndex(idx)}
+                    onMouseEnter={() => setSelectedImageIndex(idx)}
                     aria-label={`View photo ${idx + 1}`}
                   >
                     <img
