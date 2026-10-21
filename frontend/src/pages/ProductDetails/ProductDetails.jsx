@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import {
@@ -27,6 +27,13 @@ export default function ProductDetails() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // Gallery Refs
+  const galleryTrackRef = useRef(null);
+  const thumbRefs = useRef([]);
+  const isProgrammaticScroll = useRef(false);
+  const scrollTimeoutRef = useRef(null);
+  const touchStartRef = useRef({ x: 0, y: 0, moved: false });
 
   // Payment States
   const [paymentError, setPaymentError] = useState(null);
@@ -166,6 +173,9 @@ export default function ProductDetails() {
     };
 
     setSelectedImageIndex(0);
+    if (galleryTrackRef.current) {
+      galleryTrackRef.current.scrollTo({ left: 0, behavior: 'instant' });
+    }
     fetchProduct();
 
     return () => {
@@ -246,6 +256,85 @@ export default function ProductDetails() {
     }
   }, [data?.id, data?.slug]);
 
+  const scrollToImage = (index, smooth = true) => {
+    if (index < 0 || index >= allImages.length) return;
+    setSelectedImageIndex(index);
+    if (galleryTrackRef.current) {
+      isProgrammaticScroll.current = true;
+      const width = galleryTrackRef.current.clientWidth;
+      galleryTrackRef.current.scrollTo({
+        left: index * width,
+        behavior: smooth ? 'smooth' : 'auto',
+      });
+      clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = setTimeout(() => {
+        isProgrammaticScroll.current = false;
+      }, 450);
+    }
+  };
+
+  const handleGalleryScroll = (e) => {
+    if (isProgrammaticScroll.current) return;
+    const track = e.currentTarget;
+    const width = track.clientWidth;
+    if (!width) return;
+    const newIndex = Math.round(track.scrollLeft / width);
+    if (newIndex >= 0 && newIndex < allImages.length && newIndex !== selectedImageIndex) {
+      setSelectedImageIndex(newIndex);
+    }
+  };
+
+  const handleTouchStart = (e) => {
+    if (e.touches && e.touches[0]) {
+      touchStartRef.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+        moved: false,
+      };
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches && e.touches[0]) {
+      const dx = Math.abs(e.touches[0].clientX - touchStartRef.current.x);
+      const dy = Math.abs(e.touches[0].clientY - touchStartRef.current.y);
+      if (dx > 10 || dy > 10) {
+        touchStartRef.current.moved = true;
+      }
+    }
+  };
+
+  const handleSlideClick = (img) => {
+    if (touchStartRef.current.moved) return;
+    setLightboxImage(img);
+  };
+
+  // Keep active thumbnail scrolled into view
+  useEffect(() => {
+    if (thumbRefs.current[selectedImageIndex]) {
+      thumbRefs.current[selectedImageIndex].scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      });
+    }
+  }, [selectedImageIndex]);
+
+  // Keep scroll position aligned on resize / orientation change
+  useEffect(() => {
+    const handleResize = () => {
+      if (galleryTrackRef.current) {
+        const width = galleryTrackRef.current.clientWidth;
+        galleryTrackRef.current.scrollTo({
+          left: selectedImageIndex * width,
+          behavior: 'instant',
+        });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [selectedImageIndex]);
+
   if (loading && !data) return <div className="status-message">Loading product...</div>;
   if ((error || !data) && !loading) return <div className="status-message error">{error || 'Product not found'}</div>;
 
@@ -256,36 +345,53 @@ export default function ProductDetails() {
         {/* Top Section: Image Gallery & Sticky Info */}
         <div className="product-hero-section">
 
-          {/* Gallery Section - 1 Big Image + Bottom Thumbnails Row */}
+          {/* Gallery Section - Swipeable Main Image + Bottom Thumbnails Row */}
           <div className="product-gallery-container">
-            {/* Big Main Image Preview */}
-            <div
-              className="gallery-main-card"
-              onClick={() => setLightboxImage(allImages[selectedImageIndex] || allImages[0])}
-            >
-              <img
-                src={getOptimizedImageUrl(allImages[selectedImageIndex] || allImages[0], { width: 850 })}
-                alt={`${data.title} preview`}
-                className="gallery-main-img"
-                fetchPriority="high"
-                decoding="async"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = '/assets/tooth_paste.webp';
-                }}
-              />
-              {/* Invisible pre-decoded gallery buffers for instant 0ms switching */}
-              <div style={{ display: 'none' }} aria-hidden="true">
+            {/* Big Main Image Preview with Mobile Swipe & Desktop Nav */}
+            <div className="gallery-main-card">
+              <div
+                className="gallery-main-track"
+                ref={galleryTrackRef}
+                onScroll={handleGalleryScroll}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+              >
                 {allImages.map((img, idx) => (
-                  <img
-                    key={`pre-decoded-${idx}`}
-                    src={getOptimizedImageUrl(img, { width: 850 })}
-                    alt=""
-                    decoding="async"
-                  />
+                  <div
+                    key={idx}
+                    className="gallery-slide-card"
+                    onClick={() => handleSlideClick(img)}
+                  >
+                    <img
+                      src={getOptimizedImageUrl(img, { width: 850 })}
+                      alt={`${data.title} preview ${idx + 1}`}
+                      className="gallery-main-img"
+                      fetchPriority={idx === 0 ? 'high' : 'auto'}
+                      loading={idx === 0 ? 'eager' : 'lazy'}
+                      decoding="async"
+                      draggable={false}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/assets/tooth_paste.webp';
+                      }}
+                    />
+                  </div>
                 ))}
               </div>
-              <div className="zoom-hint" title="Click to enlarge">
+
+              {/* Mobile Counter Pill */}
+              {allImages.length > 1 && (
+                <div className="gallery-counter-pill" aria-live="polite">
+                  {selectedImageIndex + 1} / {allImages.length}
+                </div>
+              )}
+
+              {/* Desktop Zoom Hint Badge */}
+              <div
+                className="zoom-hint"
+                title="Click to enlarge"
+                onClick={() => setLightboxImage(allImages[selectedImageIndex] || allImages[0])}
+              >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -293,6 +399,40 @@ export default function ProductDetails() {
                   <line x1="8" y1="11" x2="14" y2="11"></line>
                 </svg>
               </div>
+
+              {/* Desktop Nav Arrows */}
+              {allImages.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    className="gallery-nav-arrow gallery-nav-prev"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      scrollToImage(selectedImageIndex - 1);
+                    }}
+                    disabled={selectedImageIndex === 0}
+                    aria-label="Previous image"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    className="gallery-nav-arrow gallery-nav-next"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      scrollToImage(selectedImageIndex + 1);
+                    }}
+                    disabled={selectedImageIndex === allImages.length - 1}
+                    aria-label="Next image"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                  </button>
+                </>
+              )}
             </div>
 
             {/* Bottom Thumbnails - Single Row */}
@@ -301,10 +441,11 @@ export default function ProductDetails() {
                 {allImages.map((img, idx) => (
                   <button
                     key={idx}
+                    ref={(el) => (thumbRefs.current[idx] = el)}
                     type="button"
                     className={`gallery-thumb-card ${idx === selectedImageIndex ? 'active' : ''}`}
-                    onClick={() => setSelectedImageIndex(idx)}
-                    onMouseEnter={() => setSelectedImageIndex(idx)}
+                    onClick={() => scrollToImage(idx)}
+                    onMouseEnter={() => scrollToImage(idx)}
                     aria-label={`View photo ${idx + 1}`}
                   >
                     <img
