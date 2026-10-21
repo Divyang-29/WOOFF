@@ -655,6 +655,21 @@
   color: #382417;
 }
 
+.article-features-checklist li > span,
+.article-features-checklist li > div {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: block;
+}
+
+.article-features-checklist li strong {
+  color: var(--primary-brown, #4B2E1E);
+}
+
+.article-features-checklist li:not(:has(.checklist-icon)) {
+  display: block;
+}
+
 .checklist-icon {
   color: #2E7D32;
   font-size: 1.15rem;

@@ -384,17 +384,17 @@ export const RICH_ARTICLES = {
           <p class="article-paragraph">This is the most important choice, and the flavour has nothing to do with it.</p>
           <div class="article-features-checklist">
             <ul>
-              <li><strong>Fluoride has the strongest evidence.</strong> A Cochrane review of 96 studies found that fluoride toothpaste prevents tooth decay in children and adolescents at strengths of 1,000 ppm and above, with protection increasing at higher strengths.</li>
-              <li><strong>In India, check the ppm.</strong> Toothpaste sold in India can contain up to 1,000 ppm fluoride, and a fluoride toothpaste must print its ppm on both the tube and the carton. The NHS recommends children's fluoride toothpaste with no less than 1,000 ppm for under-3s.</li>
-              <li><strong>Most chocolate flavoured toothpastes sold in India are fluoride-free.</strong> That is a different choice, not an automatically safer or better one. Among fluoride-free ingredients, hydroxyapatite is one of the best studied.</li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Fluoride has the strongest evidence.</strong> A Cochrane review of 96 studies found that fluoride toothpaste prevents tooth decay in children and adolescents at strengths of 1,000 ppm and above, with protection increasing at higher strengths.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>In India, check the ppm.</strong> Toothpaste sold in India can contain up to 1,000 ppm fluoride, and a fluoride toothpaste must print its ppm on both the tube and the carton. The NHS recommends children's fluoride toothpaste with no less than 1,000 ppm for under-3s.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Most chocolate flavoured toothpastes sold in India are fluoride-free.</strong> That is a different choice, not an automatically safer or better one. Among fluoride-free ingredients, hydroxyapatite is one of the best studied.</span></li>
             </ul>
           </div>
           <p class="article-paragraph">Ask your dentist before choosing a fluoride-free toothpaste if your child:</p>
           <div class="article-features-checklist">
             <ul>
-              <li>has had a cavity, or has chalky white or brown spots on the teeth</li>
-              <li>often has sweets, biscuits or sugary drinks between meals</li>
-              <li>has been told they are at higher risk of tooth decay</li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>has had a cavity, or has chalky white or brown spots on the teeth</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>often has sweets, biscuits or sugary drinks between meals</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>has been told they are at higher risk of tooth decay</span></li>
             </ul>
           </div>
           <p class="article-paragraph">In parts of India the groundwater is naturally high in fluoride. If you live in one of those areas, ask your dentist how to balance fluoride for your child.</p>
@@ -447,8 +447,8 @@ export const RICH_ARTICLES = {
           <p class="article-paragraph">Two label tips:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><strong>Look for an amount.</strong> &ldquo;With theobromine&rdquo; or &ldquo;enriched with minerals&rdquo; tells you little. A percentage or ppm figure lets you compare products, and compare them with the research.</li>
-              <li><strong>Cocoa extract isn't a dose.</strong> Cocoa naturally contains theobromine, but a label that lists only &ldquo;cocoa extract&rdquo; doesn't tell you how much theobromine is in the paste.</li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Look for an amount.</strong> &ldquo;With theobromine&rdquo; or &ldquo;enriched with minerals&rdquo; tells you little. A percentage or ppm figure lets you compare products, and compare them with the research.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Cocoa extract isn't a dose.</strong> Cocoa naturally contains theobromine, but a label that lists only &ldquo;cocoa extract&rdquo; doesn't tell you how much theobromine is in the paste.</span></li>
             </ul>
           </div>
           <p class="article-paragraph">For more on the evidence, read <strong><a href="/blog/chocolate-toothpaste" class="article-inline-link">does chocolate toothpaste work, and is it safe?</a></strong></p>
@@ -489,9 +489,9 @@ export const RICH_ARTICLES = {
           <p class="article-paragraph">Three things to look for:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><strong>Sugar shouldn't be on the list.</strong> The American Dental Association doesn't allow sugar in the toothpastes it accepts, so if you see sucrose or glucose, choose another.</li>
-              <li><strong>SLS is a personal choice.</strong> The American Dental Association lists sodium lauryl sulphate among toothpaste ingredients reported as allergens or irritants in some people, which is why some families prefer SLS-free pastes.</li>
-              <li><strong>Allergens.</strong> If your child has a food allergy, look for cocoa extract and milk-derived proteins such as lactoferrin, and ask the brand if you're unsure where an ingredient comes from.</li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Sugar shouldn't be on the list.</strong> The American Dental Association doesn't allow sugar in the toothpastes it accepts, so if you see sucrose or glucose, choose another.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>SLS is a personal choice.</strong> The American Dental Association lists sodium lauryl sulphate among toothpaste ingredients reported as allergens or irritants in some people, which is why some families prefer SLS-free pastes.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Allergens.</strong> If your child has a food allergy, look for cocoa extract and milk-derived proteins such as lactoferrin, and ask the brand if you're unsure where an ingredient comes from.</span></li>
             </ul>
           </div>
         `,
@@ -507,14 +507,14 @@ export const RICH_ARTICLES = {
           <p class="article-paragraph">Front-of-pack claims and marketplace titles don't always agree with the ingredient list. Before you buy, check that:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><strong>&ldquo;No sweeteners&rdquo;</strong> isn't contradicted by xylitol, saccharin or stevia in the list.</li>
-              <li><strong>&ldquo;No preservatives&rdquo;</strong> isn't contradicted by sodium benzoate or potassium sorbate.</li>
-              <li><strong>&ldquo;Prevents cavities&rdquo;, &ldquo;strengthens enamel&rdquo; or &ldquo;better than fluoride&rdquo;</strong> come with a source. Research on an ingredient is not a test of the finished toothpaste.</li>
-              <li><strong>&ldquo;Safe if swallowed&rdquo;</strong> doesn't replace supervision. All toothpaste is meant to be spat out, so supervise brushing and keep the tube out of reach. If a child eats a large amount, speak to your doctor. Keep chocolate toothpaste away from dogs too, because theobromine is toxic to them.</li>
-              <li><strong>&ldquo;Natural&rdquo;, &ldquo;organic&rdquo; or &ldquo;chemical-free&rdquo;</strong> doesn't distract you from the ingredient list. Every toothpaste is made of chemicals, natural or not, and none of these words tells you it is safer or works better.</li>
-              <li><strong>Approval badges</strong> say who approved what.</li>
-              <li><strong>&ldquo;FDA approved&rdquo;</strong> usually refers to the state licence a factory needs to make cosmetics. It is not an approval of the toothpaste's claims.</li>
-              <li><strong>Launch events and endorsements</strong> by dentists aren't the same as a study of the product.</li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>&ldquo;No sweeteners&rdquo;</strong> isn't contradicted by xylitol, saccharin or stevia in the list.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>&ldquo;No preservatives&rdquo;</strong> isn't contradicted by sodium benzoate or potassium sorbate.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>&ldquo;Prevents cavities&rdquo;, &ldquo;strengthens enamel&rdquo; or &ldquo;better than fluoride&rdquo;</strong> come with a source. Research on an ingredient is not a test of the finished toothpaste.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>&ldquo;Safe if swallowed&rdquo;</strong> doesn't replace supervision. All toothpaste is meant to be spat out, so supervise brushing and keep the tube out of reach. If a child eats a large amount, speak to your doctor. Keep chocolate toothpaste away from dogs too, because theobromine is toxic to them.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>&ldquo;Natural&rdquo;, &ldquo;organic&rdquo; or &ldquo;chemical-free&rdquo;</strong> doesn't distract you from the ingredient list. Every toothpaste is made of chemicals, natural or not, and none of these words tells you it is safer or works better.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Approval badges</strong> say who approved what.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>&ldquo;FDA approved&rdquo;</strong> usually refers to the state licence a factory needs to make cosmetics. It is not an approval of the toothpaste's claims.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Launch events and endorsements</strong> by dentists aren't the same as a study of the product.</span></li>
             </ul>
           </div>
         `,
@@ -531,10 +531,10 @@ export const RICH_ARTICLES = {
           <p class="article-paragraph">India's Cosmetics Rules, 2020 require the label to show the manufacturer's name and address, a manufacturing licence number, a batch number and an expiry or use-before date. Also:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><strong>Buy from the brand's own website or an authorised seller</strong>, and check that the carton is sealed and in date.</li>
-              <li><strong>Ask the brand before buying if the maker's details don't match</strong> across the website, the marketplace listing and the pack.</li>
-              <li><strong>Check the returns policy.</strong> Many marketplace listings don't accept returns on toothpaste, so buy one tube first if you're not sure your child will like the taste.</li>
-              <li><strong>Compare value per gram.</strong> Tubes range from 50 g to about 100 g, and imported chocolate toothpastes can cost several times more than Indian ones. At a pea-sized amount (about 0.25 g) twice a day, a 50 g tube holds around 100 days of brushing.</li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Buy from the brand's own website or an authorised seller</strong>, and check that the carton is sealed and in date.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Ask the brand before buying if the maker's details don't match</strong> across the website, the marketplace listing and the pack.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Check the returns policy.</strong> Many marketplace listings don't accept returns on toothpaste, so buy one tube first if you're not sure your child will like the taste.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Compare value per gram.</strong> Tubes range from 50 g to about 100 g, and imported chocolate toothpastes can cost several times more than Indian ones. At a pea-sized amount (about 0.25 g) twice a day, a 50 g tube holds around 100 days of brushing.</span></li>
             </ul>
           </div>
         `,
