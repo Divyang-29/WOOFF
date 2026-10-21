@@ -2,10 +2,51 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Banner from '../../components/Banner/Banner';
 import { API_ENDPOINTS } from '../../api';
+import { RICH_ARTICLES } from './blogArticleData';
 import './Blog.css';
 
+// Canonical ordering of blog articles for the Journal
+const CANONICAL_BLOG_ORDER = [
+  'chocolate-toothpaste',
+  'chocolate-flavoured-toothpaste',
+  'choco-flavoured-toothpaste',
+];
+
+function enrichBlogItem(post) {
+  if (!post) return post;
+  const rawSlug = String(post.slug || post.id || '').trim().toLowerCase();
+
+  let matchedKey = null;
+  if (rawSlug === 'chocolate-toothpaste' || rawSlug.includes('parents') || rawSlug.includes('know')) {
+    matchedKey = 'chocolate-toothpaste';
+  } else if (rawSlug === 'chocolate-flavoured-toothpaste' || rawSlug.includes('choose') || rawSlug.includes('best') || rawSlug.includes('guide')) {
+    matchedKey = 'chocolate-flavoured-toothpaste';
+  } else if (rawSlug === 'choco-flavoured-toothpaste' || rawSlug === 'choco-toothpaste' || rawSlug.includes('treat') || rawSlug.includes('fights')) {
+    matchedKey = 'choco-flavoured-toothpaste';
+  } else if (RICH_ARTICLES[rawSlug]) {
+    matchedKey = rawSlug;
+  }
+
+  const rich = matchedKey ? RICH_ARTICLES[matchedKey] : null;
+  if (rich) {
+    return {
+      ...post,
+      id: matchedKey,
+      slug: matchedKey,
+      title: rich.title,
+      content: rich.excerpt || post.content,
+      excerpt: rich.excerpt,
+      image_url: rich.image_url || post.image_url,
+      author: rich.author?.name || post.author || 'Wooff Team',
+      created_at: post.created_at || rich.updated_at,
+    };
+  }
+
+  return post;
+}
+
 const STATIC_BLOG_FALLBACKS = [
-  {
+  enrichBlogItem({
     id: 'chocolate-toothpaste',
     slug: 'chocolate-toothpaste',
     title: 'Chocolate Toothpaste',
@@ -13,8 +54,8 @@ const STATIC_BLOG_FALLBACKS = [
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794125/wooff_blogs/chocolate-toothpaste-wood.webp',
     author: 'Wooff Team',
     created_at: '2026-10-21T08:30:00Z',
-  },
-  {
+  }),
+  enrichBlogItem({
     id: 'chocolate-flavoured-toothpaste',
     slug: 'chocolate-flavoured-toothpaste',
     title: 'Chocolate Flavoured Toothpaste',
@@ -22,8 +63,8 @@ const STATIC_BLOG_FALLBACKS = [
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794134/wooff_blogs/FDP02976.webp',
     author: 'Wooff Team',
     created_at: '2026-10-21T09:00:00Z',
-  },
-  {
+  }),
+  enrichBlogItem({
     id: 'choco-flavoured-toothpaste',
     slug: 'choco-flavoured-toothpaste',
     title: 'Choco Flavoured Toothpaste',
@@ -31,7 +72,7 @@ const STATIC_BLOG_FALLBACKS = [
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.webp',
     author: 'Wooff Team',
     created_at: '2026-10-21T09:00:00Z',
-  },
+  }),
 ];
 
 export default function Blog() {
@@ -50,7 +91,13 @@ export default function Blog() {
           const data = await response.json();
           const blogList = Array.isArray(data) ? data : data?.blogs || data?.data || [];
           if (isMounted && blogList.length > 0) {
-            setBlogs(blogList);
+            const enriched = blogList.map(enrichBlogItem);
+            enriched.sort((a, b) => {
+              const idxA = CANONICAL_BLOG_ORDER.indexOf(a.slug);
+              const idxB = CANONICAL_BLOG_ORDER.indexOf(b.slug);
+              return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
+            });
+            setBlogs(enriched);
           }
         }
       } catch (err) {
@@ -71,11 +118,14 @@ export default function Blog() {
     return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
   };
 
-  // Slice content to 120 characters and append "..."
-  const formatExcerpt = (content) => {
-    if (!content) return '';
-    if (content.length <= 120) return content;
-    return `${content.slice(0, 120)}...`;
+  // Format excerpt cleanly
+  const formatExcerpt = (contentOrPost) => {
+    const text = typeof contentOrPost === 'object' && contentOrPost !== null
+      ? (contentOrPost.excerpt || contentOrPost.content || '')
+      : (contentOrPost || '');
+    if (!text) return '';
+    if (text.length <= 165) return text;
+    return `${text.slice(0, 160).trim()}...`;
   };
 
   return (
@@ -142,7 +192,7 @@ export default function Blog() {
                     </Link>
 
                     <p className="blog-card-excerpt">
-                      {formatExcerpt(post.content)}
+                      {formatExcerpt(post)}
                     </p>
 
                     <div className="blog-card-footer">
