@@ -180,7 +180,7 @@ export default function ProductDetails() {
       if (metaDesc) {
         metaDesc.setAttribute(
           'content',
-          'Choco toothpaste kids love to brush with. Sugar-free, fluoride-free, with 2% nano-hydroxyapatite & 2% theobromine. Made for kids 2+. Shop Wooff Kids now.'
+          'Turn daily brushing into a treat with Wooff Choco Toothpaste for kids aged 2+. sugar-free and fluoride-free formula today!'
         );
       }
     } else if (slug === 'choco-toothpaste-pack-of-2' || data?.slug === 'choco-toothpaste-pack-of-2') {
@@ -393,11 +393,20 @@ export default function ProductDetails() {
               )}
             </div>
 
-            <p className="product-description">
-              {isSinglePack
-                ? 'Wooff Kids Choco Toothpaste is a sugar-free, fluoride-free chocolate toothpaste for children above 2 years. Its carton lists 2% nano-hydroxyapatite and 2% theobromine, and the formula also contains calcium gluconate, inulin, vitamin C, lactoferrin and coenzyme Q10.'
-                : data.description}
-            </p>
+            <div className="product-description">
+              {isSinglePack ? (
+                <>
+                  <p>
+                    Choco toothpaste is toothpaste with a chocolate flavour in place of mint. It cleans teeth the way any toothpaste does; the chocolate taste is there to make twice-daily brushing easier for children who find mint too strong.
+                  </p>
+                  <p className="mt-2 mb-0">
+                    Wooff Kids Choco Toothpaste is a sugar-free, fluoride-free chocolate toothpaste for children above 2 years. Its carton lists 2% nano-hydroxyapatite and 2% theobromine, and the formula also contains calcium gluconate, inulin, vitamin C, lactoferrin and coenzyme Q10.
+                  </p>
+                </>
+              ) : (
+                <p>{data.description}</p>
+              )}
+            </div>
 
             <div className="quantity-and-cart-row">
               <div className="quantity-selector">

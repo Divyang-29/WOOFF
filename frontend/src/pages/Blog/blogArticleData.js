@@ -2,17 +2,21 @@
 
 export const RICH_ARTICLES = {
   'choco-flavoured-toothpaste': {
-    title: 'Choco Flavoured Toothpaste: 8 Tips to End Brushing Fights',
-    meta_title: 'Choco Flavoured Toothpaste: 8 Tips to End Brushing Fights | Wooff',
-    meta_description: 'Child hates brushing? See how choco flavoured toothpaste helps, plus 8 easy tips and an age-by-age routine to make brushing a treat for your kid.',
+    title: 'Choco Flavoured Toothpaste',
+    meta_title: 'Choco Flavoured Toothpaste| Wooff',
+    meta_description: 'Make brushing fun with Wooff Choco Flavoured Toothpaste! Enjoy a delicious chocolate flavour and a refreshing brushing experience every day.',
     canonical_url: 'https://wooff.care/blog/choco-flavoured-toothpaste',
     category: 'Kids Routine & Science',
     tags: ['ChocoToothpaste', 'KidsRoutine', 'ParentingTips', 'BrushingHacks', 'KidsDentistry', 'NanoHydroxyapatite'],
-    updated_at: '2026-10-16T10:00:00Z',
-    reading_time: '4 min read',
+    updated_at: '2026-10-21T09:00:00Z',
+    reading_time: '5 min read',
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.webp',
-    excerpt: 'Child hates brushing? See how choco flavoured toothpaste helps, plus 8 easy tips and an age-by-age routine to make brushing a treat for your kid.',
+    excerpt: 'Make brushing fun with Wooff Choco Flavoured Toothpaste! Enjoy a delicious chocolate flavour and a refreshing brushing experience every day.',
     image_caption: 'Wooff Kids choco flavoured toothpaste — turns daily brushing battles into joyful habits.',
+    introHtml: `
+      <p class="article-paragraph">Choco flavoured toothpaste is toothpaste that tastes of chocolate instead of mint. For a child who refuses to brush because mint feels sharp or "spicy", switching to a chocolate flavour can take away one reason for the daily battle. On its own, though, it won't build the habit. A steady routine, the right amount of toothpaste and an adult who stays involved do most of that work.</p>
+      <p class="article-paragraph">This guide covers how to make the switch, a brushing routine for each age, and practical ways to make brushing something your child looks forward to.</p>
+    `,
     author: {
       name: 'Wooff Team',
       role: 'Pediatric Oral Care Team',
@@ -20,35 +24,28 @@ export const RICH_ARTICLES = {
       bio: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
     },
     toc: [
-      { id: 'introduction', title: '1. Why Switching to Choco Flavour Helps' },
-      { id: 'why-children-resist', title: '2. Why Children Resist Brushing, and Where Flavour Fits' },
-      { id: 'sensory-sensitivities', title: '3. If Your Child Is Sensitive to Taste, Smell or Touch' },
-      { id: 'how-to-switch', title: '4. How to Switch to a Choco Flavoured Toothpaste' },
-      { id: 'routine-for-every-age', title: '5. A Brushing Routine for Every Age' },
-      { id: '8-ways-to-make-brushing-a-treat', title: '6. 8 Ways to Make Brushing a Treat' },
-      { id: 'how-to-brush-properly', title: '7. How to Brush a Child\'s Teeth Properly' },
-      { id: 'what-it-can-and-cant-do', title: '8. What Choco Flavoured Toothpaste Can and Can\'t Do' },
-      { id: 'safety-basics', title: '9. Safety Basics' },
-      { id: 'trying-wooff-kids', title: '10. Trying Wooff Kids Choco Toothpaste' },
-      { id: 'faq-section', title: '11. Frequently Asked Questions' },
+      { id: 'why-children-resist', title: '1. Why Children Resist Brushing, and Where Flavour Fits' },
+      { id: 'sensory-sensitivities', title: '2. If Your Child Is Sensitive to Taste, Smell or Touch' },
+      { id: 'how-to-switch', title: '3. How to Switch to a Choco Flavoured Toothpaste' },
+      { id: 'routine-for-every-age', title: '4. A Brushing Routine for Every Age' },
+      { id: '8-ways-to-make-brushing-a-treat', title: '5. 8 Ways to Make Brushing a Treat' },
+      { id: 'morning-and-bedtime-routine', title: '6. A Simple Morning and Bedtime Routine' },
+      { id: 'brushing-away-from-home', title: '7. Brushing Away From Home' },
+      { id: 'how-to-brush-properly', title: "8. How to Brush a Child's Teeth Properly" },
+      { id: 'when-refusing-needs-dentist', title: '9. When Refusing to Brush Needs a Dentist' },
+      { id: 'what-it-can-and-cant-do', title: "10. What Choco Flavoured Toothpaste Can and Can't Do" },
+      { id: 'choosing-the-toothpaste-itself', title: '11. Choosing the Toothpaste Itself' },
+      { id: 'safety-basics', title: '12. Safety Basics' },
+      { id: 'trying-wooff-kids', title: '13. Trying Wooff Kids Choco Toothpaste' },
+      { id: 'faq-section', title: '14. Frequently Asked Questions' },
     ],
     sections: [
-      {
-        id: 'introduction',
-        title: 'Choco Flavoured Toothpaste',
-        bodyHtml: `
-          <p class="article-paragraph">Choco flavoured toothpaste is toothpaste that tastes of chocolate instead of mint. For a child who refuses to brush because mint feels sharp or "spicy", switching to a chocolate flavour can take away one reason for the daily battle. On its own, though, it won't build the habit. A steady routine, the right amount of toothpaste and an adult who stays involved do most of that work.</p>
-          <p class="article-paragraph">This guide covers how to make the switch, a brushing routine for each age, and practical ways to make brushing something your child looks forward to.</p>
-        `,
-        quote: '“For a child who refuses to brush because mint feels sharp or spicy, switching to a chocolate flavour takes away one reason for the daily battle. On its own, though, it won\'t build the habit — steady routine and parental support do that work.”',
-      },
       {
         id: 'why-children-resist',
         title: 'Why Children Resist Brushing, and Where Flavour Fits',
         bodyHtml: `
           <p class="article-paragraph">Children push back against brushing for different reasons, and flavour fixes only one of them:</p>
           <div class="article-table-responsive-wrapper">
-            <div class="table-heading-label">Why Kids Resist & What Actually Helps</div>
             <table class="article-comparison-table">
               <thead>
                 <tr>
@@ -80,7 +77,7 @@ export const RICH_ARTICLES = {
               </tbody>
             </table>
           </div>
-          <p class="article-paragraph">If taste is the main problem, a choco flavoured toothpaste is worth trying. If it's one of the others, the tips below matter more than the flavour.</p>
+          <p class="article-paragraph mt-3">If taste is the main problem, a choco flavoured toothpaste is worth trying. If it's one of the others, the tips below matter more than the flavour.</p>
         `,
       },
       {
@@ -88,14 +85,14 @@ export const RICH_ARTICLES = {
         title: 'If Your Child Is Sensitive to Taste, Smell or Touch',
         bodyHtml: `
           <p class="article-paragraph">Some children find strong flavours, foam or the feel of bristles overwhelming. This is especially common in autistic children. In a survey of parents of 206 children with disabilities, sensory sensitivities in autistic children were linked with more difficulty with oral care at home and at the dentist. A 2020 study found that autistic children with stronger sensory responses cooperated less with toothbrushing.</p>
-          <p class="article-paragraph"><strong>If this sounds like your child:</strong></p>
+          <p class="article-paragraph">If this sounds like your child:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Choose a mild flavour and a soft toothbrush with a small head</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Use only a small amount of toothpaste, which also means less foam</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Brush in the same place, at the same time and in the same order every day</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Show the steps with pictures, or count or sing through them</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Ask a paediatric dentist or an occupational therapist for more ideas</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>choose a mild flavour and a soft toothbrush with a small head</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>use only a small amount of toothpaste, which also means less foam</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>brush in the same place, at the same time and in the same order every day</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>show the steps with pictures, or count or sing through them</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>ask a paediatric dentist or an occupational therapist for more ideas</span></li>
             </ul>
           </div>
         `,
@@ -112,7 +109,7 @@ export const RICH_ARTICLES = {
               <li><strong>Give it a week.</strong> New tastes can take a few tries to accept, so keep going for a week or so before you decide whether it's working.</li>
             </ol>
           </div>
-          <p class="article-paragraph">Before you switch, check that the toothpaste suits your child's age and dental needs. Our <strong><a href="/blog/chocolate-flavoured-toothpaste" class="article-inline-link">guide to choosing a chocolate flavoured toothpaste</a></strong> explains what to look for on the label.</p>
+          <p class="article-paragraph mt-3">Before you switch, check that the toothpaste suits your child's age and dental needs. Our <strong><a href="/blog/chocolate-flavoured-toothpaste" class="article-inline-link">guide to choosing a chocolate flavoured toothpaste</a></strong> explains what to look for on the label.</p>
         `,
       },
       {
@@ -120,7 +117,6 @@ export const RICH_ARTICLES = {
         title: 'A Brushing Routine for Every Age',
         bodyHtml: `
           <div class="article-table-responsive-wrapper">
-            <div class="table-heading-label">Age-by-Age Brushing Protocol</div>
             <table class="article-comparison-table">
               <thead>
                 <tr>
@@ -152,7 +148,7 @@ export const RICH_ARTICLES = {
               </tbody>
             </table>
           </div>
-          <p class="article-paragraph"><strong>At every age:</strong></p>
+          <p class="article-paragraph mt-3">At every age:</p>
           <div class="article-features-checklist">
             <ul>
               <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Brush twice a day for about 2 minutes, including last thing at night before bed.</span></li>
@@ -180,8 +176,32 @@ export const RICH_ARTICLES = {
         `,
       },
       {
+        id: 'morning-and-bedtime-routine',
+        title: 'A Simple Morning and Bedtime Routine',
+        bodyHtml: `
+          <div class="article-features-checklist">
+            <ol class="article-numbered-list">
+              <li>Brush in the same place, at the same times, every day.</li>
+              <li>Squeeze the toothpaste onto the brush yourself, using the amount on the pack.</li>
+              <li>Start the two-minute timer or song.</li>
+              <li>Let your child brush first, then take your "checking turn".</li>
+              <li>Spit out, then follow the pack's directions on rinsing.</li>
+              <li>At night, brush after the last food or drink of the day. After that, only water.</li>
+              <li>Finish with praise, or a tick on the sticker chart.</li>
+            </ol>
+          </div>
+        `,
+      },
+      {
+        id: 'brushing-away-from-home',
+        title: 'Brushing Away From Home',
+        bodyHtml: `
+          <p class="article-paragraph">Routines break most easily on holidays, school trips and nights at the grandparents' house. Keep a second tube and brush in that bag, so the routine and the flavour your child accepts go wherever they do. A <strong><a href="/product/choco-toothpaste-pack-of-2" class="article-inline-link">pack of two 50 g tubes</a></strong> makes this easy.</p>
+        `,
+      },
+      {
         id: 'how-to-brush-properly',
-        title: 'How to Brush a Child\'s Teeth Properly',
+        title: "How to Brush a Child's Teeth Properly",
         bodyHtml: `
           <div class="article-features-checklist">
             <ul>
@@ -195,19 +215,50 @@ export const RICH_ARTICLES = {
         `,
       },
       {
+        id: 'when-refusing-needs-dentist',
+        title: 'When Refusing to Brush Needs a Dentist',
+        bodyHtml: `
+          <p class="article-paragraph">Sometimes a child refuses to brush because it hurts. Book a dental check-up if your child:</p>
+          <div class="article-features-checklist">
+            <ul>
+              <li><i class="fa-solid fa-circle-exclamation text-warning checklist-icon"></i><span>says brushing hurts, or avoids one side of the mouth</span></li>
+              <li><i class="fa-solid fa-circle-exclamation text-warning checklist-icon"></i><span>has bleeding or swollen gums</span></li>
+              <li><i class="fa-solid fa-circle-exclamation text-warning checklist-icon"></i><span>has white, brown or dark spots on the teeth</span></li>
+              <li><i class="fa-solid fa-circle-exclamation text-warning checklist-icon"></i><span>winces at cold drinks or food</span></li>
+            </ul>
+          </div>
+          <p class="article-paragraph mt-3">These can be signs of decay, gum problems or sensitivity rather than a dislike of brushing, and a new flavour won't fix them.</p>
+        `,
+      },
+      {
         id: 'what-it-can-and-cant-do',
-        title: 'What Choco Flavoured Toothpaste Can and Can\'t Do',
+        title: "What Choco Flavoured Toothpaste Can and Can't Do",
         bodyHtml: `
           <p class="article-paragraph"><strong>It can</strong> make brushing more pleasant for a child who dislikes mint, which may make the twice-daily routine easier to keep.</p>
           <p class="article-paragraph"><strong>It can't:</strong></p>
           <div class="article-features-checklist">
             <ul>
-              <li><i class="fa-solid fa-circle-xmark text-danger checklist-icon"></i><span>Prevent cavities through its flavour. Protection depends on the active ingredient, such as fluoride, hydroxyapatite or theobromine, and the evidence for each is very different.</span></li>
-              <li><i class="fa-solid fa-circle-xmark text-danger checklist-icon"></i><span>Cancel out sugar. How often your child has sweets, biscuits or sugary drinks still matters.</span></li>
-              <li><i class="fa-solid fa-circle-xmark text-danger checklist-icon"></i><span>Replace supervision or dental check-ups.</span></li>
+              <li><i class="fa-solid fa-circle-xmark text-danger checklist-icon"></i><span>prevent cavities through its flavour. Protection depends on the active ingredient, such as fluoride, hydroxyapatite or theobromine, and the evidence for each is very different.</span></li>
+              <li><i class="fa-solid fa-circle-xmark text-danger checklist-icon"></i><span>cancel out sugar. How often your child has sweets, biscuits or sugary drinks still matters.</span></li>
+              <li><i class="fa-solid fa-circle-xmark text-danger checklist-icon"></i><span>replace supervision or dental check-ups.</span></li>
             </ul>
           </div>
-          <p class="article-paragraph">Most choco flavoured toothpastes sold in India are fluoride-free. Fluoride toothpaste has the strongest evidence for preventing tooth decay, so if your child has had cavities or is at higher risk, ask your dentist which toothpaste to use. For the evidence on each ingredient, read <strong><a href="/blog/chocolate-toothpaste" class="article-inline-link">does chocolate toothpaste work, and is it safe?</a></strong></p>
+          <p class="article-paragraph mt-3">Most choco flavoured toothpastes sold in India are fluoride-free. Fluoride toothpaste has the strongest evidence for preventing tooth decay, so if your child has had cavities or is at higher risk, ask your dentist which toothpaste to use. For the evidence on each ingredient, read <strong><a href="/blog/chocolate-toothpaste" class="article-inline-link">does chocolate toothpaste work, and is it safe?</a></strong></p>
+        `,
+      },
+      {
+        id: 'choosing-the-toothpaste-itself',
+        title: 'Choosing the Toothpaste Itself',
+        bodyHtml: `
+          <p class="article-paragraph">The flavour gets your child to the basin; the label decides whether the toothpaste suits them. Before you buy:</p>
+          <div class="article-features-checklist">
+            <ul>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Check the age on the pack.</strong> Some chocolate toothpastes are labelled for children above 2, some for the whole family, and some sold abroad only for over-6s.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Look for the active ingredient and its amount.</strong> Some chocolate toothpastes contain fluoride, hydroxyapatite or theobromine; some contain only flavour.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Read "FDA approved" carefully.</strong> It usually means the factory holds a state licence to make cosmetics, not that the toothpaste's claims were approved.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Buy one tube first.</strong> Many marketplace listings don't accept returns on toothpaste, so check your child likes the taste before buying more.</span></li>
+            </ul>
+          </div>
         `,
       },
       {
@@ -221,7 +272,7 @@ export const RICH_ARTICLES = {
               <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Close the cap after use and follow the storage directions on the pack.</span></li>
               <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>If your child has a food allergy, check the ingredient list first. Some chocolate toothpastes contain cocoa extract or milk-derived proteins such as lactoferrin.</span></li>
               <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>Swallowing a little while learning is common and not a cause for worry. If your child eats a large amount, such as much of a tube, speak to your doctor.</span></li>
-              <li><i class="fa-solid fa-triangle-exclamation text-warning checklist-icon"></i><span><strong>Keep chocolate toothpaste away from pets.</strong> Theobromine, found in many chocolate toothpastes, is toxic to dogs.</span></li>
+              <li><i class="fa-solid fa-circle-exclamation text-warning checklist-icon"></i><span>Keep chocolate toothpaste away from pets. Theobromine, found in many chocolate toothpastes, is toxic to dogs.</span></li>
             </ul>
           </div>
         `,
@@ -231,18 +282,18 @@ export const RICH_ARTICLES = {
         title: 'Trying Wooff Kids Choco Toothpaste',
         bodyHtml: `
           <p class="article-paragraph"><strong><a href="/product/choco-toothpaste" class="article-inline-link">Wooff Kids Choco Toothpaste</a></strong> is our choco flavoured toothpaste for children above 2 years. It is sugar-free and fluoride-free, and the front of the carton states its two main ingredients: 2% nano-hydroxyapatite and 2% theobromine. We don't claim it prevents cavities or repairs enamel; it's there to make brushing taste better, so the routine above is easier to keep. Wooff Kids was founded by Dr. Shrushti Bhankhariya, a dentist.</p>
-          <p class="article-paragraph fst-italic text-muted"><em>This guide is general information and doesn't replace advice from your child's dentist.</em></p>
+          <p class="article-paragraph text-muted fst-italic"><em>This guide is general information and doesn't replace advice from your child's dentist.</em></p>
         `,
-        customLinks: [
-          { text: 'View Wooff Kids Choco Toothpaste (Single 50g)', url: '/product/choco-toothpaste' },
-          { text: 'View Pack of 2 (50g each)', url: '/product/choco-toothpaste-pack-of-2' },
-        ],
       },
     ],
     faqs: [
       {
         q: 'My child hates brushing. Will choco flavoured toothpaste help?',
         a: 'It can, if the taste of mint is the problem. If your child resists the brush itself, the routine or being told what to do, use the other tips in this guide alongside the change of flavour.',
+      },
+      {
+        q: 'Should I let my child choose the toothpaste?',
+        a: "Yes, within limits. Let them choose between options that suit their age and your dentist's advice. Picking the brush colour or the flavour can make them more willing to brush.",
       },
       {
         q: 'How long should my child brush?',
@@ -258,33 +309,43 @@ export const RICH_ARTICLES = {
       },
       {
         q: 'When can my child brush on their own?',
-        a: 'NHS guidance says children aged 7 and over should be able to brush their own teeth, but it\'s still a good idea to watch and check.',
+        a: "NHS guidance says children aged 7 and over should be able to brush their own teeth, but it's still a good idea to watch and check.",
       },
       {
         q: 'Is it OK to reward brushing with chocolate?',
         a: 'Stickers, praise or extra play time work better as rewards. If your child does have chocolate, keep it to mealtimes and never after the bedtime brush.',
       },
     ],
-    conclusion_takeaways: [
-      'Choco flavoured toothpaste removes the taste barrier for children who resist sharp mint.',
-      'Flavor alone doesn\'t build the habit — a predictable morning and bedtime routine is essential.',
-      'Supervise brushing up to age 7, use small amounts, and keep toothpaste stored safely away from pets.',
-    ],
-    disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
+    conclusion_takeaways: [],
+    disclaimer: null,
     related_slugs: ['chocolate-flavoured-toothpaste', 'chocolate-toothpaste'],
   },
   'chocolate-flavoured-toothpaste': {
-    title: "Chocolate Flavoured Toothpaste: How to Choose the Best One",
-    meta_title: 'Chocolate Flavoured Toothpaste: How to Choose the Best One | Wooff',
-    meta_description: 'Buying chocolate flavoured toothpaste for your child? Check these 6 things on the label: age, fluoride, ingredients, sugar, claims and maker.',
+    title: 'Chocolate Flavoured Toothpaste',
+    meta_title: 'Chocolate Flavoured Toothpaste | Wooff',
+    meta_description: 'Discover Wooff Chocolate Flavoured Toothpaste for a fun daily brushing experience. Make oral care enjoyable for kids with a delicious chocolate taste. Shop Now!',
     canonical_url: 'https://wooff.care/blog/chocolate-flavoured-toothpaste',
     category: 'Kids Routine & Science',
     tags: ['ChocolateToothpaste', 'KidsRoutine', 'ParentsGuide', 'NanoHydroxyapatite', 'Theobromine', 'OralCare', 'FluorideFree'],
-    updated_at: '2026-10-16T08:00:00Z',
+    updated_at: '2026-10-21T09:00:00Z',
     reading_time: '5 min read',
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794134/wooff_blogs/FDP02976.webp',
-    excerpt: 'Buying chocolate flavoured toothpaste for your child? Check these 6 things on the label: age, fluoride, ingredients, sugar, claims and maker.',
+    excerpt: 'Discover Wooff Chocolate Flavoured Toothpaste for a fun daily brushing experience. Make oral care enjoyable for kids with a delicious chocolate taste. Shop Now!',
     image_caption: 'Wooff chocolate flavoured kids toothpaste crafted with nano-hydroxyapatite and cocoa-derived theobromine.',
+    introHtml: `
+      <p class="article-paragraph">Chocolate flavoured toothpaste is toothpaste that tastes of chocolate instead of mint, usually made for children who resist brushing. To choose a good one, look past the flavour and check six things on the pack:</p>
+      <div class="article-features-checklist">
+        <ol class="article-numbered-list">
+          <li>the age range</li>
+          <li>whether it contains fluoride</li>
+          <li>the active ingredient, and how much of it</li>
+          <li>the full ingredient list</li>
+          <li>whether the claims match that list</li>
+          <li>who makes it</li>
+        </ol>
+      </div>
+      <p class="article-paragraph">This guide explains each check, so you can read a label in about a minute.</p>
+    `,
     author: {
       name: 'Wooff Team',
       role: 'Pediatric Oral Care Team',
@@ -292,92 +353,66 @@ export const RICH_ARTICLES = {
       bio: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
     },
     toc: [
-      { id: 'introduction', title: '1. Check These 6 Things on the Pack' },
-      { id: 'step-1-age-range', title: '2. Step 1: Check the Age Range' },
-      { id: 'step-2-fluoride', title: '3. Step 2: Fluoride vs. Fluoride-Free' },
-      { id: 'step-3-active-ingredients', title: '4. Step 3: Find Active Ingredients & Amounts' },
-      { id: 'step-4-ingredient-list', title: '5. Step 4: Read Full Ingredient List' },
-      { id: 'step-5-claims-vs-label', title: '6. Step 5: Match Claims to the Label' },
-      { id: 'step-6-maker-value', title: '7. Step 6: Check Who Makes It & Buy Safely' },
-      { id: 'how-wooff-measures-up', title: '8. How Wooff Kids Measures Up' },
-      { id: 'faq-section', title: '9. Frequently Asked Questions' },
+      { id: 'step-1-check-the-age-range', title: '1. Step 1: Check the Age Range' },
+      { id: 'step-2-decide-between-fluoride-and-fluoride-free', title: '2. Step 2: Decide Between Fluoride and Fluoride-Free' },
+      { id: 'step-3-find-the-active-ingredient-and-how-much', title: '3. Step 3: Find the Active Ingredient, and How Much' },
+      { id: 'step-4-read-the-full-ingredient-list', title: '4. Step 4: Read the Full Ingredient List' },
+      { id: 'step-5-check-that-the-claims-match-the-label', title: '5. Step 5: Check That the Claims Match the Label' },
+      { id: 'step-6-check-who-makes-it-and-where-you-buy', title: '6. Step 6: Check Who Makes It, and Where You Buy' },
+      { id: 'kids-or-family-chocolate-toothpaste', title: "7. Kids' or Family Chocolate Toothpaste?" },
+      { id: 'questions-to-ask-your-dentist', title: '8. Questions to Ask Your Dentist' },
+      { id: 'how-wooff-kids-measures-up', title: '9. How Wooff Kids Measures Up' },
+      { id: 'faq-section', title: '10. Frequently Asked Questions' },
     ],
     sections: [
       {
-        id: 'introduction',
-        title: 'Chocolate Flavoured Toothpaste: 6 Things to Check',
-        bodyHtml: `
-          <p class="article-paragraph">Chocolate flavoured toothpaste is toothpaste that tastes of chocolate instead of mint, usually made for children who resist brushing. To choose a good one, look past the flavour and check six things on the pack:</p>
-          <div class="article-features-checklist">
-            <ol class="article-numbered-list">
-              <li><strong>The age range</strong></li>
-              <li><strong>Whether it contains fluoride</strong></li>
-              <li><strong>The active ingredient, and how much of it</strong></li>
-              <li><strong>The full ingredient list</strong></li>
-              <li><strong>Whether the claims match that list</strong></li>
-              <li><strong>Who makes it</strong></li>
-            </ol>
-          </div>
-          <p class="article-paragraph">This guide explains each check, so you can read a label in about a minute.</p>
-        `,
-        paragraphs: [
-          'Chocolate flavoured toothpaste is toothpaste that tastes of chocolate instead of mint, usually made for children who resist brushing. To choose a good one, look past the flavour and check six things on the pack:',
-          'This guide explains each check, so you can read a label in about a minute.',
-        ],
-        quote: '“To choose a good chocolate toothpaste, look past the flavour and check six things on the pack: age range, fluoride choice, active ingredients, full ingredients, verified claims, and the manufacturer.”',
-      },
-      {
-        id: 'step-1-age-range',
+        id: 'step-1-check-the-age-range',
         title: 'Step 1: Check the Age Range',
         bodyHtml: `
-          <p class="article-paragraph">Toothpastes are labelled for age groups because young children need smaller amounts and closer supervision. Look for a printed age range, such as "above 2 years". If a chocolate toothpaste doesn't state an age, ask the brand before you buy. For children under 2, ask your dentist which toothpaste to use.</p>
+          <p class="article-paragraph">Toothpastes are labelled for age groups because young children need smaller amounts and closer supervision. Look for a printed age range, such as &ldquo;above 2 years&rdquo;. If a chocolate toothpaste doesn't state an age, ask the brand before you buy. For children under 2, ask your dentist which toothpaste to use.</p>
           <p class="article-paragraph">Use the amount on the pack, and squeeze it onto the brush yourself. For fluoride toothpaste, the NHS advises a smear for children under 3 and a pea-sized amount from 3 to 6.</p>
         `,
-        callout: {
-          title: 'Dosage Rule of Thumb',
-          text: 'Under 3 years: A tiny smear on a soft-bristled brush. Ages 3 to 6: A pea-sized amount with gentle adult supervision.',
-        },
         paragraphs: [
-          'Toothpastes are labelled for age groups because young children need smaller amounts and closer supervision. Look for a printed age range, such as "above 2 years". If a chocolate toothpaste doesn\'t state an age, ask the brand before you buy. For children under 2, ask your dentist which toothpaste to use.',
-          'Use the amount on the pack, and squeeze it onto the brush yourself. For fluoride toothpaste, the NHS advises a smear for children under 3 and a pea-sized amount from 3 to 6.',
+          "Toothpastes are labelled for age groups because young children need smaller amounts and closer supervision. Look for a printed age range, such as \"above 2 years\". If a chocolate toothpaste doesn't state an age, ask the brand before you buy. For children under 2, ask your dentist which toothpaste to use.",
+          "Use the amount on the pack, and squeeze it onto the brush yourself. For fluoride toothpaste, the NHS advises a smear for children under 3 and a pea-sized amount from 3 to 6.",
         ],
       },
       {
-        id: 'step-2-fluoride',
+        id: 'step-2-decide-between-fluoride-and-fluoride-free',
         title: 'Step 2: Decide Between Fluoride and Fluoride-Free',
         bodyHtml: `
           <p class="article-paragraph">This is the most important choice, and the flavour has nothing to do with it.</p>
           <div class="article-features-checklist">
             <ul>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Fluoride has the strongest evidence.</strong> A Cochrane review of 96 studies found that fluoride toothpaste prevents tooth decay in children and adolescents at strengths of 1,000 ppm and above, with protection increasing at higher strengths.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>In India, check the ppm.</strong> Toothpaste sold in India can contain up to 1,000 ppm fluoride, and a fluoride toothpaste must print its ppm on both the tube and the carton. The NHS recommends children's fluoride toothpaste with no less than 1,000 ppm for under-3s.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Most chocolate flavoured toothpastes sold in India are fluoride-free.</strong> That is a different choice, not an automatically safer or better one. Among fluoride-free ingredients, hydroxyapatite is one of the best studied.</span></li>
+              <li><strong>Fluoride has the strongest evidence.</strong> A Cochrane review of 96 studies found that fluoride toothpaste prevents tooth decay in children and adolescents at strengths of 1,000 ppm and above, with protection increasing at higher strengths.</li>
+              <li><strong>In India, check the ppm.</strong> Toothpaste sold in India can contain up to 1,000 ppm fluoride, and a fluoride toothpaste must print its ppm on both the tube and the carton. The NHS recommends children's fluoride toothpaste with no less than 1,000 ppm for under-3s.</li>
+              <li><strong>Most chocolate flavoured toothpastes sold in India are fluoride-free.</strong> That is a different choice, not an automatically safer or better one. Among fluoride-free ingredients, hydroxyapatite is one of the best studied.</li>
             </ul>
           </div>
-          <p class="article-paragraph"><strong>Ask your dentist before choosing a fluoride-free toothpaste if your child:</strong></p>
+          <p class="article-paragraph">Ask your dentist before choosing a fluoride-free toothpaste if your child:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>has had a cavity, or has chalky white or brown spots on the teeth</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>often has sweets, biscuits or sugary drinks between meals</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>has been told they are at higher risk of tooth decay</span></li>
+              <li>has had a cavity, or has chalky white or brown spots on the teeth</li>
+              <li>often has sweets, biscuits or sugary drinks between meals</li>
+              <li>has been told they are at higher risk of tooth decay</li>
             </ul>
           </div>
           <p class="article-paragraph">In parts of India the groundwater is naturally high in fluoride. If you live in one of those areas, ask your dentist how to balance fluoride for your child.</p>
         `,
         paragraphs: [
           'This is the most important choice, and the flavour has nothing to do with it.',
-          'Most chocolate flavoured toothpastes sold in India are fluoride-free. That is a different choice, not an automatically safer or better one. Among fluoride-free ingredients, hydroxyapatite is one of the best studied.',
-          'In parts of India the groundwater is naturally high in fluoride. If you live in one of those areas, ask your dentist how to balance fluoride for your child.',
+          'Fluoride has the strongest evidence: a Cochrane review of 96 studies found that fluoride toothpaste prevents tooth decay at strengths of 1,000 ppm and above. In India, fluoride toothpaste must print its ppm on both tube and carton. Most chocolate toothpastes in India are fluoride-free; among fluoride-free ingredients, hydroxyapatite is one of the best studied.',
+          'Ask your dentist before choosing a fluoride-free toothpaste if your child has had a cavity, often eats sweets, or has higher decay risk.',
+          'In parts of India groundwater is naturally high in fluoride; consult your dentist to balance intake.',
         ],
       },
       {
-        id: 'step-3-active-ingredients',
+        id: 'step-3-find-the-active-ingredient-and-how-much',
         title: 'Step 3: Find the Active Ingredient, and How Much',
         bodyHtml: `
           <p class="article-paragraph">The flavour is what your child tastes. The active ingredient is what's meant to protect teeth. Check which one the pack contains and whether it says how much.</p>
-          <div class="article-table-responsive-wrapper">
-            <div class="table-heading-label">Active Ingredients & Evidence Comparison</div>
-            <table class="article-comparison-table">
+          <div class="article-table-wrapper">
+            <table class="article-table">
               <thead>
                 <tr>
                   <th>Active ingredient</th>
@@ -387,52 +422,50 @@ export const RICH_ARTICLES = {
               </thead>
               <tbody>
                 <tr>
-                  <td class="metric-name">Fluoride</td>
+                  <td><strong>Fluoride</strong></td>
                   <td>Sodium fluoride, sodium monofluorophosphate or stannous fluoride, with a ppm figure</td>
                   <td><strong>Strong.</strong> Decades of clinical trials support it for preventing decay</td>
                 </tr>
                 <tr>
-                  <td class="metric-name">Hydroxyapatite</td>
+                  <td><strong>Hydroxyapatite</strong></td>
                   <td>Hydroxyapatite or nano-hydroxyapatite, sometimes with a percentage</td>
                   <td><strong>Promising.</strong> In trials of up to 18 months, hydroxyapatite toothpastes did no worse than fluoride toothpastes. Most of those trials used about 10% in a larger-particle form</td>
                 </tr>
                 <tr>
-                  <td class="metric-name">Theobromine</td>
+                  <td><strong>Theobromine</strong></td>
                   <td>Theobromine or cocoa extract</td>
                   <td><strong>Early.</strong> Laboratory results are mixed, and human studies are small and short. It has not been shown to prevent cavities</td>
                 </tr>
                 <tr>
-                  <td class="metric-name">None</td>
+                  <td><strong>None</strong></td>
                   <td>Only cleaning agents, sweeteners and flavour</td>
                   <td>Cleans like any toothpaste, but contains nothing intended to help prevent decay</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <p class="article-paragraph"><strong>Two label tips:</strong></p>
+          <p class="article-paragraph">Two label tips:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Look for an amount.</strong> "With theobromine" or "enriched with minerals" tells you little. A percentage or ppm figure lets you compare products, and compare them with the research.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Cocoa extract isn't a dose.</strong> Cocoa naturally contains theobromine, but a label that lists only "cocoa extract" doesn't tell you how much theobromine is in the paste.</span></li>
+              <li><strong>Look for an amount.</strong> &ldquo;With theobromine&rdquo; or &ldquo;enriched with minerals&rdquo; tells you little. A percentage or ppm figure lets you compare products, and compare them with the research.</li>
+              <li><strong>Cocoa extract isn't a dose.</strong> Cocoa naturally contains theobromine, but a label that lists only &ldquo;cocoa extract&rdquo; doesn't tell you how much theobromine is in the paste.</li>
             </ul>
           </div>
-          <p class="article-paragraph">For more on the evidence, read <a href="/blog/chocolate-toothpaste" class="article-inline-link">does chocolate toothpaste work, and is it safe? &rarr;</a></p>
+          <p class="article-paragraph">For more on the evidence, read <strong><a href="/blog/chocolate-toothpaste" class="article-inline-link">does chocolate toothpaste work, and is it safe?</a></strong></p>
         `,
-        customLinks: [
-          { text: 'Does chocolate toothpaste work, and is it safe? Read the evidence', url: '/blog/chocolate-toothpaste' },
-        ],
         paragraphs: [
-          'The flavour is what your child tastes. The active ingredient is what\'s meant to protect teeth. Check which one the pack contains and whether it says how much.',
+          "The flavour is what your child tastes. The active ingredient is what's meant to protect teeth. Check which one the pack contains and whether it says how much.",
+          "Fluoride has strong evidence. Hydroxyapatite has promising evidence (no worse than fluoride in trials up to 18 months). Theobromine has early evidence and has not been shown to prevent cavities.",
+          "Always look for a clear amount (percentage or ppm). Cocoa extract isn't a dose.",
         ],
       },
       {
-        id: 'step-4-ingredient-list',
+        id: 'step-4-read-the-full-ingredient-list',
         title: 'Step 4: Read the Full Ingredient List',
         bodyHtml: `
           <p class="article-paragraph">India's Cosmetics Rules, 2020 require toothpaste labels to list ingredients, except on very small packs. Most of the names fall into a few groups:</p>
-          <div class="article-table-responsive-wrapper">
-            <div class="table-heading-label">Common Toothpaste Ingredients Guide</div>
-            <table class="article-comparison-table">
+          <div class="article-table-wrapper">
+            <table class="article-table">
               <thead>
                 <tr>
                   <th>On the label</th>
@@ -440,107 +473,113 @@ export const RICH_ARTICLES = {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="metric-name">Hydrated silica, silica</td>
-                  <td>Mild abrasive that helps the brush clean and polish</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Sorbitol, glycerin</td>
-                  <td>Humectants that keep the paste moist; sorbitol also tastes sweet</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Xylitol, sodium saccharin, stevia extract</td>
-                  <td>Sweeteners used instead of sugar</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Cocoa extract, chocolate flavour</td>
-                  <td>Taste</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Sodium lauryl sulphate (SLS), sodium lauroyl sarcosinate</td>
-                  <td>Foaming agents</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Cellulose gum</td>
-                  <td>Thickener</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Sodium benzoate, potassium sorbate</td>
-                  <td>Preservatives</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">CI numbers, such as CI 19140 (tartrazine, a yellow dye)</td>
-                  <td>Colours</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Sodium fluoride, sodium monofluorophosphate, stannous fluoride</td>
-                  <td>Fluoride sources</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Lactoferrin</td>
-                  <td>A protein commonly made from cow's milk, added to some formulas</td>
-                </tr>
+                <tr><td>Hydrated silica, silica</td><td>Mild abrasive that helps the brush clean and polish</td></tr>
+                <tr><td>Sorbitol, glycerin</td><td>Humectants that keep the paste moist; sorbitol also tastes sweet</td></tr>
+                <tr><td>Xylitol, sodium saccharin, stevia extract</td><td>Sweeteners used instead of sugar</td></tr>
+                <tr><td>Cocoa extract, chocolate flavour</td><td>Taste</td></tr>
+                <tr><td>Sodium lauryl sulphate (SLS), sodium lauroyl sarcosinate</td><td>Foaming agents</td></tr>
+                <tr><td>Cellulose gum</td><td>Thickener</td></tr>
+                <tr><td>Sodium benzoate, potassium sorbate</td><td>Preservatives</td></tr>
+                <tr><td>CI numbers, such as CI 19140 (tartrazine, a yellow dye)</td><td>Colours</td></tr>
+                <tr><td>Sodium fluoride, sodium monofluorophosphate, stannous fluoride</td><td>Fluoride sources</td></tr>
+                <tr><td>Lactoferrin</td><td>A protein commonly made from cow's milk, added to some formulas</td></tr>
               </tbody>
             </table>
           </div>
-          <p class="article-paragraph"><strong>Three things to look for:</strong></p>
+          <p class="article-paragraph">Three things to look for:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Sugar shouldn't be on the list.</strong> The American Dental Association doesn't allow sugar in the toothpastes it accepts, so if you see sucrose or glucose, choose another.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>SLS is a personal choice.</strong> The American Dental Association lists sodium lauryl sulphate among toothpaste ingredients reported as allergens or irritants in some people, which is why some families prefer SLS-free pastes.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Allergens.</strong> If your child has a food allergy, look for cocoa extract and milk-derived proteins such as lactoferrin, and ask the brand if you're unsure where an ingredient comes from.</span></li>
+              <li><strong>Sugar shouldn't be on the list.</strong> The American Dental Association doesn't allow sugar in the toothpastes it accepts, so if you see sucrose or glucose, choose another.</li>
+              <li><strong>SLS is a personal choice.</strong> The American Dental Association lists sodium lauryl sulphate among toothpaste ingredients reported as allergens or irritants in some people, which is why some families prefer SLS-free pastes.</li>
+              <li><strong>Allergens.</strong> If your child has a food allergy, look for cocoa extract and milk-derived proteins such as lactoferrin, and ask the brand if you're unsure where an ingredient comes from.</li>
             </ul>
           </div>
         `,
         paragraphs: [
-          'India\'s Cosmetics Rules, 2020 require toothpaste labels to list ingredients, except on very small packs.',
+          "India's Cosmetics Rules, 2020 require toothpaste labels to list ingredients. Ingredients include mild abrasives, humectants, sweeteners, flavourings, foaming agents, thickeners, preservatives, and colours.",
+          "Check that sugar is never on the list. SLS is a personal choice that some families avoid due to irritation risk. Check for food allergens like milk-derived lactoferrin or cocoa extract.",
         ],
       },
       {
-        id: 'step-5-claims-vs-label',
+        id: 'step-5-check-that-the-claims-match-the-label',
         title: 'Step 5: Check That the Claims Match the Label',
         bodyHtml: `
           <p class="article-paragraph">Front-of-pack claims and marketplace titles don't always agree with the ingredient list. Before you buy, check that:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>"No sweeteners"</strong> isn't contradicted by xylitol, saccharin or stevia in the list.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>"No preservatives"</strong> isn't contradicted by sodium benzoate or potassium sorbate.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>"Prevents cavities", "strengthens enamel" or "better than fluoride"</strong> come with a source. Research on an ingredient is not a test of the finished toothpaste.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>"Safe if swallowed"</strong> doesn't replace supervision. All toothpaste is meant to be spat out, so supervise brushing and keep the tube out of reach. If a child eats a large amount, speak to your doctor. Keep chocolate toothpaste away from dogs too, because theobromine is toxic to them.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>"Natural", "organic" or "chemical-free"</strong> doesn't distract you from the ingredient list. Every toothpaste is made of chemicals, natural or not, and none of these words tells you it is safer or works better.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Approval badges</strong> say who approved what.</span></li>
+              <li><strong>&ldquo;No sweeteners&rdquo;</strong> isn't contradicted by xylitol, saccharin or stevia in the list.</li>
+              <li><strong>&ldquo;No preservatives&rdquo;</strong> isn't contradicted by sodium benzoate or potassium sorbate.</li>
+              <li><strong>&ldquo;Prevents cavities&rdquo;, &ldquo;strengthens enamel&rdquo; or &ldquo;better than fluoride&rdquo;</strong> come with a source. Research on an ingredient is not a test of the finished toothpaste.</li>
+              <li><strong>&ldquo;Safe if swallowed&rdquo;</strong> doesn't replace supervision. All toothpaste is meant to be spat out, so supervise brushing and keep the tube out of reach. If a child eats a large amount, speak to your doctor. Keep chocolate toothpaste away from dogs too, because theobromine is toxic to them.</li>
+              <li><strong>&ldquo;Natural&rdquo;, &ldquo;organic&rdquo; or &ldquo;chemical-free&rdquo;</strong> doesn't distract you from the ingredient list. Every toothpaste is made of chemicals, natural or not, and none of these words tells you it is safer or works better.</li>
+              <li><strong>Approval badges</strong> say who approved what.</li>
+              <li><strong>&ldquo;FDA approved&rdquo;</strong> usually refers to the state licence a factory needs to make cosmetics. It is not an approval of the toothpaste's claims.</li>
+              <li><strong>Launch events and endorsements</strong> by dentists aren't the same as a study of the product.</li>
             </ul>
           </div>
         `,
         paragraphs: [
-          'Front-of-pack claims and marketplace titles don\'t always agree with the ingredient list.',
+          "Front-of-pack claims and marketplace titles don't always agree with the ingredient list. Verify claims like 'no sweeteners', 'no preservatives', and efficacy assertions.",
+          "Safe if swallowed does not replace adult supervision. Keep chocolate toothpaste away from pets, especially dogs, because theobromine is toxic to them.",
+          "FDA approved usually refers to manufacturing factory licensing, not clinical approval of product marketing claims.",
         ],
       },
       {
-        id: 'step-6-maker-value',
+        id: 'step-6-check-who-makes-it-and-where-you-buy',
         title: 'Step 6: Check Who Makes It, and Where You Buy',
         bodyHtml: `
           <p class="article-paragraph">India's Cosmetics Rules, 2020 require the label to show the manufacturer's name and address, a manufacturing licence number, a batch number and an expiry or use-before date. Also:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Buy from the brand's own website or an authorised seller</strong>, and check that the carton is sealed and in date.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Ask the brand before buying if the maker's details don't match</strong> across the website, the marketplace listing and the pack.</span></li>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Compare value per gram.</strong> Tubes range from 50 g to about 100 g, and imported chocolate toothpastes can cost several times more than Indian ones. At a pea-sized amount (about 0.25 g) twice a day, a 50 g tube holds around 100 days of brushing.</span></li>
+              <li><strong>Buy from the brand's own website or an authorised seller</strong>, and check that the carton is sealed and in date.</li>
+              <li><strong>Ask the brand before buying if the maker's details don't match</strong> across the website, the marketplace listing and the pack.</li>
+              <li><strong>Check the returns policy.</strong> Many marketplace listings don't accept returns on toothpaste, so buy one tube first if you're not sure your child will like the taste.</li>
+              <li><strong>Compare value per gram.</strong> Tubes range from 50 g to about 100 g, and imported chocolate toothpastes can cost several times more than Indian ones. At a pea-sized amount (about 0.25 g) twice a day, a 50 g tube holds around 100 days of brushing.</li>
             </ul>
           </div>
         `,
         paragraphs: [
-          'India\'s Cosmetics Rules, 2020 require the label to show the manufacturer\'s name and address, a manufacturing licence number, a batch number and an expiry or use-before date.',
+          "Check the manufacturer's name, address, licence number, batch number, and expiry date under India's Cosmetics Rules, 2020.",
+          'Buy from the brand website or authorized sellers, verify the returns policy, and compare value per gram. A 50 g tube lasts about 100 days at a pea-sized amount twice daily.',
         ],
       },
       {
-        id: 'how-wooff-measures-up',
+        id: 'kids-or-family-chocolate-toothpaste',
+        title: "Kids' or Family Chocolate Toothpaste?",
+        bodyHtml: `
+          <p class="article-paragraph">Some chocolate toothpastes are sold for the whole family, with no minimum age on the pack. Others, mostly fluoride pastes sold abroad, are labelled for adults and children over 6 only. For a young child, choose one labelled for their age. For older children and adults, choose by active ingredient, and ask your dentist if you are prone to decay.</p>
+        `,
+        paragraphs: [
+          'Some chocolate toothpastes are sold for the whole family, with no minimum age on the pack. Others, mostly fluoride pastes sold abroad, are labelled for adults and children over 6 only.',
+          'For a young child, choose one labelled for their age. For older children and adults, choose by active ingredient, and ask your dentist if you are prone to decay.',
+        ],
+      },
+      {
+        id: 'questions-to-ask-your-dentist',
+        title: 'Questions to Ask Your Dentist',
+        bodyHtml: `
+          <p class="article-paragraph">Take the tube to your child's next check-up and ask:</p>
+          <div class="article-features-checklist">
+            <ol class="article-numbered-list">
+              <li>Does my child need a fluoride toothpaste, or is a fluoride-free one fine for now?</li>
+              <li>How much toothpaste should my child use at this age?</li>
+              <li>Are there any early signs of decay, such as chalky white spots?</li>
+              <li>Is our drinking water high in fluoride?</li>
+              <li>Does my child have braces, sensitivity or any condition that changes which toothpaste suits them?</li>
+            </ol>
+          </div>
+        `,
+        paragraphs: [
+          "Take the tube to your child's next dental visit. Ask whether they need fluoride, what exact amount to use, whether there are early signs of decay, if local water is high in fluoride, and if any dental conditions affect toothpaste choice.",
+        ],
+      },
+      {
+        id: 'how-wooff-kids-measures-up',
         title: 'How Wooff Kids Measures Up',
         bodyHtml: `
           <p class="article-paragraph">Here is our own toothpaste against the same checks.</p>
-          <div class="article-table-responsive-wrapper">
-            <div class="table-heading-label">Wooff Kids Choco Toothpaste Checklist</div>
-            <table class="article-comparison-table">
+          <div class="article-table-wrapper">
+            <table class="article-table">
               <thead>
                 <tr>
                   <th>Check</th>
@@ -548,48 +587,29 @@ export const RICH_ARTICLES = {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td class="metric-name">Age range</td>
-                  <td>Above 2 years</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Fluoride</td>
-                  <td>Fluoride-free. Ask your dentist first if your child is at higher risk of decay</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Active ingredients and amounts</td>
-                  <td><strong>2% nano-hydroxyapatite and 2% theobromine</strong>, printed on the front of the carton</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Sugar</td>
-                  <td>Sugar-free</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Also free from</td>
-                  <td>SLS, parabens and artificial colours</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Claims</td>
-                  <td>We don't claim it prevents cavities or repairs enamel. The research is on its ingredients, not on this toothpaste</td>
-                </tr>
-                <tr>
-                  <td class="metric-name">Pack sizes</td>
-                  <td>A 50 g tube, or a pack of two 50 g tubes</td>
-                </tr>
+                <tr><td>Age range</td><td>Above 2 years</td></tr>
+                <tr><td>Fluoride</td><td>Fluoride-free. Ask your dentist first if your child is at higher risk of decay</td></tr>
+                <tr><td>Active ingredients and amounts</td><td>2% nano-hydroxyapatite and 2% theobromine, printed on the front of the carton</td></tr>
+                <tr><td>Sugar</td><td>Sugar-free</td></tr>
+                <tr><td>Also free from</td><td>SLS, parabens and artificial colours</td></tr>
+                <tr><td>Claims</td><td>We don't claim it prevents cavities or repairs enamel. The research is on its ingredients, not on this toothpaste</td></tr>
+                <tr><td>Pack sizes</td><td>A 50 g tube, or a pack of two 50 g tubes</td></tr>
               </tbody>
             </table>
           </div>
           <p class="article-paragraph">See the full details on the <strong><a href="/product/choco-toothpaste" class="article-inline-link">Wooff Kids Choco Toothpaste</a></strong> page, or choose the <strong><a href="/product/choco-toothpaste-pack-of-2" class="article-inline-link">pack of two 50 g tubes</a></strong>.</p>
-          <div class="blog-clinical-disclaimer-card" style="margin-top: 1.5rem;">
-            <small><em>This guide is general information and doesn't replace advice from your child's dentist.</em></small>
-          </div>
+          <p class="article-paragraph"><em>This guide is general information and doesn't replace advice from your child's dentist.</em></p>
         `,
-        customLinks: [
-          { text: 'Wooff Kids Choco Toothpaste (Single 50g)', url: '/product/choco-toothpaste' },
-          { text: 'Wooff Kids Choco Toothpaste (Pack of 2)', url: '/product/choco-toothpaste-pack-of-2' },
-        ],
         paragraphs: [
-          'Here is our own toothpaste against the same checks.',
+          'Wooff Kids Choco Toothpaste is designed for children above 2 years, is fluoride-free, and clearly discloses 2% nano-hydroxyapatite and 2% theobromine on the front of the carton.',
+          'It is sugar-free, SLS-free, paraben-free, and artificial-color-free, available in 50 g single or twin packs.',
+        ],
+      },
+      {
+        id: 'faq-section',
+        title: 'Frequently Asked Questions',
+        paragraphs: [
+          'Find clear answers to parents’ top questions about chocolate flavoured toothpaste, ingredients, dosage, and choosing the right option for your child.',
         ],
       },
     ],
@@ -615,31 +635,34 @@ export const RICH_ARTICLES = {
         a: 'Colours change how the paste looks. They are listed as CI numbers, such as CI 19140 (tartrazine). If you prefer to avoid added colours, choose a paste with no CI numbers in its ingredient list.',
       },
       {
+        q: 'Is a chocolate gel toothpaste different from a chocolate paste?',
+        a: 'Gel and paste describe texture. Both clean with mild abrasives and contain similar sweeteners and flavours. What matters is the active ingredient, its amount and the age on the label.',
+      },
+      {
         q: "What if my child doesn't like the taste?",
         a: 'Buy a single tube before a multipack. Opened toothpaste usually can\'t be returned for hygiene reasons, and that includes ours (see our <a href="/refund-policy" class="article-inline-link">refund and cancellation policy</a>). If your child still resists brushing, these <a href="/blog/choco-flavoured-toothpaste" class="article-inline-link">tips to make brushing fun</a> may help.',
       },
     ],
-    conclusion_takeaways: [
-      'Check the age range and consult your dentist on fluoride vs. fluoride-free suitability for your child.',
-      'Always look for verified active ingredients (like 2% nano-hydroxyapatite and 2% theobromine) with clear dosage amounts.',
-      'Ensure the formula is 100% sugar-free, SLS-free, and dye-free with claims that match the ingredient list.',
-      'Wooff Kids Choco Toothpaste lists all active ingredients transparently on the carton with no false claims.',
-    ],
-    disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
+    conclusion_takeaways: [],
+    disclaimer: null,
     related_slugs: ['choco-flavoured-toothpaste', 'chocolate-toothpaste'],
   },
   'chocolate-toothpaste': {
-    title: 'Chocolate Toothpaste for Kids: Is It Safe & Does It Work?',
-    meta_title: 'Chocolate Toothpaste for Kids: Is It Safe & Does It Work? | Wooff',
-    meta_description: "Is chocolate toothpaste safe for kids? Learn what's inside, what theobromine does, fluoride-free facts and how much to use. A simple guide for parents.",
+    title: 'Chocolate Toothpaste',
+    meta_title: 'Chocolate Toothpaste for Kids 2+ | Wooff',
+    meta_description: 'Looking for Chocolate Toothpaste for kids? Try Wooff for a chocolate-inspired brushing experience that makes daily oral care more enjoyable. Explore Now!',
     canonical_url: 'https://wooff.care/blog/chocolate-toothpaste',
     category: 'Kids Routine & Science',
     tags: ['ChocolateToothpaste', 'ParentsGuide', 'KidsRoutine', 'NanoHydroxyapatite', 'Theobromine', 'FluorideFree', 'PediatricDentistry'],
-    updated_at: '2026-10-16T12:00:00Z',
-    reading_time: '5 min read',
+    updated_at: '2026-10-21T08:30:00Z',
+    reading_time: '6 min read',
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794125/wooff_blogs/chocolate-toothpaste-wood.webp',
-    excerpt: "Is chocolate toothpaste safe for kids? Learn what's inside, what theobromine does, fluoride-free facts and how much to use. A simple guide for parents.",
+    excerpt: 'Looking for Chocolate Toothpaste for kids? Try Wooff for a chocolate-inspired brushing experience that makes daily oral care more enjoyable. Explore Now!',
     image_caption: 'Wooff 100% natural chocolate flavoured kids toothpaste crafted with gentle cocoa theobromine and mineral-based care.',
+    introHtml: `
+      <p class="article-paragraph">Chocolate toothpaste is toothpaste flavoured to taste of chocolate instead of mint, made mainly for children who resist brushing. It is also sold as choco toothpaste or chocolate-flavoured toothpaste. It contains no chocolate and, in most cases, no sugar. The taste comes from cocoa extract or flavouring, and the sweetness comes from non-sugar sweeteners.</p>
+      <p class="article-paragraph">So does it work? It cleans teeth like any other toothpaste, and a flavour your child enjoys can make twice-daily brushing easier. Whether it also helps prevent cavities depends on its active ingredients, not its flavour. Most chocolate toothpastes on sale in India are fluoride-free, and fluoride is still the ingredient with the strongest evidence for preventing tooth decay.</p>
+    `,
     author: {
       name: 'Wooff Team',
       role: 'Pediatric Oral Care Team',
@@ -650,21 +673,21 @@ export const RICH_ARTICLES = {
       { id: 'what-is-chocolate-toothpaste', title: '1. What Is Chocolate Toothpaste?' },
       { id: 'does-it-contain-chocolate-or-sugar', title: '2. Does It Contain Chocolate or Sugar?' },
       { id: 'does-it-work', title: '3. Does Chocolate Toothpaste Work?' },
-      { id: 'theobromine-toothpaste-evidence', title: '4. Theobromine Toothpaste: Does It Protect Teeth?' },
-      { id: 'fluoride-free-safety', title: '5. Fluoride-Free Chocolate Toothpaste: Is It Safer?' },
-      { id: 'is-it-safe-for-children', title: '6. Is Chocolate Toothpaste Safe for Children?' },
-      { id: 'how-to-choose-checklist', title: '7. How to Choose: An 8-Point Checklist' },
-      { id: 'wooff-kids-our-chocolate-toothpaste', title: '8. Wooff Kids: Our Chocolate Toothpaste' },
-      { id: 'faq-section', title: '9. Frequently Asked Questions' },
+      { id: 'types-of-chocolate-toothpaste-in-india', title: "4. Types of Chocolate Toothpaste You'll Find in India" },
+      { id: 'theobromine-toothpaste-evidence', title: '5. What Is Theobromine Toothpaste, and Does It Protect Teeth?' },
+      { id: 'fluoride-free-safety', title: '6. Fluoride-Free Chocolate Toothpaste: Is It Safer?' },
+      { id: 'is-it-safe-for-children', title: '7. Is Chocolate Toothpaste Safe for Children?' },
+      { id: 'fda-approved-and-dentist-endorsements', title: '8. What "FDA Approved" and Dentist Endorsements Really Mean' },
+      { id: 'how-to-choose-checklist', title: '9. How to Choose a Chocolate Toothpaste: A Checklist' },
+      { id: 'wooff-kids-our-chocolate-toothpaste', title: '10. Wooff Kids: Our Chocolate Toothpaste' },
+      { id: 'faq-section', title: '11. Frequently Asked Questions' },
     ],
     sections: [
       {
         id: 'what-is-chocolate-toothpaste',
         title: 'What Is Chocolate Toothpaste?',
         bodyHtml: `
-          <p class="article-paragraph">Chocolate toothpaste, choco toothpaste and chocolate-flavoured toothpaste are three names for the same product. It is toothpaste flavoured to taste of chocolate instead of mint, made mainly for children who resist brushing. It contains no chocolate and, in most cases, no sugar. The taste comes from cocoa extract or flavouring, and the sweetness comes from non-sugar sweeteners.</p>
-          <p class="article-paragraph">So does it work? It cleans teeth like any other toothpaste, and a flavour your child enjoys can make twice-daily brushing easier. Whether it also helps prevent cavities depends on its active ingredients, not its flavour. Most chocolate toothpastes on sale in India are fluoride-free, and fluoride is still the ingredient with the strongest evidence for preventing tooth decay.</p>
-          <p class="article-paragraph">Like any toothpaste, it is a blend of ingredients with different jobs:</p>
+          <p class="article-paragraph">Chocolate toothpaste, choco toothpaste and chocolate-flavoured toothpaste are three names for the same product. Like any toothpaste, it is a blend of ingredients with different jobs:</p>
           <div class="article-features-checklist">
             <ul>
               <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Cleaning agents</strong>, such as hydrated silica, help the brush polish plaque off teeth.</span></li>
@@ -676,14 +699,13 @@ export const RICH_ARTICLES = {
           <p class="article-paragraph">The flavour is what your child notices. The active ingredient is what matters for preventing decay. Keep those two questions separate when you compare products.</p>
           <p class="article-paragraph text-muted fst-italic"><em>Searching for "chocolate toothpaste" can also bring up a British school dessert of the same name, a chocolate tart. This guide is about the toothpaste.</em></p>
         `,
-        quote: '“The flavour is what your child notices. The active ingredient is what matters for preventing decay. Keep those two questions separate when you compare products.”',
       },
       {
         id: 'does-it-contain-chocolate-or-sugar',
         title: 'Does Chocolate Toothpaste Contain Chocolate or Sugar?',
         bodyHtml: `
           <p class="article-paragraph">Usually not, but the label is the only way to be sure. The chocolate taste comes from cocoa extract or chocolate flavouring. The sweetness comes from non-sugar sweeteners such as sorbitol, xylitol, saccharin or stevia. Plaque bacteria turn sugar into the acid that attacks enamel, so a sugar-free toothpaste doesn't add to the problem.</p>
-          <p class="article-paragraph"><strong>Two cautions to keep in mind:</strong></p>
+          <p class="article-paragraph">Two cautions:</p>
           <div class="article-features-checklist">
             <ul>
               <li><i class="fa-solid fa-circle-exclamation text-warning checklist-icon"></i><span><strong>A sugar-free toothpaste doesn't cancel out sugar.</strong> How often your child has sweets, biscuits and sugary drinks still matters, whatever the toothpaste tastes like.</span></li>
@@ -698,7 +720,6 @@ export const RICH_ARTICLES = {
         bodyHtml: `
           <p class="article-paragraph">That depends on what you need it to do.</p>
           <div class="article-table-responsive-wrapper">
-            <div class="table-heading-label">What You Want vs. Does It Do It?</div>
             <table class="article-comparison-table">
               <thead>
                 <tr>
@@ -709,26 +730,25 @@ export const RICH_ARTICLES = {
               <tbody>
                 <tr>
                   <td class="metric-name">Clean plaque off teeth</td>
-                  <td><strong>Yes.</strong> Brushing well for two minutes does most of the work, with any toothpaste</td>
+                  <td>Yes. Brushing well for two minutes does most of the work, with any toothpaste</td>
                 </tr>
                 <tr>
                   <td class="metric-name">Help a reluctant child brush</td>
-                  <td><strong>It can.</strong> A taste your child likes may make twice-daily brushing easier to stick with</td>
+                  <td>It can. A taste your child likes may make twice-daily brushing easier to stick with</td>
                 </tr>
                 <tr>
                   <td class="metric-name">Prevent cavities</td>
-                  <td><strong>Depends on the active ingredient</strong>, not the flavour</td>
+                  <td>Depends on the active ingredient, not the flavour</td>
                 </tr>
                 <tr>
                   <td class="metric-name">Strengthen or "repair" enamel</td>
-                  <td><strong>Not established</strong> for any chocolate toothpaste. Some ingredients show promise in research</td>
+                  <td>Not established for any chocolate toothpaste. Some ingredients show promise in research</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <h3 class="article-h3 mt-4 mb-2">How the Active Ingredients Compare</h3>
+          <h3 class="article-h3 mt-4 mb-3">How the Active Ingredients Compare</h3>
           <div class="article-table-responsive-wrapper">
-            <div class="table-heading-label">Active Ingredients Comparison</div>
             <table class="article-comparison-table">
               <thead>
                 <tr>
@@ -739,22 +759,22 @@ export const RICH_ARTICLES = {
               </thead>
               <tbody>
                 <tr>
-                  <td class="metric-name">Fluoride</td>
+                  <td class="metric-name"><strong>Fluoride</strong></td>
                   <td>A mineral that helps enamel resist acid attacks and repair early damage</td>
                   <td><strong>Strong.</strong> A Cochrane review of 96 studies supports fluoride toothpaste over non-fluoride toothpaste</td>
                 </tr>
                 <tr>
-                  <td class="metric-name">Hydroxyapatite (including nHAp)</td>
+                  <td class="metric-name"><strong>Hydroxyapatite</strong> (including nano-hydroxyapatite)</td>
                   <td>A synthetic form of the calcium-phosphate mineral that makes up most of tooth enamel</td>
                   <td><strong>Promising.</strong> In trials of up to 18 months, hydroxyapatite toothpaste was no worse than fluoride toothpaste at limiting new decay in children and adults. Most trials tested about 10% hydroxyapatite in a larger-particle form</td>
                 </tr>
                 <tr>
-                  <td class="metric-name">Theobromine</td>
+                  <td class="metric-name"><strong>Theobromine</strong></td>
                   <td>A natural compound in cocoa, chemically related to caffeine</td>
                   <td><strong>Early.</strong> Mostly laboratory studies with mixed results, plus one small study in children. No large trial has shown fewer cavities</td>
                 </tr>
                 <tr>
-                  <td class="metric-name">Chocolate flavour alone</td>
+                  <td class="metric-name"><strong>Chocolate flavour alone</strong></td>
                   <td>Taste only</td>
                   <td><strong>None</strong></td>
                 </tr>
@@ -764,23 +784,61 @@ export const RICH_ARTICLES = {
         `,
       },
       {
+        id: 'types-of-chocolate-toothpaste-in-india',
+        title: "Types of Chocolate Toothpaste You'll Find in India",
+        bodyHtml: `
+          <p class="article-paragraph">Search for chocolate toothpaste and you'll find four kinds. They taste similar but work very differently:</p>
+          <div class="article-table-responsive-wrapper">
+            <table class="article-comparison-table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Main active ingredient</th>
+                  <th>What to know</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="metric-name">Flavour-only gel or paste</td>
+                  <td>None</td>
+                  <td>Cleans like any toothpaste, but contains nothing meant to help prevent decay</td>
+                </tr>
+                <tr>
+                  <td class="metric-name">Theobromine paste</td>
+                  <td>Theobromine or cocoa extract</td>
+                  <td>Early evidence only, and the amount is often not stated</td>
+                </tr>
+                <tr>
+                  <td class="metric-name">Hydroxyapatite paste</td>
+                  <td>Hydroxyapatite or nano-hydroxyapatite</td>
+                  <td>Promising evidence; check the percentage</td>
+                </tr>
+                <tr>
+                  <td class="metric-name">Chocolate toothpaste with fluoride</td>
+                  <td>Fluoride</td>
+                  <td>Strongest evidence. Mostly sold abroad, and some are labelled for over-6s only, so check the ppm and the age</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="article-paragraph mt-3">Some chocolate toothpastes are sold for the whole family, with no minimum age on the pack. For a young child, choose one that is labelled for their age.</p>
+        `,
+      },
+      {
         id: 'theobromine-toothpaste-evidence',
         title: 'What Is Theobromine Toothpaste, and Does It Protect Teeth?',
         bodyHtml: `
           <p class="article-paragraph">Theobromine is a natural compound found in cocoa beans. Toothpastes that contain it are often sold as theobromine toothpaste. Researchers have tested whether it helps tooth enamel take up minerals (remineralisation). Here is what the evidence shows so far:</p>
           <div class="article-features-checklist">
             <ul>
-              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Laboratory results are mixed.</strong> A widely publicised 2013 study found theobromine performed comparably to fluoride in remineralising artificial enamel lesions. However, independent laboratory studies have found weaker effects than fluoride, and one found no effect at the concentrations tested.</span></li>
+              <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Laboratory results are mixed.</strong> A widely publicised 2013 study found theobromine performed comparably to fluoride in remineralising artificial enamel lesions. Its authors included the chief executive and chief scientific officer of a company that sells theobromine toothpaste. Independent laboratory studies have found weaker effects than fluoride, and one found no effect at the concentrations tested.</span></li>
               <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>A 2024 review pooled six laboratory studies.</strong> It judged theobromine's effect comparable to fluoride's, but the individual results conflicted, and every study was done in a laboratory, not in children's mouths.</span></li>
               <li><i class="fa-solid fa-circle-check checklist-icon"></i><span><strong>Human evidence is limited.</strong> A 2021 pilot study followed 26 children aged about 4. Both a theobromine toothpaste and a fluoride toothpaste were followed by signs of enamel remineralisation and lower levels of a cavity-causing bacterium. The study was small and short, and no large trial has yet shown that theobromine toothpaste prevents cavities.</span></li>
             </ul>
           </div>
-          <blockquote class="article-editorial-quote">
-            <p>“Theobromine is a promising ingredient, not a proven replacement for fluoride. Treat claims that it 'prevents cavities' or 'works better than fluoride' with caution.”</p>
-            <cite>— Pediatric Dental Research Consensus</cite>
-          </blockquote>
+          <p class="article-paragraph mt-3"><strong>The bottom line:</strong> theobromine is a promising ingredient, not a proven replacement for fluoride. Treat claims that it "prevents cavities" or "works better than fluoride" with caution.</p>
           <h3 class="article-h3 mt-4 mb-2">How Much Theobromine Is in One Brush?</h3>
-          <p class="article-paragraph">Far less than in a chocolate bar. A pea-sized amount of toothpaste weighs about 0.25 g, so a paste with 2% theobromine holds about 5 mg per brush. Milk chocolate contains about 205 mg per 100 g, so that is roughly the amount in 2.5 g of milk chocolate. Toothpaste is still meant to be spat out, and a whole tube is a different matter, especially for pets.</p>
+          <p class="article-paragraph">Far less than in a chocolate bar. A pea-sized amount of toothpaste weighs about 0.25 g, so a paste with 2% theobromine holds about 5 mg per brush. Milk chocolate contains about 205 mg per 100 g, so that is roughly the amount in 2.5 g of milk chocolate. Toothpaste is still meant to be spat out, and a whole tube is a different matter, especially for pets (see below).</p>
         `,
       },
       {
@@ -796,7 +854,7 @@ export const RICH_ARTICLES = {
               <li><i class="fa-solid fa-circle-check checklist-icon"></i><span>A Cochrane review of 96 studies supports fluoride toothpaste over non-fluoride toothpaste for preventing decay.</span></li>
             </ul>
           </div>
-          <p class="article-paragraph"><strong>The Indian context:</strong> In parts of India, children are also exposed to fluoride from untreated groundwater and some foods, and official figures have reported fluorosis in 230 districts across 19 states. If you live in a high-fluoride area, ask your dentist how to balance fluoride for your child.</p>
+          <p class="article-paragraph"><strong>The Indian context.</strong> In parts of India, children are also exposed to fluoride from untreated groundwater and some foods, and official figures have reported fluorosis in 230 districts across 19 states. If you live in a high-fluoride area, ask your dentist how to balance fluoride for your child.</p>
           <p class="article-paragraph">So fluoride-free is a different choice, not an automatically safer or better one. Talk to your dentist before choosing a fluoride-free toothpaste if your child:</p>
           <div class="article-features-checklist">
             <ul>
@@ -824,11 +882,19 @@ export const RICH_ARTICLES = {
               <li><strong>Check for allergies.</strong> Some chocolate toothpastes contain cocoa extract or milk-derived proteins such as lactoferrin, which is commonly made from cow's milk. If your child has a food allergy, read the full ingredient list and ask your doctor before use.</li>
             </ol>
           </div>
-          <p class="article-paragraph">If your child still resists brushing, try these <strong><a href="/blog/choco-flavoured-toothpaste" class="article-inline-link">tips to make brushing fun</a></strong>.</p>
+          <p class="article-paragraph">If your child still resists brushing, try these <strong><a href="/blog/choco-toothpaste" class="article-inline-link">tips to make brushing fun</a></strong>.</p>
           <h3 class="article-h3 mt-4 mb-2">What to Do if Your Child Eats Toothpaste</h3>
           <p class="article-paragraph">Swallowing a little while learning to brush is common and usually nothing to worry about, especially with a sugar-free, fluoride-free paste. If your child eats a large amount, such as much of a tube, speak to your doctor and keep the pack with you so you can read out the ingredients.</p>
           <h3 class="article-h3 mt-4 mb-2">Keep It Away from Pets</h3>
           <p class="article-paragraph">Theobromine is toxic to dogs. Mild signs can appear at about 20 mg per kg of body weight, and seizures at about 60 mg/kg. A 50 g tube with 2% theobromine contains about 1 g, enough to seriously poison a small dog. Many toothpastes also contain xylitol, which can cause dangerously low blood sugar in dogs. Store the tube where pets can't reach it.</p>
+        `,
+      },
+      {
+        id: 'fda-approved-and-dentist-endorsements',
+        title: 'What "FDA Approved" and Dentist Endorsements Really Mean',
+        bodyHtml: `
+          <p class="article-paragraph">In India, toothpaste is regulated as a cosmetic. A manufacturer needs a cosmetic manufacturing licence from its State Food &amp; Drug Control Administration, which is why some brands say "FDA approved". That licence, and a Good Manufacturing Practices (GMP) certificate, show the factory meets the rules. They don't mean a regulator has tested the toothpaste or approved its health claims. Imported toothpastes also need registration with the Central Drugs Standard Control Organisation (CDSCO) before they can be sold in India.</p>
+          <p class="article-paragraph">Dentist endorsements work the same way. A dentist recommending a product, or dental association office-bearers attending a product launch, is not a clinical trial. Ask what was tested: a study of that toothpaste, with results you can read.</p>
         `,
       },
       {
@@ -845,6 +911,7 @@ export const RICH_ARTICLES = {
               <li><strong>Claims with evidence.</strong> Be cautious about "prevents cavities", "better than fluoride", "safe if swallowed" or approval badges unless the brand says which study or which authority backs them.</li>
               <li><strong>Maker's details.</strong> The label should show the manufacturer's name and address, a licence number, a batch number and an expiry or use-before date.</li>
               <li><strong>Your child's dental needs.</strong> If your child has had cavities, white spots, braces or sensitivity, ask your dentist first.</li>
+              <li><strong>Where you buy.</strong> Buy from the brand's website or an authorised seller, and buy one tube first: many marketplace listings don't accept returns on toothpaste.</li>
             </ol>
           </div>
           <p class="article-paragraph">For a step-by-step guide to reading the label, see <strong><a href="/blog/chocolate-flavoured-toothpaste" class="article-inline-link">how to choose a chocolate flavoured toothpaste</a></strong>.</p>
@@ -858,13 +925,13 @@ export const RICH_ARTICLES = {
           <p class="article-paragraph">The research in this guide is about those ingredients, not about our toothpaste itself, so we don't claim that Wooff Kids prevents cavities or repairs enamel. Its job is to clean your child's teeth with a taste that makes brushing easier. Wooff Kids was founded by <strong><a href="/about" class="article-inline-link">Dr. Shrushti Bhankhariya</a></strong>, a dentist.</p>
           <p class="article-paragraph text-muted fst-italic"><em>This guide is general information and doesn't replace advice from your child's dentist.</em></p>
         `,
-        customLinks: [
-          { text: 'View Wooff Kids Choco Toothpaste (Single 50g)', url: '/product/choco-toothpaste' },
-          { text: 'View Pack of 2 (50g each)', url: '/product/choco-toothpaste-pack-of-2' },
-        ],
       },
     ],
     faqs: [
+      {
+        q: 'Does chocolate toothpaste taste like chocolate?',
+        a: "It tastes of cocoa or chocolate flavouring, but usually milder and less sweet than a chocolate bar, because it is sweetened without sugar and also contains cleaning ingredients. It won't have the cooling feel of mint.",
+      },
       {
         q: 'Is theobromine toothpaste better than fluoride toothpaste?',
         a: 'Not on current evidence. Fluoride toothpaste is supported by decades of clinical trials. Theobromine has mixed results in laboratory studies and has been tested only in small, short human studies. It is a promising ingredient, not a proven replacement for fluoride.',
@@ -894,12 +961,8 @@ export const RICH_ARTICLES = {
         a: "Brushing your teeth and gums twice a day, and gently cleaning the tongue once a day, help prevent bad breath whatever the flavour. Mint adds a cooling feeling that chocolate doesn't, so breath may not feel 'minty' afterwards, but that's taste, not cleanliness. If bad breath doesn't go away, see a dentist: gum disease, tooth decay and a dry mouth can all cause it.",
       },
     ],
-    conclusion_takeaways: [
-      'Chocolate toothpaste cleans teeth effectively and helps reluctant children build a consistent habit.',
-      'Active cavity protection depends on active ingredients like fluoride or nHAp, not the chocolate flavour.',
-      'Always follow pea-sized dosing, supervise brushing under 7, and keep chocolate toothpaste far away from pets.',
-    ],
-    disclaimer: "Written by the Wooff team. Reviewed for accuracy; check with your child's dentist for personal advice. Toothpaste is not a substitute for regular dental visits.",
+    conclusion_takeaways: [],
+    disclaimer: null,
     related_slugs: ['chocolate-flavoured-toothpaste', 'choco-flavoured-toothpaste'],
   },
 };
@@ -950,15 +1013,14 @@ export function getEnrichedBlog(baseBlog, allBlogs = []) {
     })
     .slice(0, 3);
 
-  // Parse tags from database string or array
+  // Parse tags: Curated tags from richData take priority
   let parsedTags = [];
-  if (baseBlog.tags) {
+  if (richData.tags && richData.tags.length > 0) {
+    parsedTags = richData.tags;
+  } else if (baseBlog.tags) {
     parsedTags = Array.isArray(baseBlog.tags)
       ? baseBlog.tags
       : baseBlog.tags.split(',').map((t) => t.trim().replace(/^#/, '')).filter(Boolean);
-  }
-  if (parsedTags.length === 0 && richData.tags) {
-    parsedTags = richData.tags;
   }
   if (parsedTags.length === 0) {
     parsedTags = ['OralHealth', 'KidsWellness', 'WooffKids', 'DentalScience'];
@@ -986,11 +1048,11 @@ export function getEnrichedBlog(baseBlog, allBlogs = []) {
     ];
   }
 
-  // Parse Conclusion Takeaways: Curated takeaways take priority
-  let parsedTakeaways = Array.isArray(richData.conclusion_takeaways) && richData.conclusion_takeaways.length > 0
-    ? richData.conclusion_takeaways
-    : [];
-  if (parsedTakeaways.length === 0 && baseBlog.conclusion_takeaways) {
+  // Parse Conclusion Takeaways: Curated takeaways take priority (empty array allowed)
+  let parsedTakeaways = [];
+  if (richData.conclusion_takeaways !== undefined) {
+    parsedTakeaways = Array.isArray(richData.conclusion_takeaways) ? richData.conclusion_takeaways : [];
+  } else if (baseBlog.conclusion_takeaways) {
     try {
       parsedTakeaways = typeof baseBlog.conclusion_takeaways === 'string' 
         ? JSON.parse(baseBlog.conclusion_takeaways) 
@@ -999,13 +1061,6 @@ export function getEnrichedBlog(baseBlog, allBlogs = []) {
       parsedTakeaways = [];
     }
   }
-  if (!Array.isArray(parsedTakeaways) || parsedTakeaways.length === 0) {
-    parsedTakeaways = [
-      'Prioritize gentle, biocompatible minerals over harsh chemicals.',
-      'Daily consistency creates long-term positive oral wellness habits.',
-      'Always consult your pediatric dentist for personalized oral care routines.',
-    ];
-  }
 
   return {
     ...baseBlog,
@@ -1013,10 +1068,11 @@ export function getEnrichedBlog(baseBlog, allBlogs = []) {
     category: baseBlog.category || richData.category || 'Dental Health',
     tags: parsedTags,
     updated_at: baseBlog.updated_at || richData.updated_at || baseBlog.created_at,
-    reading_time: baseBlog.reading_time || estimatedReadingTime,
+    reading_time: richData.reading_time || baseBlog.reading_time || estimatedReadingTime,
     excerpt: richData.excerpt || baseBlog.excerpt || paragraphs[0] || '',
-    image_caption: baseBlog.image_caption || richData.image_caption || 'Wooff Kids Botanical Dental Research & Clinical Insights.',
-    disclaimer: richData.disclaimer || baseBlog.disclaimer || null,
+    introHtml: richData.introHtml || baseBlog.introHtml || null,
+    image_caption: richData.image_caption !== undefined ? richData.image_caption : (baseBlog.image_caption || 'Wooff Kids Botanical Dental Research & Clinical Insights.'),
+    disclaimer: richData.disclaimer !== undefined ? richData.disclaimer : (baseBlog.disclaimer || null),
     meta_title: richData.meta_title || null,
     meta_description: richData.meta_description || null,
     author_profile: {

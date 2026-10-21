@@ -57,6 +57,11 @@ export const SINGLE_PACK_CHOCO_FAQS = [
     answer: 'Wooff Kids Choco Toothpaste contains no sugar and no chocolate; its taste comes from cocoa extract. Cavities form when plaque bacteria turn sugars from food and drinks into acid, so a sugar-free toothpaste doesn\'t feed them. The flavour doesn\'t protect teeth either: brushing twice a day and cutting down on sugary snacks do.'
   },
   {
+    id: 'fda-approved',
+    question: 'Is Wooff Kids Choco Toothpaste FDA approved?',
+    answer: 'In India, toothpaste is regulated as a cosmetic, so it isn\'t "approved" the way a medicine is. Wooff Kids is made under a cosmetic manufacturing licence issued by a State Food & Drug Control Administration, at a plant certified for Good Manufacturing Practices. These show the factory meets the rules. They aren\'t an approval of health claims, which is why we don\'t make any.'
+  },
+  {
     id: 'toddler-2yo',
     question: 'Can a 2-year-old use Wooff Kids Choco Toothpaste?',
     answer: 'Yes. It is labelled for children above 2 years. Use a pea-sized amount, put it on the brush yourself, and brush your child\'s teeth for them until they are about 3. For children under 2, ask your dentist which toothpaste to use and how much.'
@@ -94,12 +99,12 @@ export const SINGLE_PACK_CHOCO_FAQS = [
   {
     id: 'returns-opened-tube',
     question: 'Can I return an opened tube?',
-    answer: 'For hygiene reasons, opened or used tubes can\'t be returned. If your order arrives damaged, leaking or incorrect, contact us within 48 hours of delivery and share an unedited video of the sealed parcel being opened. Full details are in our refund and cancellation policy.'
+    answer: 'For hygiene reasons, opened or used tubes can\'t be returned. If your order arrives damaged, leaking or incorrect, contact us within 48 hours of delivery and share an unedited video of the sealed parcel being opened. Full details are in our <a href="/refund-policy" class="faq-inline-link"><strong>refund and cancellation policy</strong></a>.'
   },
   {
     id: 'where-to-buy-choco',
     question: 'Where can I buy Wooff Kids Choco Toothpaste?',
-    answer: 'On wooff.care, as a single 50 g tube or a pack of two 50 g tubes. You can pay by UPI, card, net banking or cash on delivery.'
+    answer: 'On wooff.care, as a single 50 g tube or a <a href="/product/choco-toothpaste-pack-of-2" class="faq-inline-link"><strong>pack of two 50 g tubes</strong></a>. You can pay by UPI, card, net banking or cash on delivery.'
   },
   {
     id: 'delivery-timeline',
@@ -189,7 +194,11 @@ export default function ProductFAQ({ faqs, isSinglePack = false }) {
                   
                   {isOpen && (
                     <div className="faq-answer-content">
-                      <p>{item.answer}</p>
+                      {typeof item.answer === 'string' && item.answer.includes('<') ? (
+                        <div dangerouslySetInnerHTML={{ __html: item.answer }} />
+                      ) : (
+                        <p>{item.answer}</p>
+                      )}
                     </div>
                   )}
                 </div>

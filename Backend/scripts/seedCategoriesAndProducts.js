@@ -36,7 +36,7 @@ async function run() {
         title: "Wooff Choco Toothpaste",
         slug: "wooff-choco-toothpaste",
         price: 399.00,
-        final_price: 349.00,
+        final_price: 249.00,
         primary_image: "/assets/tooth_paste.webp",
         images: JSON.stringify(["/assets/tooth_paste.webp"]),
         description: "India's 1st prebiotic chocolate toothpaste for kids. Infused with real cocoa and 2% Nano-hydroxyapatite to actively rebuild enamel, strengthen gums, and make brushing delicious.",

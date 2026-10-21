@@ -393,6 +393,42 @@
   margin: 0;
 }
 
+/* Blockquote for Founder Quote */
+.spe-blockquote {
+  margin: 1.5rem 0;
+  padding: 1.35rem 1.75rem;
+  background-color: #FAF5EE;
+  border-left: 4px solid var(--primary-brown, #4B2E1E);
+  border-radius: 0 14px 14px 0;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #382417;
+  box-shadow: 2px 2px 8px rgba(75, 46, 30, 0.05);
+}
+
+.spe-blockquote p {
+  margin-bottom: 0.6rem;
+}
+
+.spe-blockquote p:last-child {
+  margin-bottom: 0;
+  font-style: normal;
+  font-weight: 700;
+  color: var(--primary-brown, #4B2E1E);
+}
+
+.spe-ordered-list {
+  padding-left: 1.4rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: #382417;
+}
+
 @media (max-width: 768px) {
   .spe-cell-label {
     width: 35%;

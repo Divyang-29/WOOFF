@@ -89,7 +89,7 @@ export const STATIC_PRODUCTS = [
       "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966752/wooff_assets/j48dfjncw6lhemjdeyk3.jpg",
       "https://res.cloudinary.com/dnvgblkjo/image/upload/v1791966808/wooff_assets/kkylwilrooaywztjdmia.jpg"
     ],
-    description: "Brushing just got delicious! Wooff Kids Chocolate Flavour Toothpaste is a chocolate toothpaste for kids above 2 years, made with Nano-Hydroxyapatite, Theobromine, Lactoferrin, Coenzyme Q10 and more. A yummy chocolate taste helps kids look forward to brushing every day.",
+    description: "Choco toothpaste is toothpaste with a chocolate flavour in place of mint. It cleans teeth the way any toothpaste does; the chocolate taste is there to make twice-daily brushing easier for children who find mint too strong.\n\nWooff Kids Choco Toothpaste is a sugar-free, fluoride-free chocolate toothpaste for children above 2 years. Its carton lists 2% nano-hydroxyapatite and 2% theobromine, and the formula also contains calcium gluconate, inulin, vitamin C, lactoferrin and coenzyme Q10.",
     stock: 100,
     sku: "WOOFF-KIDS-CHOCO-50G-P1",
     estimated_delivery: "2-4 business days",

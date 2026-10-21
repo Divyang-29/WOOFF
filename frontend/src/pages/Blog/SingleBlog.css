@@ -349,6 +349,17 @@
 }
 
 /* 5. Short Introduction / Excerpt Box */
+.single-blog-intro-content {
+  margin-bottom: 2.25rem;
+}
+
+.single-blog-intro-content .article-paragraph {
+  font-size: 1.05rem;
+  line-height: 1.78;
+  color: var(--primary-brown, #4B2E1E);
+  margin-bottom: 1.15rem;
+}
+
 .single-blog-lead-box {
   background-color: #FFFFFF;
   border: 2px solid var(--primary-brown, #4B2E1E);

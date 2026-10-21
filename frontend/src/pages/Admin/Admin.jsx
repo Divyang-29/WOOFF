@@ -1778,7 +1778,7 @@ export default function Admin() {
       video_url: '',
       product_name: firstProd.title || '',
       product_photo: firstProd.primary_image || '',
-      price: firstProd.final_price || firstProd.price || 349,
+      price: firstProd.final_price || firstProd.price || 249,
       caption: firstProd.title ? `Brush with ${firstProd.title}! 🦷✨` : 'See it in action!',
       author: '@wooffkids',
       rating: '5.0 ★',
@@ -6223,7 +6223,7 @@ export default function Admin() {
                   <input
                     type="number"
                     className="form-control"
-                    placeholder="349"
+                    placeholder="249"
                     value={reelForm.price}
                     onChange={(e) => setReelForm({ ...reelForm, price: e.target.value })}
                     required

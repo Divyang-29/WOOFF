@@ -151,10 +151,40 @@ export default function SingleBlog() {
   useEffect(() => {
     if (!blog) return;
 
-    document.title = blog.meta_title || `${blog.title} | Wooff`;
-    const metaTag = document.querySelector('meta[name="description"]');
-    if (metaTag && (blog.meta_description || blog.excerpt)) {
-      metaTag.setAttribute('content', blog.meta_description || blog.excerpt);
+    const pageTitle = blog.meta_title || `${blog.title} | Wooff`;
+    const pageDesc = blog.meta_description || blog.excerpt || '';
+
+    document.title = pageTitle;
+
+    // Standard meta description
+    let metaTag = document.querySelector('meta[name="description"]');
+    if (!metaTag) {
+      metaTag = document.createElement('meta');
+      metaTag.name = 'description';
+      document.head.appendChild(metaTag);
+    }
+    if (pageDesc) {
+      metaTag.setAttribute('content', pageDesc);
+    }
+
+    // Open Graph & Twitter Descriptions
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc && pageDesc) ogDesc.setAttribute('content', pageDesc);
+
+    const twitterDesc = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDesc && pageDesc) twitterDesc.setAttribute('content', pageDesc);
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', pageTitle);
+
+    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitle) twitterTitle.setAttribute('content', pageTitle);
+
+    if (blog.canonical_url) {
+      let canonicalLink = document.querySelector('link[rel="canonical"]');
+      if (canonicalLink) {
+        canonicalLink.setAttribute('href', blog.canonical_url);
+      }
     }
 
     let scriptTag = document.getElementById('blog-schema-ld');
@@ -417,12 +447,14 @@ export default function SingleBlog() {
             </div>
 
             {/* 5. Short Introduction / Excerpt */}
-            {blog.excerpt && (
+            {blog.introHtml ? (
+              <div className="single-blog-intro-content mb-4" dangerouslySetInnerHTML={{ __html: blog.introHtml }} />
+            ) : blog.excerpt ? (
               <div className="single-blog-lead-box">
                 <div className="lead-icon"><i className="fa-solid fa-quote-left" /></div>
                 <p className="lead-text">{blog.excerpt}</p>
               </div>
-            )}
+            ) : null}
 
             {/* 6. Table of Contents */}
             {blog.toc && blog.toc.length > 0 && (
@@ -587,24 +619,26 @@ export default function SingleBlog() {
             )}
 
             {/* 9. Conclusion & Key Takeaways */}
-            <section id="conclusion" className="blog-conclusion-section">
-              <div className="conclusion-box">
-                <div className="conclusion-badge">
-                  <i className="fa-solid fa-bookmark" /> Conclusion & Key Takeaways
+            {blog.conclusion_takeaways && blog.conclusion_takeaways.length > 0 && (
+              <section id="conclusion" className="blog-conclusion-section">
+                <div className="conclusion-box">
+                  <div className="conclusion-badge">
+                    <i className="fa-solid fa-bookmark" /> Conclusion & Key Takeaways
+                  </div>
+                  <p className="conclusion-intro">
+                    Empowering your family’s dental health starts with understanding biological ingredients over aggressive marketing:
+                  </p>
+                  <ul className="conclusion-takeaways-list">
+                    {blog.conclusion_takeaways.map((point, idx) => (
+                      <li key={idx}>
+                        <i className="fa-solid fa-shield-halved takeaway-icon" />
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <p className="conclusion-intro">
-                  Empowering your family’s dental health starts with understanding biological ingredients over aggressive marketing:
-                </p>
-                <ul className="conclusion-takeaways-list">
-                  {blog.conclusion_takeaways.map((point, idx) => (
-                    <li key={idx}>
-                      <i className="fa-solid fa-shield-halved takeaway-icon" />
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </section>
+              </section>
+            )}
 
             {/* 10. Clinical Disclaimer & Accuracy Notice */}
             {blog.disclaimer && (
@@ -647,7 +681,7 @@ export default function SingleBlog() {
                 </p>
                 <div className="prod-rec-actions">
                   <Link to="/product/choco-toothpaste" className="btn-pill-3d">
-                    Shop Formula • ₹349
+                    Shop Formula • ₹249
                   </Link>
                   <Link to="/products" className="btn-view-all-products">
                     View All Products →

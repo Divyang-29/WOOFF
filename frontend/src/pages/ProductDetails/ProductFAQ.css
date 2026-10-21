@@ -272,3 +272,15 @@
     font-size: 0.95rem;
   }
 }
+
+.faq-inline-link {
+  color: var(--primary-brown, #4B2E1E);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+}
+
+.faq-inline-link:hover {
+  opacity: 0.8;
+}
