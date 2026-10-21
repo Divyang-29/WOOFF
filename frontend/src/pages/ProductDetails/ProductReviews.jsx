@@ -304,12 +304,12 @@ export default function ProductReviews({ productId, productSlug, initialRatingAv
             <div className="revitin-score-header">
               <div className="revitin-score-row">
                 <span className="revitin-score-num">
-                  {reviewCount > 0 ? ratingAvg.toFixed(1) : '5.0'}
+                  {reviewCount > 0 ? ratingAvg.toFixed(1) : '0.0'}
                 </span>
                 <span className="revitin-score-stars">
                   {reviewCount > 0 
                     ? ('★'.repeat(Math.round(ratingAvg)) + '☆'.repeat(5 - Math.round(ratingAvg)))
-                    : '★★★★★'}
+                    : '☆☆☆☆☆'}
                 </span>
               </div>
               <div className="revitin-reviews-pill">
@@ -338,12 +338,20 @@ export default function ProductReviews({ productId, productSlug, initialRatingAv
 
             {/* 4. Reviews Summary with Sparkle & Write Review Button */}
             <div className="revitin-summary-section">
-              <h3 className="revitin-summary-title">
-                Reviews Summary <i className="fa-solid fa-wand-magic-sparkles revitin-sparkle"></i>
-              </h3>
-              <p className="revitin-summary-text">
-                Most parents find Wooff toothpaste to be a delightful, gentle alternative to conventional formulas, praising its delicious chocolate taste and the way their kids actually look forward to brushing. Many report cleaner teeth, healthy gums, cavity prevention, and peace of mind from the 100% safe to swallow, bio-identical nano-hydroxyapatite (nHAp) formula.
-              </p>
+              {reviewCount > 0 ? (
+                <>
+                  <h3 className="revitin-summary-title">
+                    Reviews Summary <i className="fa-solid fa-wand-magic-sparkles revitin-sparkle"></i>
+                  </h3>
+                  <p className="revitin-summary-text">
+                    Most parents find Wooff toothpaste to be a delightful, gentle alternative to conventional formulas, praising its delicious chocolate taste and the way their kids actually look forward to brushing. Many report cleaner teeth, healthy gums, cavity prevention, and peace of mind from the 100% safe to swallow, bio-identical nano-hydroxyapatite (nHAp) formula.
+                  </p>
+                </>
+              ) : (
+                <p className="revitin-summary-text" style={{ fontStyle: 'italic', color: '#7c5a43', marginBottom: '1.25rem' }}>
+                  No customer reviews yet. Be the first to share your experience with other parents!
+                </p>
+              )}
               <button 
                 type="button" 
                 className="revitin-write-btn"

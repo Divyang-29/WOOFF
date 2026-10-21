@@ -53,8 +53,8 @@ export const STATIC_PRODUCTS = [
     stock: 100,
     sku: "WOOFF-KIDS-CHOCO-50G-P2",
     estimated_delivery: "2-4 business days",
-    rating_avg: "4.80",
-    review_count: 5,
+    rating_avg: "0.00",
+    review_count: 0,
     is_active: true,
     is_bestseller: true,
     bundle_type: "bundle-2",
@@ -93,8 +93,8 @@ export const STATIC_PRODUCTS = [
     stock: 100,
     sku: "WOOFF-KIDS-CHOCO-50G-P1",
     estimated_delivery: "2-4 business days",
-    rating_avg: "4.90",
-    review_count: 8,
+    rating_avg: "0.00",
+    review_count: 0,
     is_active: true,
     is_bestseller: false,
     bundle_type: "single",
@@ -121,8 +121,8 @@ export function normalizeProduct(product) {
   };
 }
 
-const CACHE_KEY_PRODUCTS = 'wooff_cached_products_v3';
-const CACHE_KEY_PRODUCT_PREFIX = 'wooff_cached_prod_v3_';
+const CACHE_KEY_PRODUCTS = 'wooff_cached_products_v5';
+const CACHE_KEY_PRODUCT_PREFIX = 'wooff_cached_prod_v5_';
 
 export function getCachedProducts() {
   try {
