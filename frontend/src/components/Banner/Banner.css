@@ -67,26 +67,29 @@
 
 .banner-title {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-size: clamp(2.1rem, 4.5vw, 3.4rem);
   font-weight: 500;
   color: var(--primary-brown, #4B2E1E);
   letter-spacing: -0.5px;
   line-height: 1.2;
   margin: 0;
   text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .page-banner {
-    padding: 7.5rem 1.25rem 2rem 1.25rem;
+    padding: 5.5rem 1.25rem 1.85rem 1.25rem;
   }
   .banner-title {
-    font-size: 2.25rem;
+    font-size: 1.95rem;
   }
   .banner-breadcrumb-badge {
     font-size: 0.75rem;
-    padding: 0.35rem 1rem;
+    padding: 0.35rem 0.95rem;
   }
   .breadcrumb-divider {
     margin: 0 0.35rem;
@@ -95,9 +98,14 @@
 
 @media (max-width: 480px) {
   .page-banner {
-    padding: 7rem 1rem 1.75rem 1rem;
+    padding: 5rem 0.85rem 1.5rem 0.85rem;
   }
   .banner-title {
-    font-size: 1.85rem;
+    font-size: 1.55rem;
+    line-height: 1.25;
+  }
+  .banner-breadcrumb-badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.85rem;
   }
 }

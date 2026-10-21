@@ -411,8 +411,8 @@ export const RICH_ARTICLES = {
         title: 'Step 3: Find the Active Ingredient, and How Much',
         bodyHtml: `
           <p class="article-paragraph">The flavour is what your child tastes. The active ingredient is what's meant to protect teeth. Check which one the pack contains and whether it says how much.</p>
-          <div class="article-table-wrapper">
-            <table class="article-table">
+          <div class="article-table-responsive-wrapper">
+            <table class="article-comparison-table">
               <thead>
                 <tr>
                   <th>Active ingredient</th>
@@ -464,8 +464,8 @@ export const RICH_ARTICLES = {
         title: 'Step 4: Read the Full Ingredient List',
         bodyHtml: `
           <p class="article-paragraph">India's Cosmetics Rules, 2020 require toothpaste labels to list ingredients, except on very small packs. Most of the names fall into a few groups:</p>
-          <div class="article-table-wrapper">
-            <table class="article-table">
+          <div class="article-table-responsive-wrapper">
+            <table class="article-comparison-table">
               <thead>
                 <tr>
                   <th>On the label</th>
@@ -578,8 +578,8 @@ export const RICH_ARTICLES = {
         title: 'How Wooff Kids Measures Up',
         bodyHtml: `
           <p class="article-paragraph">Here is our own toothpaste against the same checks.</p>
-          <div class="article-table-wrapper">
-            <table class="article-table">
+          <div class="article-table-responsive-wrapper">
+            <table class="article-comparison-table">
               <thead>
                 <tr>
                   <th>Check</th>

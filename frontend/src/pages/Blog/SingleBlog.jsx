@@ -72,6 +72,7 @@ export default function SingleBlog() {
   const [tags, setTags] = useState(initialData?.tags || []);
   const [copiedLink, setCopiedLink] = useState(false);
   const [activeTocId, setActiveTocId] = useState('');
+  const [isTocOpen, setIsTocOpen] = useState(true);
 
   // Interactive Comments State (Real user comments only, no fake data)
   const [comments, setComments] = useState([]);
@@ -458,21 +459,61 @@ export default function SingleBlog() {
 
             {/* 6. Table of Contents */}
             {blog.toc && blog.toc.length > 0 && (
-              <div className="single-blog-toc-card">
-                <div className="toc-header">
-                  <span className="toc-icon">📑</span>
-                  <h3 className="toc-title">Table of Contents</h3>
+              <div className={`single-blog-toc-card ${isTocOpen ? 'is-open' : 'is-collapsed'}`}>
+                <div
+                  className="toc-header"
+                  onClick={() => setIsTocOpen(!isTocOpen)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsTocOpen(!isTocOpen); }}
+                >
+                  <div className="toc-header-left">
+                    <span className="toc-icon">📑</span>
+                    <h3 className="toc-title">Table of Contents</h3>
+                    <span className="toc-count-pill">{blog.toc.length} sections</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="toc-toggle-btn"
+                    aria-label={isTocOpen ? 'Collapse table of contents' : 'Expand table of contents'}
+                  >
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style={{
+                        transform: isTocOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.25s ease',
+                      }}
+                    >
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
                 </div>
-                <ul className="toc-list">
-                  {blog.toc.map((item) => (
-                    <li key={item.id} className={activeTocId === item.id ? 'active' : ''}>
-                      <a href={`#${item.id}`}>
-                        <span className="toc-dot">•</span>
-                        {item.title}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+                {isTocOpen && (
+                  <ul className="toc-list">
+                    {blog.toc.map((item) => (
+                      <li key={item.id} className={activeTocId === item.id ? 'active' : ''}>
+                        <a
+                          href={`#${item.id}`}
+                          onClick={() => {
+                            if (window.innerWidth < 768) {
+                              setIsTocOpen(false);
+                            }
+                          }}
+                        >
+                          <span className="toc-dot">•</span>
+                          <span className="toc-item-text">{item.title}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             )}
 
