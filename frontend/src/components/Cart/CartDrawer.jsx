@@ -77,7 +77,7 @@ export default function CartDrawer() {
                     <div className="cart-item-details">
                       <h4 className="cart-item-title">
                         {item.slug === 'choco-toothpaste' || String(item.product_id || item.id) === '9'
-                          ? 'Wooff Kids Choco Toothpaste 50g (Above 2 Years)'
+                          ? 'Choco Toothpaste'
                           : item.title}
                       </h4>
                       <div className="cart-item-price-row">

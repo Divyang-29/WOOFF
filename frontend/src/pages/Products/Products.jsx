@@ -123,7 +123,7 @@ export default function Products() {
                   >
                     <h3 className="card-title">
                       {product.slug === 'choco-toothpaste' || String(product.id) === '9'
-                        ? 'Wooff Kids Choco Toothpaste 50g (Above 2 Years)'
+                        ? 'Choco Toothpaste'
                         : product.title}
                     </h3>
                   </Link>
