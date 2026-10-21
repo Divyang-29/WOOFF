@@ -688,20 +688,6 @@
   position: relative;
 }
 
-.article-table-responsive-wrapper::before,
-.article-table-wrapper::before {
-  content: "↔ Scroll horizontally to view table";
-  display: none;
-  background-color: #FAF5EE;
-  color: var(--secondary-brown, #7A4E2D);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-align: right;
-  padding: 4px 12px;
-  border-bottom: 1px dashed rgba(75, 46, 30, 0.18);
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-}
 
 .table-heading-label {
   background-color: var(--primary-brown, #4B2E1E);
@@ -1582,10 +1568,6 @@
     gap: 0.65rem;
   }
 
-  .article-table-responsive-wrapper::before,
-  .article-table-wrapper::before {
-    display: block;
-  }
 
   .blog-product-recommendation-card {
     padding: 1.75rem 1.35rem;
