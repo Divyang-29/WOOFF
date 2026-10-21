@@ -334,7 +334,7 @@ export default function ProductDetails() {
 
             <h1 className="product-title">
               {slug === 'choco-toothpaste' || data.slug === 'choco-toothpaste'
-                ? 'Wooff Kids Choco Toothpaste 50g (Above 2 Years)'
+                ? 'Choco Toothpaste'
                 : (slug === 'choco-toothpaste-pack-of-2' || data.slug === 'choco-toothpaste-pack-of-2'
                   ? 'Wooff Kids Chocolate Flavour Toothpaste, Pack of 2 (50 g each)'
                   : data.title)}

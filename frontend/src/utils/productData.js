@@ -67,7 +67,7 @@ export const STATIC_PRODUCTS = [
   {
     id: 9,
     category_id: 1,
-    title: "Wooff Kids Choco Toothpaste 50g (Above 2 Years)",
+    title: "Choco Toothpaste",
     slug: "choco-toothpaste",
     price: "299.00",
     final_price: "249.00",
@@ -114,15 +114,15 @@ export function normalizeProduct(product) {
   return {
     ...product,
     title: isSingle
-      ? 'Wooff Kids Choco Toothpaste 50g (Above 2 Years)'
+      ? 'Choco Toothpaste'
       : isPack2
         ? 'Wooff Kids Chocolate Flavour Toothpaste, Pack of 2 (50 g each)'
         : (product.title || product.name),
   };
 }
 
-const CACHE_KEY_PRODUCTS = 'wooff_cached_products_v5';
-const CACHE_KEY_PRODUCT_PREFIX = 'wooff_cached_prod_v5_';
+const CACHE_KEY_PRODUCTS = 'wooff_cached_products_v6';
+const CACHE_KEY_PRODUCT_PREFIX = 'wooff_cached_prod_v6_';
 
 export function getCachedProducts() {
   try {
