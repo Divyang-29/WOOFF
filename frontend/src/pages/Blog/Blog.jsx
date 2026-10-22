@@ -38,7 +38,7 @@ function enrichBlogItem(post) {
       excerpt: rich.excerpt,
       image_url: rich.image_url || post.image_url,
       author: rich.author?.name || post.author || 'Wooff Team',
-      created_at: post.created_at || rich.updated_at,
+      created_at: rich.created_at || rich.updated_at || post.created_at,
     };
   }
 
@@ -53,7 +53,7 @@ const STATIC_BLOG_FALLBACKS = [
     content: "Looking for Chocolate Toothpaste for kids? Try Wooff for a chocolate-inspired brushing experience that makes daily oral care more enjoyable. Explore Now!",
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794125/wooff_blogs/chocolate-toothpaste-wood.webp',
     author: 'Wooff Team',
-    created_at: '2026-10-21T08:30:00Z',
+    created_at: '2026-10-23T08:30:00Z',
   }),
   enrichBlogItem({
     id: 'chocolate-flavoured-toothpaste',
@@ -62,7 +62,7 @@ const STATIC_BLOG_FALLBACKS = [
     content: 'Discover Wooff Chocolate Flavoured Toothpaste for a fun daily brushing experience. Make oral care enjoyable for kids with a delicious chocolate taste. Shop Now!',
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794134/wooff_blogs/FDP02976.webp',
     author: 'Wooff Team',
-    created_at: '2026-10-21T09:00:00Z',
+    created_at: '2026-10-23T09:00:00Z',
   }),
   enrichBlogItem({
     id: 'choco-flavoured-toothpaste',
@@ -71,7 +71,7 @@ const STATIC_BLOG_FALLBACKS = [
     content: 'Make brushing fun with Wooff Choco Flavoured Toothpaste! Enjoy a delicious chocolate flavour and a refreshing brushing experience every day.',
     image_url: 'https://res.cloudinary.com/dnvgblkjo/image/upload/v1791794136/wooff_blogs/choco-toothpaste-pieces.webp',
     author: 'Wooff Team',
-    created_at: '2026-10-21T09:00:00Z',
+    created_at: '2026-10-23T09:00:00Z',
   }),
 ];
 

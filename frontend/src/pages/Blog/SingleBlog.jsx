@@ -43,7 +43,7 @@ function getInitialBlogData(slug) {
     author_role: rich.author?.role || 'Pediatric Oral Care Team',
     author_bio: rich.author?.bio,
     author_avatar: rich.author?.avatar,
-    created_at: rich.updated_at || new Date().toISOString(),
+    created_at: rich.created_at || rich.updated_at || new Date().toISOString(),
     content: rich.excerpt,
     category: rich.category,
     tags: rich.tags,

@@ -55,7 +55,7 @@
   <!-- 7. Blogs Listing -->
   <url>
     <loc>https://wooff.care/blog</loc>
-    <lastmod>2026-10-12</lastmod>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -63,19 +63,19 @@
   <!-- 8. Individual Blog Articles -->
   <url>
     <loc>https://wooff.care/blog/choco-flavoured-toothpaste</loc>
-    <lastmod>2026-10-16</lastmod>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://wooff.care/blog/chocolate-flavoured-toothpaste</loc>
-    <lastmod>2026-10-12</lastmod>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://wooff.care/blog/chocolate-toothpaste</loc>
-    <lastmod>2026-10-12</lastmod>
+    <lastmod>2026-10-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
